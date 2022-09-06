@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Entity;
+
+/**
+ * @ORM\Table {{ module.slugSingular }}
+ * @ORM\Translation
+ */
+class {{ module.entityName }}
+{
+
+    /**
+     * @var int
+     *
+     * @ORM\Id
+     */
+    private $id = 0;
+
+{% for item in items %}
+{% if item.isRelation %}
+    /**
+     * @var int
+     *
+     * @ORM\Type INT(6) UNSIGNED
+     * @ORM\Column {{ item.slug }}
+     */
+    private ${{ item.slug }} = 0;
+
+{% else -%}
+    {%- for type in types -%}
+        {%- if item.type == type.name -%}
+            {{- include(template_from_string(type.entityProperty), {"item": item}) -}}
+            {{- "\n" -}}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endif %}
+{% endfor %}
+
+    public function __construct()
+    {
+{% for item in items %}
+{% if item.type == "date" %}
+        $this->{{ item.slug }} = new \DateTime();
+{% endif %}
+{% endfor %}
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
+{% for item in items %}
+{% if item.isRelation %}
+    /**
+     * @return int
+     */
+    public function get{{ item.slugInCamel }}(): int
+    {
+        return $this->{{ item.slug }};
+    }
+
+    /**
+     * @param int ${{ item.slug }}
+     */
+    public function set{{ item.slugInCamel }}(int ${{ item.slug }})
+    {
+        $this->{{ item.slug }} = ${{ item.slug }};
+    }
+
+{% else -%}
+    {%- for type in types -%}
+        {%- if item.type == type.name -%}
+            {{- include(template_from_string(type.entityMethods), {"item": item}) -}}
+            {{- "\n" -}}
+        {%- endif -%}
+    {%- endfor -%}
+{%- endif %}
+{% endfor %}
+}

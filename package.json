@@ -6,9 +6,13 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "bootstrap": "^5.2.0",
+    "immutability-helper": "^3.1.1",
     "react": "^18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -19,9 +23,21 @@
   },
   "eslintConfig": {
     "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:jsx-a11y/recommended",
+      "plugin:react/jsx-runtime",
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "strict": 0,
+      "react/jsx-uses-react": "off",
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn"
+    }
   },
   "browserslist": {
     "production": [
@@ -34,5 +50,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "sass": "^1.54.8"
   }
 }

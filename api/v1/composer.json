@@ -1,0 +1,35 @@
+{
+  "name": "gephart/gephart",
+  "type": "library",
+  "description": "PHP framework with CRUD generator",
+  "keywords": [],
+  "homepage": "https://github.com/gephart/gephart",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Michal Katuščák",
+      "email": "michal@katuscak.cz"
+    }
+  ],
+  "require": {
+    "php": ">=7.1",
+    "gephart/framework": "0.6.*"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "3.*"
+  },
+  "autoload": {
+    "psr-4": { "": "src/" },
+    "exclude-from-classmap": [
+      "/Tests/"
+    ]
+  },
+  "scripts": {
+    "gephart-scripts": [
+      "Gephart\\Framework\\Composer\\Scripts::install"
+    ],
+    "post-create-project-cmd": [
+      "@gephart-scripts"
+    ]
+  }
+}

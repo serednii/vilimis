@@ -1,0 +1,173 @@
+<?php
+
+namespace Admin\Controller;
+
+use Admin\Facade\AdminResponse;
+use App\Entity\{{ module.entityName }};
+{% for entity in entities %}
+use App\Repository\{{ entity }}Repository;
+{% endfor %}
+use Gephart\Framework\Facade\EntityManager;
+use Gephart\Framework\Facade\Request;
+use Gephart\Framework\Facade\Router;
+use Psr\Http\Message\UploadedFileInterface;
+
+/**
+ * @Security ROLE_ADMIN
+ * @RoutePrefix /admin/{{ module.slugSingular }}
+ */
+class {{ module.entityName }}Controller
+{
+    /**
+     * @var {{ module.entityName }}Repository
+     */
+    private ${{ module.slugSingular }}_repository;
+
+{% for item in items if item.isRelation and item.slug != module.slugSingular %}
+    /**
+     * @var {{ item.type }}Repository
+     */
+    private ${{ item.slug }}_repository;
+
+{% endfor %}
+
+    public function __construct(
+{% for item in items if item.isRelation and item.slug != module.slugSingular %}
+        {{ item.type }}Repository ${{ item.slug }}_repository,
+{% endfor %}
+        {{ module.entityName }}Repository ${{ module.slugSingular }}_repository
+    )
+    {
+{% for item in items if item.isRelation and item.slug != module.slugSingular %}
+        $this->{{ item.slug }}_repository = ${{ item.slug }}_repository;
+{% endfor %}
+        $this->{{ module.slugSingular }}_repository = ${{ module.slugSingular }}_repository;
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/",
+     *  "name": "admin_{{ module.slugSingular }}"
+     * }
+     */
+    public function index()
+    {
+        $postData = Request::getParsedBody();
+        $filesData = Request::getUploadedFiles();
+
+        if (!empty($postData["{{ items[0].slug }}"])) {
+            ${{ module.slugSingular }} = new {{ module.entityName }}();
+            $this->mapEntityFromArray(${{ module.slugSingular }}, $postData, $filesData);
+
+            EntityManager::save(${{ module.slugSingular }});
+
+            Router::redirectTo("admin_{{ module.slugSingular }}");
+        }
+
+{% for item in items if item.isRelation %}
+        ${{ item.slugPlural }} = $this->{{ item.slug }}_repository->findBy([],["ORDER BY" => "id"]);
+{% endfor %}
+        ${{ module.slugPlural }} = $this->{{ module.slugSingular }}_repository->findBy([], [
+            "ORDER BY" => "id DESC"
+        ]);
+
+        return AdminResponse::createResponse("admin/{{ module.slugSingular }}/index.html.twig", [
+{% for item in items if item.isRelation %}
+            "{{ item.slugPlural }}" => ${{ item.slugPlural }},
+{% endfor %}
+            "{{ module.slugPlural }}" => ${{ module.slugPlural }}
+        ]);
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/edit/{id}",
+     *  "name": "admin_{{ module.slugSingular }}_edit"
+     * }
+     */
+    public function edit($id)
+    {
+        $postData = Request::getParsedBody();
+        $filesData = Request::getUploadedFiles();
+
+        if (!empty($postData["{{ items[0].slug }}"])) {
+            ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($id);
+            $this->mapEntityFromArray(${{ module.slugSingular }}, $postData, $filesData);
+
+            EntityManager::save(${{ module.slugSingular }});
+
+            Router::redirectTo("admin_{{ module.slugSingular }}_edit", ["id"=>${{ module.slugSingular }}->getId()]);
+        }
+
+{% for item in items if item.isRelation %}
+        ${{ item.slugPlural }} = $this->{{ item.slug }}_repository->findBy([],["ORDER BY" => "id"]);
+{% endfor %}
+        ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($id);
+
+        return AdminResponse::createResponse("admin/{{ module.slugSingular }}/edit.html.twig", [
+{% for item in items if item.isRelation %}
+            "{{ item.slugPlural }}" => ${{ item.slugPlural }},
+{% endfor %}
+            "{{ module.slugSingular }}" => ${{ module.slugSingular }}
+        ]);
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/delete/{id}",
+     *  "name": "admin_{{ module.slugSingular }}_delete"
+     * }
+     */
+    public function delete($id)
+    {
+        ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($id);
+        EntityManager::remove(${{ module.slugSingular }});
+
+        Router::redirectTo("admin_{{ module.slugSingular }}");
+    }
+
+    private function mapEntityFromArray({{ module.entityName }} ${{ module.slugSingular }}, array $data, array $files) {
+{% for item in items %}
+    {%- for type in types -%}
+        {%- if item.type == type.name -%}
+            {{- include(template_from_string(type.set), {"item": item}) -}}
+            {{- "\n" -}}
+        {%- endif -%}
+    {%- endfor -%}
+{% endfor %}
+    }
+
+{% set break = false %}
+{% for item in items if not break %}
+{% if item.type == "file" or item.type == "image" %}
+    private function uploadFile(UploadedFileInterface $file): string
+    {
+        $client_filename = $file->getClientFilename();
+        $filename = md5($client_filename.time()) . "." . substr($client_filename, -4);
+        $dir1 = substr($filename, 0, 2);
+        $dir2 = substr($filename, 2, 2);
+        $upload_dir = __DIR__ . "/../../../web/upload";
+        $target = $upload_dir . "/" . $dir1 . "/" . $dir2 . "/" . $filename;
+
+        if (!is_dir($upload_dir . "/" . $dir1)) {
+            @mkdir($upload_dir . "/" . $dir1);
+            @chmod($upload_dir . "/" . $dir1, 0777);
+        }
+
+        if (!is_dir($upload_dir . "/" . $dir1 . "/" . $dir2)) {
+            @mkdir($upload_dir . "/" . $dir1 . "/" . $dir2);
+            @chmod($upload_dir . "/" . $dir1 . "/" . $dir2, 0777);
+        }
+
+        if ($file->moveTo($target)) {
+            @chmod($target, 0777);
+            return $dir1 . "/" . $dir2 . "/" . $filename;
+        }
+
+        return "";
+    }
+
+{% set break = true %}
+{% endif %}
+{% endfor %}
+}
