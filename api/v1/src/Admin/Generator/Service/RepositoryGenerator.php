@@ -39,7 +39,7 @@ class RepositoryGenerator
         $this->module_repository = $module_repository;
         $this->item_repository = $item_repository;
         $this->template_engine = $template_engine;
-        $this->repository_dir = realpath(__DIR__ . "/../../../App/Repository");
+        $this->repository_dir = realpath(__DIR__ . "/../../../API/Repository");
     }
 
     public function isGenerated(int $module_id)

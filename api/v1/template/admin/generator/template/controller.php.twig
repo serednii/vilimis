@@ -3,9 +3,9 @@
 namespace Admin\Controller;
 
 use Admin\Facade\AdminResponse;
-use App\Entity\{{ module.entityName }};
+use API\Entity\{{ module.entityName }};
 {% for entity in entities %}
-use App\Repository\{{ entity }}Repository;
+use API\Repository\{{ entity }}Repository;
 {% endfor %}
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
@@ -23,24 +23,24 @@ class {{ module.entityName }}Controller
      */
     private ${{ module.slugSingular }}_repository;
 
-{% for item in items if item.isRelation and item.slug != module.slugSingular %}
+{% for item in items %}{% if item.isRelation and item.slug != module.slugSingular %}
     /**
      * @var {{ item.type }}Repository
      */
     private ${{ item.slug }}_repository;
 
-{% endfor %}
+{% endif %}{% endfor %}
 
     public function __construct(
-{% for item in items if item.isRelation and item.slug != module.slugSingular %}
+{% for item in items %}{% if item.isRelation and item.slug != module.slugSingular %}
         {{ item.type }}Repository ${{ item.slug }}_repository,
-{% endfor %}
+{% endif %}{% endfor %}
         {{ module.entityName }}Repository ${{ module.slugSingular }}_repository
     )
     {
-{% for item in items if item.isRelation and item.slug != module.slugSingular %}
+{% for item in items %}{% if item.isRelation and item.slug != module.slugSingular %}
         $this->{{ item.slug }}_repository = ${{ item.slug }}_repository;
-{% endfor %}
+{% endif %}{% endfor %}
         $this->{{ module.slugSingular }}_repository = ${{ module.slugSingular }}_repository;
     }
 
@@ -64,17 +64,17 @@ class {{ module.entityName }}Controller
             Router::redirectTo("admin_{{ module.slugSingular }}");
         }
 
-{% for item in items if item.isRelation %}
+{% for item in items %}{% if item.isRelation %}
         ${{ item.slugPlural }} = $this->{{ item.slug }}_repository->findBy([],["ORDER BY" => "id"]);
-{% endfor %}
+{% endif %}{% endfor %}
         ${{ module.slugPlural }} = $this->{{ module.slugSingular }}_repository->findBy([], [
             "ORDER BY" => "id DESC"
         ]);
 
         return AdminResponse::createResponse("admin/{{ module.slugSingular }}/index.html.twig", [
-{% for item in items if item.isRelation %}
+{% for item in items %}{% if item.isRelation %}
             "{{ item.slugPlural }}" => ${{ item.slugPlural }},
-{% endfor %}
+{% endif %}{% endfor %}
             "{{ module.slugPlural }}" => ${{ module.slugPlural }}
         ]);
     }
@@ -99,15 +99,15 @@ class {{ module.entityName }}Controller
             Router::redirectTo("admin_{{ module.slugSingular }}_edit", ["id"=>${{ module.slugSingular }}->getId()]);
         }
 
-{% for item in items if item.isRelation %}
+{% for item in items %}{% if item.isRelation %}
         ${{ item.slugPlural }} = $this->{{ item.slug }}_repository->findBy([],["ORDER BY" => "id"]);
-{% endfor %}
+{% endif %}{% endfor %}
         ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($id);
 
         return AdminResponse::createResponse("admin/{{ module.slugSingular }}/edit.html.twig", [
-{% for item in items if item.isRelation %}
+{% for item in items %}{% if item.isRelation %}
             "{{ item.slugPlural }}" => ${{ item.slugPlural }},
-{% endfor %}
+{% endif %}{% endfor %}
             "{{ module.slugSingular }}" => ${{ module.slugSingular }}
         ]);
     }
@@ -138,7 +138,7 @@ class {{ module.entityName }}Controller
     }
 
 {% set break = false %}
-{% for item in items if not break %}
+{% for item in items  %}{% if not break %}
 {% if item.type == "file" or item.type == "image" %}
     private function uploadFile(UploadedFileInterface $file): string
     {
@@ -169,5 +169,5 @@ class {{ module.entityName }}Controller
 
 {% set break = true %}
 {% endif %}
-{% endfor %}
+{% endif %}{% endfor %}
 }

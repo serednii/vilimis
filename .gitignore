@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /api/v1/vendor
+/api/v1/cache
 
 # testing
 /coverage

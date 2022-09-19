@@ -1,9 +1,9 @@
 import React, {useRef, useState} from "react";
 import { useDrag, useDrop } from "react-dnd";
-import { TYPES } from "../constants";
+import { TYPES } from "../../constants";
 import { useContainerContext } from "./ContainerContext";
-import styles from "../styles";
-import { heightBetweenCursorAndMiddle } from "../utils";
+import styles from "../../styles";
+import { heightBetweenCursorAndMiddle } from "../../utils";
 
 const DraggableElement = ({
   type,

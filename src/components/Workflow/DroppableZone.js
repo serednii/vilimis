@@ -1,13 +1,13 @@
 import React, { useRef, useState } from "react";
 import { useDrop } from "react-dnd";
-import { TYPES } from "../constants";
+import { TYPES } from "../../constants";
 import { useContainerContext } from "./ContainerContext";
-import { heightBetweenCursorAndMiddle } from "../utils";
-import Condition from "./WorkflowItems/Condition";
-import Edit from "./WorkflowItems/Edit";
-import Mail from "./WorkflowItems/Mail";
-import Entity from "./WorkflowItems/Entity";
-import Base from "./WorkflowItems/Base";
+import { heightBetweenCursorAndMiddle } from "../../utils";
+import Condition from "../WorkflowItems/Condition";
+import Edit from "../WorkflowItems/Edit";
+import Mail from "../WorkflowItems/Mail";
+import Entity from "../WorkflowItems/Entity";
+import Base from "../WorkflowItems/Base";
 
 const DroppableZone = ({ type, parents, elements, addLot, As, ...props }) => {
   const refDrop = useRef(null);

@@ -1,0 +1,15 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Uživatelé - úprava</h1>
+
+    <form action="{{ _router.generateUrl("admin_user_edit", {"id":user.id}) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_email">E-mail</label>
+                <input value="{{ user.Email }}" type="text" name="email" class="form-control" id="form_edit_email">
+            </div>
+        <button type="submit" class="btn btn-default">Uložit</button>
+    </form>
+
+{% endblock %}

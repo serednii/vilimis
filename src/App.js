@@ -1,10 +1,10 @@
 import React, { useReducer } from "react";
-import { ContainerContextProvider } from "./components/ContainerContext";
+import { ContainerContextProvider } from "./components/Workflow/ContainerContext";
 import { ACTIONS, reducer } from "./reducer";
 import { TYPES } from "./constants";
 import styles from "./styles";
 import { findInTree } from "./utils";
-import LotContent from "./components/LotContent";
+import LotContent from "./components/Workflow/LotContent";
 
 const INITIAL_STATE = {
   container: {

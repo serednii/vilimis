@@ -1,7 +1,7 @@
 import React from "react";
 import DraggableElement from "./DraggableElement";
-import { TYPES } from "../constants";
-import styles from "../styles";
+import { TYPES } from "../../constants";
+import styles from "../../styles";
 import { useContainerContext } from "./ContainerContext";
 
 const Item = ({ data, index, parents }) => {

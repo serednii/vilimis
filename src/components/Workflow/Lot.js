@@ -1,8 +1,8 @@
 import React from "react";
 import DraggableElement from "./DraggableElement";
 import LotContent from "./LotContent";
-import {TYPES} from "../constants";
-import styles from "../styles";
+import {TYPES} from "../../constants";
+import styles from "../../styles";
 import {useContainerContext} from "./ContainerContext";
 
 const Lot = ({data, index, parents}) => {

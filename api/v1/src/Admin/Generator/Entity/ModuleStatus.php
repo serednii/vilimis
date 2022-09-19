@@ -2,6 +2,9 @@
 
 namespace Admin\Generator\Entity;
 
+/**
+ * @Serializable
+ */
 class ModuleStatus
 {
     /**

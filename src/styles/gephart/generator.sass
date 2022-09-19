@@ -1,0 +1,164 @@
+.gephart-generator-entity
+  &-list
+    &-blank
+      &:before
+        display: none
+
+      + button
+        opacity: 0
+
+
+  &-add
+    opacity: 0
+
+  &-item-wrap:hover > &-add,
+  &-item-wrap:hover > &-item > &-add,
+  &-item-wrap:hover > &-item > &-item-text > &-add
+    opacity: 1
+
+
+  &-item-wrap
+    position: relative
+    padding-bottom: 24px
+
+    &-over
+    //border-left: 4px blue solid
+
+    &-over:has(&-over)
+      border-left: 0
+
+    &-overTop
+      &:after
+        content: ""
+        position: absolute
+        top: -15px
+        left: 0
+        height: 0
+        width: 100%
+        bottom: auto
+        border-bottom: 4px dashed #fff
+
+    &-overDown
+      &:after
+        content: ""
+        position: absolute
+        bottom: 11px
+        height: 0
+        width: 100%
+        left: 0
+        top: auto
+        border-bottom: 4px dashed #fff
+
+    &-dragging
+      opacity: .4
+
+  &-item
+    position: relative
+    color: #222
+    padding: 20px
+
+    border: 0.0625rem solid #D1D5DB
+    background: #fff
+    border-radius: 0.5rem
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 7%)
+    display: flex
+
+    .btn-add
+      position: absolute
+      left: 50%
+      transform: translateX(-50%)
+      white-space: nowrap
+      bottom: -50px
+
+    button:not(.btn)
+      display: none
+
+    &-blank
+      opacity: 0
+
+  &-list:after
+    content: ""
+    display: block
+    clear: both
+
+  &-item-wrap:last-child:before
+    display: none
+
+
+  &-item-text
+    line-height: 30px
+    text-align: left
+    margin-left: 20px
+    display: flex
+    justify-content: center
+    flex: 1 1 auto
+    flex-flow: column
+
+  &-item-icon
+    font-weight: bold
+    margin-left: auto
+    margin-right: auto
+    text-align: center
+    position: relative
+    width: 104px
+    padding: 28px 0px
+    height: 120px
+    flex: 0 0 104px
+
+  &-item-icon img
+    margin-bottom: 3px
+    opacity: .9
+
+  &-item-inner
+    position: relative
+
+  &-item-rhombus
+    position: absolute
+    top: -10%
+    left: -20%
+    width: 140%
+    height: 120%
+
+    transform: scaleY(.9) scaleX(.9)
+
+
+    clip-path: polygon(0 50%, 50% 100%,100% 50%,50% 0)
+    background: #ffeaa7
+
+  &-item-round
+    position: absolute
+    top: 0
+    left: -10%
+    width: 120%
+    height: 100%
+    border-radius: 100%
+
+    background: #74b9ff
+
+  &-item-hexagon
+    position: absolute
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
+
+  &-item-hexagon span
+    display: block
+
+  &-item-hexagon span:nth-child(1)
+    width: 0
+    border-bottom: 30px solid #55efc4
+    border-left: 52px solid transparent
+    border-right: 52px solid transparent
+
+  &-item-hexagon span:nth-child(2)
+    width: 104px
+    height: 60px
+    background-color: #55efc4
+
+
+  &-item-hexagon span:nth-child(3)
+    width: 0
+    border-top: 30px solid #55efc4
+    border-left: 52px solid transparent
+    border-right: 52px solid transparent

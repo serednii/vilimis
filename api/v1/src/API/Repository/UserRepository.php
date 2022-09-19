@@ -2,10 +2,10 @@
 
 namespace API\Repository;
 
-use API\Entity\{{ module.entityName }};
+use API\Entity\User;
 use Gephart\ORM\EntityManager;
 
-class {{ module.entityName }}Repository
+class UserRepository
 {
 
     /**
@@ -20,7 +20,7 @@ class {{ module.entityName }}Repository
 
     public function __construct(EntityManager $entity_manager)
     {
-        $this->entity_class = {{ module.entityName }}::class;
+        $this->entity_class = User::class;
         $this->entity_manager = $entity_manager;
     }
 

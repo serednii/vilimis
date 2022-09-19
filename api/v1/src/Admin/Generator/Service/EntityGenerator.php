@@ -45,7 +45,7 @@ class EntityGenerator
         $this->module_repository = $module_repository;
         $this->item_repository = $item_repository;
         $this->template_engine = $template_engine;
-        $this->entity_dir = realpath(__DIR__ . "/../../../App/Entity");
+        $this->entity_dir = realpath(__DIR__ . "/../../../API/Entity");
         $this->types = $types;
     }
 

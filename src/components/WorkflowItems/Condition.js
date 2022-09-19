@@ -1,9 +1,9 @@
 import React from "react";
-import DraggableElement from "../DraggableElement";
-import LotContent from "../LotContent";
+import DraggableElement from "../Workflow/DraggableElement";
+import LotContent from "../Workflow/LotContent";
 import {TYPES} from "../../constants";
 import styles from "../../styles";
-import {useContainerContext} from "../ContainerContext";
+import {useContainerContext} from "../Workflow/ContainerContext";
 
 const Condition = ({data, index, parents, addLot}) => {
     const {remove} = useContainerContext();

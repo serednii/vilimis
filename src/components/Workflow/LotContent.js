@@ -1,9 +1,9 @@
 import React from "react";
 import DroppableZone from "./DroppableZone";
-import { TYPES } from "../constants";
+import { TYPES } from "../../constants";
 import Item from "./Item";
 import Lot from "./Lot";
-import styles from "../styles";
+import styles from "../../styles";
 import { useContainerContext } from "./ContainerContext";
 
 const LotContent = ({ lot, parents }) => {

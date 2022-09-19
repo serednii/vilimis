@@ -5,6 +5,7 @@ namespace Admin\Generator\Entity;
 /**
  * @ORM\Table generator_module
  * @ORM\Translation
+ * @Serializable
  */
 class Module
 {

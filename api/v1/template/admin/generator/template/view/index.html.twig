@@ -48,14 +48,14 @@
             {{ "{%" }} for {{ module.slugSingular }} in {{ module.slugPlural }} {{ "%}" }}
                 <tr>
 {% set break = false %}
-{% for item in items if not break %}
+{% for item in items %}{% if not break %}
 {% if item.type == "text" %}
 {% set break = true %}
                     <td>
                         <a href="{{ "{{" }} _router.generateUrl("admin_{{ module.slugSingular }}_edit", {"id":{{ module.slugSingular }}.id}) {{ "}}" }}">{{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }} {{ "}}" }}</a>
                     </td>
 {% endif %}
-{% endfor %}
+{% endif %}{% endfor %}
                     <td width="130">
                         <a class="btn btn-xs btn-success" href="{{ "{{" }} _router.generateUrl("admin_{{ module.slugSingular }}_edit", {"id":{{ module.slugSingular }}.id}) {{ "}}" }}">upravit</a>
                         <a class="btn btn-xs btn-danger" href="{{ "{{" }} _router.generateUrl("admin_{{ module.slugSingular }}_delete", {"id":{{ module.slugSingular }}.id}) {{ "}}" }}"
