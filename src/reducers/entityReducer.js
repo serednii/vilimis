@@ -4,6 +4,7 @@ export const ENTITY_ACTIONS = {
     LOAD: "LOAD",
     MOVE: "MOVE",
     MOVE_PROPERTY: "MOVE_PROPERTY",
+    ADD_PROPERTY: "ADD_PROPERTY",
 };
 
 export const entityReducer = (state, {action, ...args}) => {
@@ -19,9 +20,26 @@ export const entityReducer = (state, {action, ...args}) => {
                 status
             };
         }
+        case ENTITY_ACTIONS.ADD_PROPERTY: {
+            const {entityId} = args;
+
+            const propertiesSelected = Array.from(state.propertiesSelected);
+            propertiesSelected.push({
+                id: "new-" + propertiesSelected.length,
+                sort: propertiesSelected.length,
+                name: "",
+                type: "",
+                slug: "",
+                moduleId: entityId
+            });
+
+            return {
+                ...state,
+                propertiesSelected
+            };
+        }
         case ENTITY_ACTIONS.MOVE: {
             const {fromIndex, toIndex} = args;
-            console.log(fromIndex+"----"+toIndex);
 
             if (fromIndex === toIndex) {
                 return state;

@@ -51,6 +51,14 @@ class Item
     private $module_id = "";
 
     /**
+     * @var int|null
+     *
+     * @ORM\Type int
+     * @ORM\Column sort
+     */
+    private $sort = 0;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -144,6 +152,22 @@ class Item
     public function setModuleId(int $module_id)
     {
         $this->module_id = $module_id;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSort(): ?int
+    {
+        return $this->sort;
+    }
+
+    /**
+     * @param int|null $sort
+     */
+    public function setSort(?int $sort): void
+    {
+        $this->sort = $sort;
     }
 
     public function isRelation()

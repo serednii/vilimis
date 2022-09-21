@@ -88,6 +88,23 @@ const EntityEdit = () => {
     }
 
 
+    const sendItemsForm = async (event) => {
+        event.preventDefault();
+
+        const data = new FormData(event.target);
+
+        let object = {};
+        data.forEach(function(value, key){
+            object[key] = value;
+        });
+
+        await postData(CONFIG.api + CONFIG.endpointEntityItemsEdit, object);
+        setInit(!init);
+
+        return false;
+    }
+
+
     return (
         <EntityContextProvider
             value={{...state, dispatch, find, move}}
@@ -154,22 +171,65 @@ const EntityEdit = () => {
                             </div>
                         </form>
 
-                        <h2 className="fs-5 fw-bold mt-4">Pole</h2>
 
-                        <DndProvider backend={HTML5Backend}>
-                            <div className={"gephart-generator-entity-list"}>
-                            {Array.from(state.propertiesSelected).map((item, key) => (
-                                <EntityDraggableElement id={item.id} key={item.id} index={key}>
-                                    <div>
-                                        <strong>{item.name}</strong> | {item.type}  | {item.slug} | {item.slugPlural}
-                                    </div>
-                                </EntityDraggableElement>
-                            ))}
-                                <div className={"gephart-generator-entity-item-wrap"}>
-                                    Přidat
+                            <form onSubmit={sendItemsForm} className="card border-0 mt-4 shadow">
+                                <input type="hidden" name="moduleId" defaultValue={entity.id}/>
+                                <input type="hidden" name="count" defaultValue={Array.from(state.propertiesSelected).length}/>
+                                <div
+                                    className="card-header border-bottom d-flex align-items-center justify-content-between">
+                                    <h2 className="fs-5 fw-bold mb-0">Pole</h2>
+                                    <button type="submit" className="btn btn-primary">Uložit</button>
                                 </div>
-                            </div>
-                        </DndProvider>
+                                <div className="card-body">
+
+                                    <DndProvider backend={HTML5Backend}>
+                                        <div className={"gephart-generator-entity-list"}>
+                                            {Array.from(state.propertiesSelected).map((item, key) => (
+                                                <EntityDraggableElement id={item.id} key={item.id} index={key}>
+                                                    <input type="hidden" name={"id["+key+"]"} value={item.id} />
+                                                    <input type="hidden" name={"sort["+key+"]"} value={key} />
+                                                    <div className="row">
+                                                        <div className="col-12 col-md-auto">
+                                                            <div className="mb-4">
+                                                                <label htmlFor={"property-name_" + key}>Název</label>
+                                                                <input type="text"
+                                                                       name={"name["+key+"]"} defaultValue={item.name}
+                                                                       className="form-control" id={"property-name_" + key}
+                                                                       required/>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-12 col-md-auto">
+                                                            <div className="mb-4">
+                                                                <label htmlFor={"property-slug_" + key}>Slug</label>
+                                                                <input type="text"
+                                                                       name={"slug["+key+"]"} defaultValue={item.slug}
+                                                                       className="form-control" id={"property-slug_" + key}
+                                                                       required/>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-12 col-md-auto">
+                                                            <div className="mb-4">
+                                                                <label htmlFor={"property-type_" + key}>Typ</label>
+                                                                <input type="text"
+                                                                       name={"type["+key+"]"} defaultValue={item.type}
+                                                                       className="form-control" id={"property-type_" + key}
+                                                                       required/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </EntityDraggableElement>
+                                            ))}
+                                            <div className={"gephart-generator-entity-item-wrap"}>
+                                                <button onClick={()=>dispatch({action: ENTITY_ACTIONS.ADD_PROPERTY, entityId: id})} type="button" className={"btn btn-secondary"}>
+                                                    Přidat
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </DndProvider>
+
+                                </div>
+                            </form>
+
                     </div>
                 )
             )}
