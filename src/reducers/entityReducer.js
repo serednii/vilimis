@@ -1,5 +1,3 @@
-import {ACTIONS} from "../reducer";
-
 export const ENTITY_ACTIONS = {
     LOAD: "LOAD",
     MOVE: "MOVE",

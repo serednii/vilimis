@@ -97,6 +97,8 @@ class ItemsEditEntityController
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "data" => $data,
+            "message" => "Nastavení položek entity uloženo",
+            "code" => 200
         ]));
     }
 }

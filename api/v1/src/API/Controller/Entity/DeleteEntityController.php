@@ -15,9 +15,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @xxxSecurity ROLE_ADMIN
- * @RoutePrefix /entity/edit
+ * @RoutePrefix /entity/delete
  */
-class EditEntityController
+class DeleteEntityController
 {
     /**
      * @var ModuleRepository
@@ -69,7 +69,7 @@ class EditEntityController
     /**
      * @Route {
      *  "rule": "/",
-     *  "name": "entity_edit"
+     *  "name": "entity_delete"
      * }
      */
     public function index()
@@ -77,20 +77,19 @@ class EditEntityController
         $data = $this->request->getBody();
         $data = json_decode($data->getContents());
 
+        try {
+            $module = $this->module_repository->find($data->id);
+            $this->entityManager->remove($module);
 
-        /** @var Module $module */
-        $module = $this->module_repository->find($data->id);
-        $module->setIcon($data->icon);
-        $module->setName($data->name);
-        $module->setSlugSingular($data->slugSingular);
-        $module->setSlugPlural($data->slugPlural);
-        $module->setInMenu(!empty($data->inMenu)?true:false);
-        $this->entityManager->save($module);
-
-        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-            "data" => $data,
-            "message" => "Nastavení entity uloženo",
-            "code" => 200
-        ]));
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => "Entita {$module->getName()} smazána}",
+                "code" => 400
+            ]));
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 400
+            ]));
+        }
     }
 }

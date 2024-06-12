@@ -7,6 +7,8 @@ import {DndProvider} from "react-dnd";
 import {ACTIONS} from "../../reducer";
 import EntityDraggableElement from "./EntityDraggableElement";
 import {useParams} from "react-router-dom";
+import {useRootContext} from "../../contexts/RootContext";
+import {LOADER_ACTIONS} from "../../reducers/loaderReducer";
 
 const INITIAL_STATE = {
     entities: {},
@@ -22,6 +24,8 @@ const EntityEdit = () => {
     const [error, setError] = useState(true);
     const [state, dispatch] = useReducer(entityReducer, INITIAL_STATE);
     const entity = Array.from(state.entities).find(e=>e.id == id);
+
+    const {loaderDispatch, toast} = useRootContext()
 
     const move = (fromIndex, toIndex) =>
         dispatch({ action: ENTITY_ACTIONS.MOVE_PROPERTY, fromIndex, toIndex });
@@ -54,6 +58,7 @@ const EntityEdit = () => {
     }, [state])
 
     async function postData(url = '', data = {}) {
+        loaderDispatch({action: LOADER_ACTIONS.SHOW});
         // Default options are marked with *
         const response = await fetch(url, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -68,7 +73,18 @@ const EntityEdit = () => {
             referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
             body: JSON.stringify(data) // body data type must match "Content-Type" header
         });
-        return response.json(); // parses JSON response into native JavaScript objects
+        loaderDispatch({action: LOADER_ACTIONS.HIDE});
+        const result = await response.json();
+        if ("message" in result) {
+            if ("code" in result && result.code.toString().substring(0,1) === "2") {
+                toast.success(result.message);
+            } else if ("code" in result && result.code.toString().substring(0,1) === "4") {
+                toast.error(result.message);
+            } else {
+                toast(result.message);
+            }
+        }
+        return result; // parses JSON response into native JavaScript objects
     }
 
     const sendForm = async (event) => {

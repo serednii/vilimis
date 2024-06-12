@@ -1,5 +1,5 @@
 import {createRoot} from 'react-dom/client';
-import React from "react";
+import React, {useReducer} from "react";
 import './styles/index.sass';
 import Workflow from "./pages/Workflow";
 import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
@@ -8,11 +8,25 @@ import Home from "./pages/Home";
 import EntityPage from "./pages/EntityPage";
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {fas} from '@fortawesome/free-solid-svg-icons';
+import RootContext from "./contexts/RootContext";
+import {loaderReducer} from "./reducers/loaderReducer";
+import {ToastContainer, toast} from "react-toastify";
+
+import 'react-toastify/dist/ReactToastify.css';
+import {LineWave} from "react-loader-spinner";
 
 library.add(fas);
 
 function Root() {
-    return (<>
+    const [loaderState, loaderDispatch ] = useReducer(loaderReducer, {show: 0});
+
+    const providerState = {
+        loaderState,
+        loaderDispatch,
+        toast
+    }
+
+    return (<RootContext.Provider value={providerState}>
 
         <BrowserRouter>
         <nav id="sidebarMenu" className="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
@@ -277,6 +291,27 @@ function Root() {
                     </div>
                 </div>
             </div>
+
+            <div style={{position:"fixed",bottom: "0px",right: "0px",zIndex:999,opacity:loaderState.show>0?1:0,transition: "opacity .2s"}}>
+            <LineWave
+                visible={loaderState.show}
+                height="100"
+                width="100"
+                color="#4fa94d"
+                ariaLabel="line-wave-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
+                firstLineColor=""
+                middleLineColor=""
+                lastLineColor=""
+            />
+            </div>
+
+            <ToastContainer
+                position="bottom-left"
+                autoClose={2000}
+                theme={"colored"}
+            />
                 <Routes>
                     {/*<Route path="/" element={<Layout/>}>*/}
                     <Route index element={<Home/>}/>
@@ -288,7 +323,7 @@ function Root() {
                 </Routes>
         </main>
     </BrowserRouter>
-    </>)
+    </RootContext.Provider>)
 }
 
 
