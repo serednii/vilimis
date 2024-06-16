@@ -1,0 +1,60 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Úkol</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_task") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ task.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_hour_budget">Hodinový rozpočet</label>
+                <input value="{{ task.HourBudget }}" type="number" name="hour_budget" class="form-control" id="form_edit_hour_budget">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_project_id">Projekt</label>
+                <select name="project_id" class="form-control" id="form_edit_project_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for project_id in project_ids %}
+                        <option value="{{ project_id.id }}">
+                        {% if project_id.title %}
+                            {{ project_id.title }}
+                        {% elseif project_id.name %}
+                            {{ project_id.name }}
+                        {% else %}
+                            #{{ project_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for task in tasks %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_task_edit", {"id":task.id}) }}">{{ task.Name }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_task_edit", {"id":task.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_task_delete", {"id":task.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

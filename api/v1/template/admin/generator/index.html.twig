@@ -65,6 +65,17 @@
                                 <td><button class="btn btn-xs btn-warning js-generator-controllersync-show" data-toggle="modal" data-target="#generator-modal">Generovat</button></td>
                             </tr>
                             <tr>
+                                <th>APIController:</th>
+                                <td>
+                                    {% if modules_status[module.entityName].apicontroller %}
+                                        existuje
+                                    {% else %}
+                                        neexistuje
+                                    {% endif %}
+                                </td>
+                                <td><button class="btn btn-xs btn-warning js-generator-apicontrollersync-show" data-toggle="modal" data-target="#generator-modal">Generovat</button></td>
+                            </tr>
+                            <tr>
                                 <th>Šablony:</th>
                                 <td>
                                     {% if modules_status[module.entityName].view %}

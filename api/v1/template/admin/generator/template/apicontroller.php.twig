@@ -1,0 +1,198 @@
+<?php
+
+namespace API\Controller;
+
+use API\Entity\{{ module.entityName }};
+{% for entity in entities %}
+use API\Repository\{{ entity }}Repository;
+{% endfor %}
+use Gephart\Framework\Facade\EntityManager;
+use Gephart\Framework\Facade\Request;
+use Gephart\Framework\Facade\Router;
+use Psr\Http\Message\UploadedFileInterface;
+use API\Service\JsonSerializator;
+use Gephart\Framework\Response\JsonResponseFactory;
+
+/**
+ * @RoutePrefix /{{ module.slugSingular }}
+ */
+class {{ module.entityName }}Controller
+{
+    /**
+     * @var {{ module.entityName }}Repository
+     */
+    private ${{ module.slugSingular }}_repository;
+
+    /**
+     * @var JsonResponseFactory
+     */
+    private $jsonResponseFactory;
+
+    /**
+     * @var JsonSerializator
+     */
+    private $jsonSerializator;
+
+    public function __construct(
+        {{ module.entityName }}Repository ${{ module.slugSingular }}_repository,
+        JsonResponseFactory $jsonResponseFactory,
+        JsonSerializator $jsonSerializator
+    )
+    {
+        $this->{{ module.slugSingular }}_repository = ${{ module.slugSingular }}_repository;
+        $this->jsonResponseFactory = $jsonResponseFactory;
+        $this->jsonSerializator = $jsonSerializator;
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/list",
+     *  "name": "{{ module.slugSingular }}_list"
+     * }
+     */
+    public function index()
+    {
+        ${{ module.slugPlural }} = $this->{{ module.slugSingular }}_repository->findBy([], [
+            "ORDER BY" => "id DESC"
+        ]);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "data" => ${{ module.slugPlural }}
+        ]));
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/single/{id}",
+     *  "name": "{{ module.slugSingular }}_single"
+     * }
+     */
+    public function single($id)
+    {
+        ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($id);
+
+        if (!${{ module.slugSingular }}) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => "Nenalezeno",
+                "code" => 404
+            ]));
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "data" => ${{ module.slugSingular }}
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/save",
+     *  "name": "{{ module.slugSingular }}_save"
+     * }
+     */
+    public function save()
+    {
+        $postData = Request::getParsedBody();
+        $filesData = Request::getUploadedFiles();
+
+        if (!empty($postData["{{ items[0].slug }}"])) {
+
+            if (!empty($postData["id"])) {
+                ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($postData["id"]);
+
+
+                if (!${{ module.slugSingular }}) {
+                    return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                        "message" => "Nenalezeno: $postData[id]",
+                        "code" => 404
+                    ]));
+                }
+            } else {
+                ${{ module.slugSingular }} = new {{ module.entityName }}();
+            }
+            $this->mapEntityFromArray(${{ module.slugSingular }}, $postData, $filesData);
+
+            EntityManager::save(${{ module.slugSingular }});
+
+
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "{{ module.slugSingular }}" => ${{ module.slugSingular }},
+                "message" => "Uloženo",
+                "code" => 200
+            ]));
+        }
+
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Chybí data",
+            "code" => 500
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/delete/{id}",
+     *  "name": "{{ module.slugSingular }}_delete"
+     * }
+     */
+    public function delete($id)
+    {
+        ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($id);
+        EntityManager::remove(${{ module.slugSingular }});
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
+    private function mapEntityFromArray({{ module.entityName }} ${{ module.slugSingular }}, array $data, array $files) {
+{% for item in items %}
+    {%- if item.isRelation %}
+        ${{ module.slugSingular }}->set{{ item.slugInCamel }}(!empty($data["{{ item.slug }}"]) ? (int) $data["{{ item.slug }}"] : null);{{- "\n" -}}
+    {%- else -%}
+        {%- for type in types -%}
+            {%- if item.type == type.name -%}
+                {{- include(template_from_string(type.set), {"item": item}) -}}
+                {{- "\n" -}}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
+{% endfor %}
+    }
+
+{% set break = false %}
+{% for item in items  %}{% if not break %}
+{% if item.type == "file" or item.type == "image" %}
+    private function uploadFile(UploadedFileInterface $file): string
+    {
+        $client_filename = $file->getClientFilename();
+        $filename = md5($client_filename.time()) . "." . substr($client_filename, -4);
+        $dir1 = substr($filename, 0, 2);
+        $dir2 = substr($filename, 2, 2);
+        $upload_dir = __DIR__ . "/../../../web/upload";
+        $target = $upload_dir . "/" . $dir1 . "/" . $dir2 . "/" . $filename;
+
+        if (!is_dir($upload_dir . "/" . $dir1)) {
+            @mkdir($upload_dir . "/" . $dir1);
+            @chmod($upload_dir . "/" . $dir1, 0777);
+        }
+
+        if (!is_dir($upload_dir . "/" . $dir1 . "/" . $dir2)) {
+            @mkdir($upload_dir . "/" . $dir1 . "/" . $dir2);
+            @chmod($upload_dir . "/" . $dir1 . "/" . $dir2, 0777);
+        }
+
+        if ($file->moveTo($target)) {
+            @chmod($target, 0777);
+            return $dir1 . "/" . $dir2 . "/" . $filename;
+        }
+
+        return "";
+    }
+
+{% set break = true %}
+{% endif %}
+{% endif %}{% endfor %}
+}

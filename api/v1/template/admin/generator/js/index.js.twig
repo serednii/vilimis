@@ -128,6 +128,26 @@ $(function () {
         }
     });
 
+    $("body").on("click", ".js-generator-apicontrollersync-show", function () {
+        $("#generator-modal-label").html("Probíhá generování ...");
+        $("#generator-modal-content").html("Načítání ...");
+        var id = $(this).parents(".js-generator-module").data("generator-module_id");
+        if (confirm('Generováním přijdete o veškeré ruční úpravy. Opravdu chcete?')) {
+            $.get("{{ _router.generateUrl("admin_generator_ajax_apicontrollersync") }}", {
+                "id": id
+            }, function (html) {
+                $("#generator-modal-label").html("APIController byl vygenerován:");
+                $("#generator-modal-content").html("<pre><code class='php'>" + html + "</code></pre>");
+                $('#generator-modal-content pre code').each(function (i, block) {
+                    hljs.highlightBlock(block);
+                });
+            });
+        } else {
+            event.stopPropagation();
+            return false;
+        }
+    });
+
     $("body").on("click", ".js-generator-viewsync-show", function () {
         $("#generator-modal-label").html("Probíhá generování ...");
         $("#generator-modal-content").html("Načítání ...");

@@ -4,7 +4,6 @@ namespace API\Entity;
 
 /**
  * @ORM\Table user
- * @ORM\Translation
  * @Serializable
  */
 class User
@@ -22,9 +21,32 @@ class User
      *
      * @ORM\Type VARCHAR(255)
      * @ORM\Column email
-     * @ORM\Translatable
      */
     private $email = "";
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type VARCHAR(255)
+     * @ORM\Column name
+     */
+    private $name = "";
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type VARCHAR(255)
+     * @ORM\Column surname
+     */
+    private $surname = "";
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type VARCHAR(255)
+     * @ORM\Column password
+     */
+    private $password = "";
     
 
     public function __construct()
@@ -61,6 +83,54 @@ class User
     public function setEmail(string $email)
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSurname(): string
+    {
+        return $this->surname;
+    }
+
+    /**
+     * @param string $surname
+     */
+    public function setSurname(string $surname)
+    {
+        $this->surname = $surname;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password)
+    {
+        $this->password = $password;
     }
 
 }

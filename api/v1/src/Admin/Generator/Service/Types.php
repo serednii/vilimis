@@ -6,6 +6,7 @@ use Admin\Generator\Type\BoolType;
 use Admin\Generator\Type\DateType;
 use Admin\Generator\Type\FileType;
 use Admin\Generator\Type\ImageType;
+use Admin\Generator\Type\IntType;
 use Admin\Generator\Type\TextareaType;
 use Admin\Generator\Type\TextType;
 use Admin\Generator\Type\TypeInterface;
@@ -29,6 +30,7 @@ class Types
         $this->types = new Collection(TypeInterface::class);
 
         $this->triggerHook([
+            IntType::class,
             BoolType::class,
             DateType::class,
             FileType::class,
@@ -60,7 +62,7 @@ class Types
         }
 
         $this->types = $this->types->sort(function(TypeInterface $left, TypeInterface $right){
-            return $left->getPriority() < $right->getPriority();
+            return $right->getPriority() <=> $left->getPriority();
         });
 
         return $this->types;

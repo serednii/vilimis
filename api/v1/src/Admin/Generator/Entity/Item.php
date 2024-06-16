@@ -172,7 +172,7 @@ class Item
 
     public function isRelation()
     {
-        $repository = __DIR__ . "/../../../App/Repository/" . $this->getType() . "Repository.php";
+        $repository = __DIR__ . "/../../../API/Repository/" . $this->getType() . "Repository.php";
         return file_exists($repository);
     }
 }

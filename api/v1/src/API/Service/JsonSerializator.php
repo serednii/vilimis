@@ -66,13 +66,15 @@ final class JsonSerializator
         foreach ($propertiesReflection as $reflectionProperty) {
             $name = $reflectionProperty->getName();
 
-            if (strpos($name, "get") !== false) {
+            if (strpos($name, "get") === 0) {
                 $property = substr($name, 3);
+
                 $data[lcfirst($property)] = $value->$name();
             }
 
-            if (strpos($name, "is") !== false) {
+            if (strpos($name, "is") === 0) {
                 $property = substr($name, 2);
+                echo "$class->$name()"."<br>";
                 $data[lcfirst($property)] = $value->$name();
             }
         }

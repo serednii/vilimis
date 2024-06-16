@@ -15,6 +15,11 @@ class ModuleStatus
     /**
      * @var bool
      */
+    private $apicontroller = false;
+
+    /**
+     * @var bool
+     */
     private $table = false;
 
     /**
@@ -122,5 +127,15 @@ class ModuleStatus
             && $this->isRepository()
             && $this->isTable()
             && $this->isView();
+    }
+
+    public function isAPIController(): bool
+    {
+        return $this->apicontroller;
+    }
+
+    public function setAPIController(bool $apicontroller): void
+    {
+        $this->apicontroller = $apicontroller;
     }
 }

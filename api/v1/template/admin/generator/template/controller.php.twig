@@ -128,12 +128,16 @@ class {{ module.entityName }}Controller
 
     private function mapEntityFromArray({{ module.entityName }} ${{ module.slugSingular }}, array $data, array $files) {
 {% for item in items %}
-    {%- for type in types -%}
-        {%- if item.type == type.name -%}
-            {{- include(template_from_string(type.set), {"item": item}) -}}
-            {{- "\n" -}}
-        {%- endif -%}
-    {%- endfor -%}
+    {%- if item.isRelation %}
+        ${{ module.slugSingular }}->set{{ item.slugInCamel }}(!empty($data["{{ item.slug }}"]) ? (int) $data["{{ item.slug }}"] : null);{{- "\n" -}}
+    {%- else -%}
+        {%- for type in types -%}
+            {%- if item.type == type.name -%}
+                {{- include(template_from_string(type.set), {"item": item}) -}}
+                {{- "\n" -}}
+            {%- endif -%}
+        {%- endfor -%}
+    {%- endif -%}
 {% endfor %}
     }
 

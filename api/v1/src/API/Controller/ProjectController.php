@@ -1,0 +1,161 @@
+<?php
+
+namespace API\Controller;
+
+use API\Entity\Project;
+use API\Repository\ProjectRepository;
+use API\Repository\ClientRepository;
+use API\Repository\EndCustomerRepository;
+use API\Repository\ProjectStatusRepository;
+use Gephart\Framework\Facade\EntityManager;
+use Gephart\Framework\Facade\Request;
+use Gephart\Framework\Facade\Router;
+use Psr\Http\Message\UploadedFileInterface;
+use API\Service\JsonSerializator;
+use Gephart\Framework\Response\JsonResponseFactory;
+
+/**
+ * @RoutePrefix /project
+ */
+class ProjectController
+{
+    /**
+     * @var ProjectRepository
+     */
+    private $project_repository;
+
+    /**
+     * @var JsonResponseFactory
+     */
+    private $jsonResponseFactory;
+
+    /**
+     * @var JsonSerializator
+     */
+    private $jsonSerializator;
+
+    public function __construct(
+        ProjectRepository $project_repository,
+        JsonResponseFactory $jsonResponseFactory,
+        JsonSerializator $jsonSerializator
+    )
+    {
+        $this->project_repository = $project_repository;
+        $this->jsonResponseFactory = $jsonResponseFactory;
+        $this->jsonSerializator = $jsonSerializator;
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/list",
+     *  "name": "project_list"
+     * }
+     */
+    public function index()
+    {
+        $projects = $this->project_repository->findBy([], [
+            "ORDER BY" => "id DESC"
+        ]);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "data" => $projects
+        ]));
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/single/{id}",
+     *  "name": "project_single"
+     * }
+     */
+    public function single($id)
+    {
+        $project = $this->project_repository->find($id);
+
+        if (!$project) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => "Nenalezeno",
+                "code" => 404
+            ]));
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "data" => $project
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/save",
+     *  "name": "project_save"
+     * }
+     */
+    public function save()
+    {
+        $postData = Request::getParsedBody();
+        $filesData = Request::getUploadedFiles();
+
+        if (!empty($postData["name"])) {
+
+            if (!empty($postData["id"])) {
+                $project = $this->project_repository->find($postData["id"]);
+
+
+                if (!$project) {
+                    return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                        "message" => "Nenalezeno: $postData[id]",
+                        "code" => 404
+                    ]));
+                }
+            } else {
+                $project = new Project();
+            }
+            $this->mapEntityFromArray($project, $postData, $filesData);
+
+            EntityManager::save($project);
+
+
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "project" => $project,
+                "message" => "Uloženo",
+                "code" => 200
+            ]));
+        }
+
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Chybí data",
+            "code" => 500
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/delete/{id}",
+     *  "name": "project_delete"
+     * }
+     */
+    public function delete($id)
+    {
+        $project = $this->project_repository->find($id);
+        EntityManager::remove($project);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
+    private function mapEntityFromArray(Project $project, array $data, array $files) {
+        $project->setName($data["name"]);
+        $project->setBudget(isset($data["budget"]) ? (int) $data["budget"] : 0);
+        $project->setClientId(!empty($data["client_id"]) ? (int) $data["client_id"] : null);
+        $project->setEndCustomerId(!empty($data["end_customer_id"]) ? (int) $data["end_customer_id"] : null);
+        $project->setHourRate(isset($data["hour_rate"]) ? (int) $data["hour_rate"] : 0);
+        $project->setHourBudget(isset($data["hour_budget"]) ? (int) $data["hour_budget"] : 0);
+        $project->setProjectStatusId(!empty($data["project_status_id"]) ? (int) $data["project_status_id"] : null);
+    }
+
+}

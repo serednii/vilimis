@@ -38,6 +38,7 @@ final class StatusProvider
         $entity_name = $module->getEntityName();
 
         $this->setStatusByController($status, $entity_name);
+        $this->setStatusByAPIController($status, $entity_name);
         $this->setStatusByEntity($status, $entity_name);
         $this->setStatusByRepository($status, $entity_name);
         $this->setStatusByView($status, $entity_name);
@@ -55,9 +56,18 @@ final class StatusProvider
         }
     }
 
+    private function setStatusByAPIController(ModuleStatus $status, string $entity_name)
+    {
+        $controller_dir = realpath(__DIR__ . "/../../../API/Controller");
+
+        if (file_exists($controller_dir . "/" . $entity_name . "Controller.php")) {
+            $status->setAPIController(true);
+        }
+    }
+
     private function setStatusByEntity(ModuleStatus $status, string $entity_name)
     {
-        $entity_dir = realpath(__DIR__ . "/../../../App/Entity");
+        $entity_dir = realpath(__DIR__ . "/../../../API/Entity");
 
         if (file_exists($entity_dir . "/" . $entity_name . ".php")) {
             $status->setEntity(true);
@@ -66,7 +76,7 @@ final class StatusProvider
 
     private function setStatusByRepository(ModuleStatus $status, string $entity_name)
     {
-        $repository_dir = realpath(__DIR__ . "/../../../App/Repository");
+        $repository_dir = realpath(__DIR__ . "/../../../API/Repository");
 
         if (file_exists($repository_dir . "/" . $entity_name . "Repository.php")) {
             $status->setRepository(true);

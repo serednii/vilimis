@@ -17,7 +17,6 @@ final class TextareaType implements TypeInterface
      *
      * @ORM\Type TEXT
      * @ORM\Column {{ item.slug }}
-     * @ORM\Translatable
      */
     private \${{ item.slug }} = "";
     

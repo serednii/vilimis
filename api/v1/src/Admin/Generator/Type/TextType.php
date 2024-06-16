@@ -17,7 +17,6 @@ final class TextType implements TypeInterface
      *
      * @ORM\Type VARCHAR(255)
      * @ORM\Column {{ item.slug }}
-     * @ORM\Translatable
      */
     private \${{ item.slug }} = "";
     

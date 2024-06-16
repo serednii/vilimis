@@ -4,7 +4,6 @@ namespace API\Entity;
 
 /**
  * @ORM\Table {{ module.slugSingular }}
- * @ORM\Translation
  * @Serializable
  */
 class {{ module.entityName }}
@@ -20,12 +19,12 @@ class {{ module.entityName }}
 {% for item in items %}
 {% if item.isRelation %}
     /**
-     * @var int
+     * @var ?int
      *
      * @ORM\Type INT(6) UNSIGNED
      * @ORM\Column {{ item.slug }}
      */
-    private ${{ item.slug }} = 0;
+    private ${{ item.slug }} = null;
 
 {% else -%}
     {%- for type in types -%}
@@ -65,17 +64,17 @@ class {{ module.entityName }}
 {% for item in items %}
 {% if item.isRelation %}
     /**
-     * @return int
+     * @return ?int
      */
-    public function get{{ item.slugInCamel }}(): int
+    public function get{{ item.slugInCamel }}(): ?int
     {
         return $this->{{ item.slug }};
     }
 
     /**
-     * @param int ${{ item.slug }}
+     * @param ?int ${{ item.slug }}
      */
-    public function set{{ item.slugInCamel }}(int ${{ item.slug }})
+    public function set{{ item.slugInCamel }}(?int ${{ item.slug }})
     {
         $this->{{ item.slug }} = ${{ item.slug }};
     }

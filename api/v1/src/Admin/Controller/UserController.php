@@ -101,6 +101,9 @@ class UserController
 
     private function mapEntityFromArray(User $user, array $data, array $files) {
         $user->setEmail($data["email"]);
+        $user->setName($data["name"]);
+        $user->setSurname($data["surname"]);
+        $user->setPassword($data["password"]);
     }
 
 }

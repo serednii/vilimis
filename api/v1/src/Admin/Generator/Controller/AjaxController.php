@@ -5,6 +5,7 @@ namespace Admin\Generator\Controller;
 use Admin\Generator\Entity\Module;
 use Admin\Generator\Repository\ItemRepository;
 use Admin\Generator\Repository\ModuleRepository;
+use Admin\Generator\Service\APIControllerGenerator;
 use Admin\Generator\Service\ControllerGenerator;
 use Admin\Generator\Service\EntityGenerator;
 use Admin\Generator\Service\RepositoryGenerator;
@@ -47,6 +48,11 @@ class AjaxController
     private $controller_generator;
 
     /**
+     * @var APIControllerGenerator
+     */
+    private $api_controller_generator;
+
+    /**
      * @var SQLBuilder
      */
     private $sql_builder;
@@ -71,6 +77,7 @@ class AjaxController
         EntityManager $entity_manager,
         EntityGenerator $entity_generator,
         ControllerGenerator $controller_generator,
+        APIControllerGenerator $api_controller_generator,
         RepositoryGenerator $repository_generator,
         ViewGenerator $view_generator,
         SQLBuilder $sql_builder,
@@ -82,6 +89,7 @@ class AjaxController
         $this->entity_generator = $entity_generator;
         $this->sql_builder = $sql_builder;
         $this->controller_generator = $controller_generator;
+        $this->api_controller_generator = $api_controller_generator;
         $this->repository_generator = $repository_generator;
         $this->view_generator = $view_generator;
         $this->types = $types;
@@ -131,9 +139,9 @@ class AjaxController
             $this->entity_generator->generate($id);
         }
 
-        $sql = $this->sql_builder->syncTable("App\\Entity\\".$module->getEntityName());
+        $sql = $this->sql_builder->syncTable("API\\Entity\\".$module->getEntityName());
 
-        $this->entity_manager->syncTable("App\\Entity\\".$module->getEntityName());
+        $this->entity_manager->syncTable("API\\Entity\\".$module->getEntityName());
 
         return Response::text($sql);
     }
@@ -169,6 +177,23 @@ class AjaxController
         }
 
         $result = $this->controller_generator->generate($id);
+        return Response::text($result);
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/apicontrollersync",
+     *  "name": "admin_generator_ajax_apicontrollersync"
+     * }
+     */
+    public function apiControllerSync()
+    {
+        $id = Request::getQueryParams()["id"];
+        if (!$id) {
+            throw new \Exception("Id must be sent in request.");
+        }
+
+        $result = $this->api_controller_generator->generate($id);
         return Response::text($result);
     }
 
