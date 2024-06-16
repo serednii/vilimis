@@ -38,7 +38,10 @@ $(function () {
                             $("#generator-modal-content").append("Controller vygenerován.<br/>");
                             $.get("{{ _router.generateUrl("admin_generator_ajax_viewsync") }}", {"id": id}, function () {
                                 $("#generator-modal-content").append("Šablona vygenerována.<br/>");
-                                $("#generator-modal-label").html("Hotovo");
+                                $.get("{{ _router.generateUrl("admin_generator_ajax_apicontrollersync") }}", {"id": id}, function () {
+                                    $("#generator-modal-content").append("API controller vygenerován.<br/>");
+                                    $("#generator-modal-label").html("Hotovo");
+                                });
                             });
                         });
                     });

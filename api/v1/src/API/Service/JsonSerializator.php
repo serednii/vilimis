@@ -74,7 +74,6 @@ final class JsonSerializator
 
             if (strpos($name, "is") === 0) {
                 $property = substr($name, 2);
-                echo "$class->$name()"."<br>";
                 $data[lcfirst($property)] = $value->$name();
             }
         }

@@ -33,12 +33,12 @@ class Task
     private $hour_budget = false;
     
     /**
-     * @var int
+     * @var ?int
      *
      * @ORM\Type INT(6) UNSIGNED
      * @ORM\Column project_id
      */
-    private $project_id = 0;
+    private $project_id = null;
 
 
     public function __construct()
@@ -94,17 +94,17 @@ class Task
     }
 
     /**
-     * @return int
+     * @return ?int
      */
-    public function getProjectId(): int
+    public function getProjectId(): ?int
     {
         return $this->project_id;
     }
 
     /**
-     * @param int $project_id
+     * @param ?int $project_id
      */
-    public function setProjectId(int $project_id)
+    public function setProjectId(?int $project_id)
     {
         $this->project_id = $project_id;
     }

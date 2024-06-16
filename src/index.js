@@ -19,6 +19,7 @@ import Clients from "./pages/Clients";
 import EndCustomer from "./pages/EndCustomer";
 import EndCustomerContact from "./pages/EndCustomerContact";
 import Projects from "./pages/Projects";
+import Tasks from "./pages/Tasks";
 
 library.add(fas);
 
@@ -93,36 +94,20 @@ function Root() {
                             </NavLink>
                         </li>
                         <li className="nav-item">
-        <span
-            className="nav-link  collapsed  d-flex justify-content-between align-items-center"
-            data-bs-toggle="collapse" data-bs-target="#submenu-pages">
-          <span>
-            <span className="sidebar-icon">
-              <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                   xmlns="http://www.w3.org/2000/svg"><path
-                  fill-rule="evenodd"
-                  d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"
-                  clip-rule="evenodd"></path><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"></path></svg>
-            </span>
-            <span className="sidebar-text">Obchodní příležitosti</span>
-          </span>
-        </span>
-                        </li>
-                        <li className="nav-item">
-        <span
-            className="nav-link  collapsed  d-flex justify-content-between align-items-center"
-            data-bs-toggle="collapse" data-bs-target="#submenu-pages">
+                            <NavLink to="/tasks"
+                                     className="nav-link d-flex justify-content-between">
           <span>
             <span className="sidebar-icon">
                 <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                     xmlns="http://www.w3.org/2000/svg"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"></path><path
-                    fill-rule="evenodd"
-                    d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
-                    clip-rule="evenodd"></path></svg>
+                     xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                                          clip-rule="evenodd"></path>
+                                </svg>
             </span>
-            <span className="sidebar-text">Adresář</span>
+            <span className="sidebar-text">Úkoly</span>
           </span>
-        </span>
+                            </NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink to="/projects"
@@ -388,6 +373,8 @@ function Root() {
                     <Route path="clients" element={<Clients/>}/>
                     <Route path="projects/*" element={<Projects/>}/>
                     <Route path="projects" element={<Projects/>}/>
+                    <Route path="tasks/*" element={<Tasks/>}/>
+                    <Route path="tasks" element={<Tasks/>}/>
                     <Route path="workflow" element={<Workflow/>}/>
                     <Route path="entity/*" element={<EntityPage/>}/>
                     <Route path="entity" element={<EntityPage/>}/>

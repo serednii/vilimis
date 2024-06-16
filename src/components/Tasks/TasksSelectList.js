@@ -1,22 +1,22 @@
 import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
-import Select, {StylesConfig} from "react-select";
+import Select from "react-select";
 import {CONFIG} from "../../config";
-import ProjectForm from "./ProjectForm";
+import TaskForm from "./TaskForm";
 import Modal from 'react-modal';
 
 Modal.setAppElement("#root");
 
-const ProjectsSelectList = ({onChange, selected}) => {
+const TasksSelectList = ({onChange, selected}) => {
     const {API} = useRootContext()
-    const [projects, setProjects] = useState([]);
+    const [tasks, setTasks] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
     const [option, setOption] = useState([]);
 
     useEffect(() => {
-        loadProjects((options)=>{
+        loadTasks((options)=>{
             if (selected) {
-                let selectedValue = options.filter(projectValue => projectValue.value == selected);
+                let selectedValue = options.filter(taskValue => taskValue.value == selected);
                 if (selectedValue) {
                     setSelectedOption(selectedValue[0])
                     if (onChange) {
@@ -27,19 +27,19 @@ const ProjectsSelectList = ({onChange, selected}) => {
         });
     }, []);
 
-    function loadProjects(onLoad) {
-        API.getData("/project/list", (projects) => {
-            setProjects(projects);
+    function loadTasks(onLoad) {
+        API.getData("/task/list", (tasks) => {
+            setTasks(tasks);
 
-            if (projects && projects.length > 0) {
+            if (tasks && tasks.length > 0) {
                 const options = [];
-                projects.map(project => {
-                    let projectValue = {
-                        value: project.id,
-                        label: project.name,
-                        logo: project.logo ? CONFIG.uploadDir + project.logo : ""
+                tasks.map(task => {
+                    let taskValue = {
+                        value: task.id,
+                        label: task.name,
+                        logo: task.logo ? CONFIG.uploadDir + task.logo : ""
                     };
-                    options.push(projectValue);
+                    options.push(taskValue);
                 });
                 setOption(options);
 
@@ -50,11 +50,11 @@ const ProjectsSelectList = ({onChange, selected}) => {
         });
     }
 
-    function onNewProject(project){
+    function onNewTask(task){
         setIsOpen(false);
 
-        loadProjects((options)=>{
-            let selectedValue = options.filter(projectValue => projectValue.value == project.id);
+        loadTasks((options)=>{
+            let selectedValue = options.filter(taskValue => taskValue.value == task.id);
 
             if (selectedValue) {
                 setSelectedOption(selectedValue[0])
@@ -142,9 +142,9 @@ const ProjectsSelectList = ({onChange, selected}) => {
                         <div className="card p-3 p-lg-4">
                             <button onClick={closeModal} type="button" className="btn-close ms-auto" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
-                            <h2>Nový projekt</h2>
+                            <h2>Nový koncový zákazník</h2>
 
-                            <ProjectForm handleSave={onNewProject}/>
+                            <TaskForm handleSave={onNewTask}/>
                         </div>
                         </div>
                     </div>
@@ -153,4 +153,4 @@ const ProjectsSelectList = ({onChange, selected}) => {
     );
 };
 
-export default ProjectsSelectList;
+export default TasksSelectList;

@@ -60,6 +60,28 @@ class TaskController
         ]));
     }
 
+    /**
+     * @Route {
+     *  "rule": "/single/{id}",
+     *  "name": "task_single"
+     * }
+     */
+    public function single($id)
+    {
+        $task = $this->task_repository->find($id);
+
+        if (!$task) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => "Nenalezeno",
+                "code" => 404
+            ]));
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "data" => $task
+        ]));
+    }
+
 
     /**
      * @Route {
@@ -73,7 +95,20 @@ class TaskController
         $filesData = Request::getUploadedFiles();
 
         if (!empty($postData["name"])) {
-            $task = new Task();
+
+            if (!empty($postData["id"])) {
+                $task = $this->task_repository->find($postData["id"]);
+
+
+                if (!$task) {
+                    return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                        "message" => "Nenalezeno: $postData[id]",
+                        "code" => 404
+                    ]));
+                }
+            } else {
+                $task = new Task();
+            }
             $this->mapEntityFromArray($task, $postData, $filesData);
 
             EntityManager::save($task);
@@ -106,7 +141,6 @@ class TaskController
         EntityManager::remove($task);
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-            "data" => $data,
             "message" => "Smazáno",
             "code" => 200
         ]));

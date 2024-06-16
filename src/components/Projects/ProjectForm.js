@@ -66,7 +66,7 @@ const ProjectForm = ({id, handleSave}) => {
                         <input type="hidden" name="end_customer_id" value={selectedEndCustomerId}/>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="form_edit_client_id">Koncový uživatel</label>
+                        <label htmlFor="form_edit_client_id">Stav projektu</label>
                         <ProjectStatusesSelectList selected={project.projectStatusId} onChange={setSelectedProjectStatusId}/>
                         <input type="hidden" name="project_status_id" value={selectedProjectStatusId}/>
                     </div>
