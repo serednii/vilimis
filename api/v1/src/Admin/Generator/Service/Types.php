@@ -3,6 +3,7 @@
 namespace Admin\Generator\Service;
 
 use Admin\Generator\Type\BoolType;
+use Admin\Generator\Type\DateTimeType;
 use Admin\Generator\Type\DateType;
 use Admin\Generator\Type\FileType;
 use Admin\Generator\Type\ImageType;
@@ -33,6 +34,7 @@ class Types
             IntType::class,
             BoolType::class,
             DateType::class,
+            DateTimeType::class,
             FileType::class,
             ImageType::class,
             TextareaType::class,
