@@ -1,20 +1,20 @@
-import React, {useEffect, useState} from "react";
-import {useRootContext} from "../../contexts/RootContext";
+import React, { useEffect, useState } from "react";
+import { useRootContext } from "../../contexts/RootContext";
 import Select from "react-select";
-import {CONFIG} from "../../config";
+import { CONFIG } from "../../config";
 import TaskForm from "./TaskForm";
 import Modal from 'react-modal';
 
 Modal.setAppElement("#root");
 
-const TasksSelectList = ({onChange, selected}) => {
-    const {API} = useRootContext()
+const TasksSelectList = ({ onChange, selected }) => {
+    const { API } = useRootContext();
     const [tasks, setTasks] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
     const [option, setOption] = useState([]);
 
     useEffect(() => {
-        loadTasks((options)=>{
+        loadTasks((options) => {
             if (selected) {
                 let selectedValue = options.filter(taskValue => taskValue.value == selected);
                 if (selectedValue) {
@@ -50,10 +50,10 @@ const TasksSelectList = ({onChange, selected}) => {
         });
     }
 
-    function onNewTask(task){
+    function onNewTask(task) {
         setIsOpen(false);
 
-        loadTasks((options)=>{
+        loadTasks((options) => {
             let selectedValue = options.filter(taskValue => taskValue.value == task.id);
 
             if (selectedValue) {
@@ -82,9 +82,9 @@ const TasksSelectList = ({onChange, selected}) => {
     });
 
     const colourStyles = {
-        input: (styles) => ({...styles, ...dot()}),
-        singleValue: (styles, {data}) => ({...styles, ...dot(data.logo)}),
-        option: (styles, {data}) => ({...styles, ...dot(data.logo)}),
+        input: (styles) => ({ ...styles, ...dot() }),
+        singleValue: (styles, { data }) => ({ ...styles, ...dot(data.logo) }),
+        option: (styles, { data }) => ({ ...styles, ...dot(data.logo) }),
     }
 
 
@@ -141,13 +141,13 @@ const TasksSelectList = ({onChange, selected}) => {
                     <div className="modal-body p-0">
                         <div className="card p-3 p-lg-4">
                             <button onClick={closeModal} type="button" className="btn-close ms-auto" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                                aria-label="Close"></button>
                             <h2>Nový koncový zákazník</h2>
 
-                            <TaskForm handleSave={onNewTask}/>
-                        </div>
+                            <TaskForm handleSave={onNewTask} />
                         </div>
                     </div>
+                </div>
             </Modal>
         </>
     );
