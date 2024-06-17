@@ -27,7 +27,7 @@ class TaskTimetrack
     /**
      * @var \DateTime
      *
-     * @ORM\Type DATE
+     * @ORM\Type DATETIME
      * @ORM\Column datetime_start
      */
     private $datetime_start = "";
@@ -35,7 +35,7 @@ class TaskTimetrack
     /**
      * @var \DateTime
      *
-     * @ORM\Type DATE
+     * @ORM\Type DATETIME
      * @ORM\Column datetime_stop
      */
     private $datetime_stop = "";

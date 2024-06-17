@@ -15,7 +15,7 @@ final class DateTimeType implements TypeInterface
     /**
      * @var \DateTime
      *
-     * @ORM\Type DATE
+     * @ORM\Type DATETIME
      * @ORM\Column {{ item.slug }}
      */
     private \${{ item.slug }} = "";
