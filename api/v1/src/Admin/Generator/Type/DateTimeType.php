@@ -13,12 +13,12 @@ final class DateTimeType implements TypeInterface
     {
         return <<<EOL
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
      * @ORM\Type DATETIME
      * @ORM\Column {{ item.slug }}
      */
-    private \${{ item.slug }} = "";
+    private \${{ item.slug }} = null;
     
 EOL;
 
@@ -28,17 +28,17 @@ EOL;
     {
         return <<<EOL
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function get{{ item.slugInCamel }}(): \DateTime
+    public function get{{ item.slugInCamel }}(): ?\DateTime
     {
         return \$this->{{ item.slug }};
     }
 
     /**
-     * @param \DateTime \${{ item.slug }}
+     * @param \DateTime|null \${{ item.slug }}
      */
-    public function set{{ item.slugInCamel }}(\DateTime \${{ item.slug }})
+    public function set{{ item.slugInCamel }}(?\DateTime \${{ item.slug }})
     {
         \$this->{{ item.slug }} = \${{ item.slug }};
     }
@@ -49,7 +49,7 @@ EOL;
     public function getSet(): string
     {
         return <<<EOL
-        \${{ module.slugSingular }}->set{{ item.slugInCamel }}(new \DateTime(\$data["{{ item.slug }}"]));
+        \${{ module.slugSingular }}->set{{ item.slugInCamel }}(!empty(\$data["{{ item.slug }}"]) ? new \DateTime(\$data["{{ item.slug }}"]) : null);
 EOL;
     }
 

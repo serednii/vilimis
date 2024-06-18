@@ -142,7 +142,7 @@ const TasksSelectList = ({ onChange, selected }) => {
                         <div className="card p-3 p-lg-4">
                             <button onClick={closeModal} type="button" className="btn-close ms-auto" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
-                            <h2>Nový koncový zákazník</h2>
+                            <h2>Task</h2>
 
                             <TaskForm handleSave={onNewTask} />
                         </div>

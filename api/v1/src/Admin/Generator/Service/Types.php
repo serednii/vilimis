@@ -11,6 +11,7 @@ use Admin\Generator\Type\IntType;
 use Admin\Generator\Type\TextareaType;
 use Admin\Generator\Type\TextType;
 use Admin\Generator\Type\TypeInterface;
+use Admin\Generator\Type\WysiwygType;
 use Gephart\Collections\Collection;
 use Gephart\EventManager\Event;
 use Gephart\EventManager\EventManager;
@@ -38,6 +39,7 @@ class Types
             FileType::class,
             ImageType::class,
             TextareaType::class,
+            WysiwygType::class,
             TextType::class
         ]);
     }

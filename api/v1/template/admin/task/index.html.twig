@@ -35,6 +35,31 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="form-group">
+                <label for="form_edit_task_status_id">Stav úkolu</label>
+                <select name="task_status_id" class="form-control" id="form_edit_task_status_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for task_status_id in task_status_ids %}
+                        <option value="{{ task_status_id.id }}">
+                        {% if task_status_id.title %}
+                            {{ task_status_id.title }}
+                        {% elseif task_status_id.name %}
+                            {{ task_status_id.name }}
+                        {% else %}
+                            #{{ task_status_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_description">Zadání</label>
+                <textarea class="form-control js-wysiwyg" name="description" rows="10" id="form_edit_description">{{ task.Description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_dead_line_date">Termín</label>
+                <input value="{{ task.DeadLineDate.format("Y-m-d H:i") }}" type="datetime-local" name="dead_line_date" class="form-control" id="form_edit_dead_line_date">
+            </div>
             <button type="submit" class="btn btn-default">Přidat</button>
         </form>
         <br/>

@@ -7,10 +7,10 @@ import Select from 'react-select';
 //     { value: 'vanilla', label: 'Vanilla' }
 // ]
 
-const TimeTrackerTask = ({ option, isOpen }) => {
+const TimeTrackerTask = ({ option, isOpen, handleChange }) => {
     return (
-        isOpen && <div className='position-absolute'>
-            <Select options={option} />
+        isOpen && <div className='position-absolute' style={{right:0,width:"300px"}}>
+            <Select options={option} onChange={handleChange} />
         </div>
     )
 }

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
-import {CONFIG} from "../../config";
 import ProjectsSelectList from "../Projects/ProjectsSelectList";
+import TaskStatusesSelectList from "../TaskStatuses/TaskStatusesSelectList";
 
 const taskBlank = {
     name: "",
@@ -13,6 +13,7 @@ const TaskForm = ({id, handleSave}) => {
     const {API} = useRootContext()
     const [task, setTask] = useState(null);
     const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const [selectedTaskStatusId, setSelectedTaskStatusId] = useState(null);
 
     useEffect(() => {
         if (id) {
@@ -43,24 +44,60 @@ const TaskForm = ({id, handleSave}) => {
         });
     }
 
+    if (!task) {
+        return (<>Načítaní..</>)
+    }
+
+    task.deadLineDateFormated = "";
+    if (task && "deadLineDate" in task && task.deadLineDate && "date" in task.deadLineDate) {
+        task.deadLineDateFormated = task.deadLineDate.date.substring(0, 16)
+    }
+
     return (
         <>
             {task && "name" in task && (
                 <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="form_edit_project_id">Projekt</label>
-                        <ProjectsSelectList selected={task.projectId} onChange={setSelectedProjectId}/>
-                        <input type="hidden" name="project_id" value={selectedProjectId}/>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="form_edit_name">Název</label>
-                        <input defaultValue={task.name} type="text" name="name" className="form-control"
-                               id="form_edit_name"/>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="form_edit_hour_budget">Hodinový rozpočet</label>
-                        <input defaultValue={task.hourBudget} type="number" name="hour_budget" className="form-control"
-                               id="form_edit_hour_budget"></input>
+                    <div className="row">
+                        <div className="col-12 col-md-8">
+                            <div className="mb-3">
+                                <label htmlFor="form_edit_name">Název</label>
+                                <input defaultValue={task.name} type="text" name="name" className="form-control"
+                                       id="form_edit_name"/>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="form_edit_description">Zadání</label>
+                                <textarea defaultValue={task.description} className="form-control" name="description"
+                                          rows="10"
+                                          id="form_edit_description"></textarea>
+                            </div>
+                        </div>
+                        <div className="col-12 col-md-4">
+                            <div className="mb-3">
+                                <label htmlFor="form_edit_project_id">Stav úkolu</label>
+                                <TaskStatusesSelectList selected={task.taskStatusId}
+                                                        onChange={setSelectedTaskStatusId}/>
+                                <input type="hidden" name="task_status_id" value={selectedTaskStatusId}/>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="form_edit_dead_line_date">Termín</label>
+                                <input defaultValue={task.deadLineDateFormated} type="datetime-local"
+                                       name="dead_line_date"
+                                       className="form-control"
+                                       id="form_edit_dead_line_date"></input>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="form_edit_hour_budget">Hodinový rozpočet</label>
+                                <input defaultValue={task.hourBudget} type="number" name="hour_budget"
+                                       className="form-control"
+                                       id="form_edit_hour_budget"></input>
+                            </div>
+                            <hr/>
+                            <div className="mb-3">
+                                <label htmlFor="form_edit_project_id">Projekt</label>
+                                <ProjectsSelectList selected={task.projectId} onChange={setSelectedProjectId}/>
+                                <input type="hidden" name="project_id" value={selectedProjectId}/>
+                            </div>
+                        </div>
                     </div>
                     <button type="submit" className="btn btn-primary">
                         {id ? "Uložit" : "Přidat"}

@@ -2,23 +2,23 @@
 
 namespace Admin\Generator\Type;
 
-final class DateType implements TypeInterface
+final class WysiwygType implements TypeInterface
 {
     public function getName(): string
     {
-        return "date";
+        return "wysiwyg";
     }
 
     public function getEntityProperty(): string
     {
         return <<<EOL
     /**
-     * @var \DateTime|null
+     * @var string
      *
-     * @ORM\Type DATE
+     * @ORM\Type TEXT
      * @ORM\Column {{ item.slug }}
      */
-    private \${{ item.slug }} = null;
+    private \${{ item.slug }} = "";
     
 EOL;
 
@@ -28,28 +28,28 @@ EOL;
     {
         return <<<EOL
     /**
-     * @return \DateTime|null
+     * @return string
      */
-    public function get{{ item.slugInCamel }}(): ?\DateTime
+    public function get{{ item.slugInCamel }}(): string
     {
         return \$this->{{ item.slug }};
     }
 
     /**
-     * @param \DateTime|null \${{ item.slug }}
+     * @param string \${{ item.slug }}
      */
-    public function set{{ item.slugInCamel }}(?\DateTime \${{ item.slug }})
+    public function set{{ item.slugInCamel }}(string \${{ item.slug }})
     {
         \$this->{{ item.slug }} = \${{ item.slug }};
     }
-
+    
 EOL;
     }
 
     public function getSet(): string
     {
         return <<<EOL
-        \${{ module.slugSingular }}->set{{ item.slugInCamel }}(!empty(\$data["{{ item.slug }}"]) ? new \DateTime(\$data["{{ item.slug }}"]) : null);
+        \${{ module.slugSingular }}->set{{ item.slugInCamel }}(\$data["{{ item.slug }}"]);
 EOL;
     }
 
@@ -58,7 +58,7 @@ EOL;
         return <<<EOL
             <div class="form-group">
                 <label for="form_edit_{{ item.slug }}">{{ item.name }}</label>
-                <input value="{{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }}.format("Y-m-d") {{ "}}" }}" type="date" name="{{ item.slug }}" class="form-control" id="form_edit_{{ item.slug }}">
+                <textarea class="form-control js-wysiwyg" name="{{ item.slug }}" rows="10" id="form_edit_{{ item.slug }}">{{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }} {{ "}}" }}</textarea>
             </div>
 EOL;
 
@@ -67,13 +67,13 @@ EOL;
     public function getShow(): string
     {
         return <<<EOL
-                        {{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }}.format("d. m. Y") {{ "}}" }}
+                        {{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }} {{ "}}" }}
 EOL;
 
     }
 
     public function getPriority(): int
     {
-        return 300;
+        return 500;
     }
 }

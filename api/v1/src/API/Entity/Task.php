@@ -40,6 +40,30 @@ class Task
      */
     private $project_id = null;
 
+    /**
+     * @var ?int
+     *
+     * @ORM\Type INT(6) UNSIGNED
+     * @ORM\Column task_status_id
+     */
+    private $task_status_id = null;
+
+    /**
+     * @var string
+     *
+     * @ORM\Type TEXT
+     * @ORM\Column description
+     */
+    private $description = "";
+    
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Type DATETIME
+     * @ORM\Column dead_line_date
+     */
+    private $dead_line_date = null;
+    
 
     public function __construct()
     {
@@ -107,6 +131,54 @@ class Task
     public function setProjectId(?int $project_id)
     {
         $this->project_id = $project_id;
+    }
+
+    /**
+     * @return ?int
+     */
+    public function getTaskStatusId(): ?int
+    {
+        return $this->task_status_id;
+    }
+
+    /**
+     * @param ?int $task_status_id
+     */
+    public function setTaskStatusId(?int $task_status_id)
+    {
+        $this->task_status_id = $task_status_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description)
+    {
+        $this->description = $description;
+    }
+    
+    /**
+     * @return \DateTime|null
+     */
+    public function getDeadLineDate(): ?\DateTime
+    {
+        return $this->dead_line_date;
+    }
+
+    /**
+     * @param \DateTime|null $dead_line_date
+     */
+    public function setDeadLineDate(?\DateTime $dead_line_date)
+    {
+        $this->dead_line_date = $dead_line_date;
     }
 
 }
