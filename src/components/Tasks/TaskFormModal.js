@@ -28,8 +28,8 @@ const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callbac
             >
                 <div className="modal-content">
                     <div className="modal-body p-0">
-                        <div className="card p-3 p-lg-4">
-                            <button onClick={onRequestClose} type="button" className="btn-close ms-auto"
+                        <div className="card p-3 p-lg-4 d-block">
+                            <button onClick={onRequestClose} type="button" className="btn-close float-end"
                                     data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             <h2>Úkol #{id}</h2>
