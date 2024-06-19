@@ -1,0 +1,51 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Poznámka</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_comment") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_description">Poznámka</label>
+                <textarea class="form-control js-wysiwyg" name="description" rows="10" id="form_edit_description">{{ comment.Description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_entity">Entita</label>
+                <input value="{{ comment.Entity }}" type="text" name="entity" class="form-control" id="form_edit_entity">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_entity_id">ID entity</label>
+                <input value="{{ comment.EntityId }}" type="text" name="entity_id" class="form-control" id="form_edit_entity_id">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_created">Čas vytvoření</label>
+                <input value="{{ comment.Created.format("Y-m-d H:i") }}" type="datetime-local" name="created" class="form-control" id="form_edit_created">
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for comment in comments %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_comment_edit", {"id":comment.id}) }}">{{ comment.Entity }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_comment_edit", {"id":comment.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_comment_delete", {"id":comment.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}
