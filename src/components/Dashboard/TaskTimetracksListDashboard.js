@@ -60,7 +60,7 @@ const TaskTimetracksListDashboard = ({}) => {
 
                         "taskId" in taskTimetrack && taskTimetrack.taskId && tasks.filter(task => task.id === taskTimetrack.taskId).map((task, task_index) => (
 
-                        <div key={taskTimetrack_index} className="list-group-item border-0 pb-4">
+                        <div key={taskTimetrack_index+"-"+taskTimetrack.id} className="list-group-item border-0 pb-4">
                             {(!beforeTaskTimetrack || beforeTaskTimetrack.taskId != taskTimetrack.taskId) && (
                                 <div className="mb-3">
                                     <TasksListItem
@@ -71,7 +71,7 @@ const TaskTimetracksListDashboard = ({}) => {
                                         onUpdate={() => setReload(true)}/>
                                 </div>
                             )}
-                            <TimeTrackerItem taskTimetrack={taskTimetrack}/>
+                            <TimeTrackerItem taskTimetrack={taskTimetrack} onChange={()=>setReload(true)}/>
                             {(beforeTaskTimetrack = taskTimetrack) && ""}
                         </div>
 

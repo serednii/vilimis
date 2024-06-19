@@ -42,6 +42,15 @@ const TimeTrackerItem = ({taskTimetrack, onChange}) => {
         formData.append("datetime_start", datetimeStart);
         formData.append("datetime_stop", datetimeStop);
         API.postData("/taskTimetrack/save", formData, ()=>{
+
+            setCanSave(false);
+            if (onChange) {
+                onChange();
+            }
+        });
+    }
+    function handleDelete(id) {
+        API.getData("/taskTimetrack/delete/"+id, ()=>{
             setCanSave(false);
             if (onChange) {
                 onChange();
@@ -71,7 +80,11 @@ const TimeTrackerItem = ({taskTimetrack, onChange}) => {
             </div>
             {canSave && (
                 <div className="mt-3">
-                    <button className="btn btn-primary" type="submit">Uložit</button>
+                    <button className="btn btn-sm btn-primary" type="submit">Uložit</button>
+                    <button
+                        onClick={() => window.confirm("Opravdu smazat?") && handleDelete(taskTimetrack.id)}
+                        className="btn btn-sm btn-danger ms-2" type="button">Smazat
+                    </button>
                 </div>
             )}
         </form>

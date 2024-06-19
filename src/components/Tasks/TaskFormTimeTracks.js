@@ -11,7 +11,7 @@ const TaskFormTimeTracks = ({taskId}) => {
     const [reload, setReload] = useState(true);
     const [amountTime, setAmountTime] = useState(0);
     const [taskTimetracks, setTaskTimetracks] = useState([]);
-
+console.log(reload);
     useEffect(() => {
         if (!reload) return;
 
@@ -60,7 +60,7 @@ const TaskFormTimeTracks = ({taskId}) => {
                 </div>
             )}
             {taskTimetracks && taskTimetracks.length > 0 && taskTimetracks.map((taskTimetrack, taskTimetrack_index) => (
-                <div key={taskTimetrack_index} className=" card p-3 mt-4">
+                <div key={taskTimetrack_index+"-"+taskTimetrack.id} className=" card p-3 mt-4">
                     <TimeTrackerItem taskTimetrack={taskTimetrack} onChange={()=>setReload(true)}/>
                 </div>
             ))}

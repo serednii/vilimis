@@ -11,7 +11,7 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
     useEffect(() => {
         const intervalId = setInterval(() => {
             if (timetrackerState.start) {
-                setTimeSpentOnPage((new Date()).getTime() - timetrackerState.start); // increment by 1 second
+                setTimeSpentOnPage((new Date()).getTime() - ((new Date()).getTimezoneOffset() * 60000) - timetrackerState.start); // increment by 1 second
             } else {
                 setTimeSpentOnPage(0);
             }
@@ -20,9 +20,11 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
     }, [timetrackerState]); // run only once on mount
 
     useEffect(() => {
-        API.getData("/task/single/" + taskId, (task) => {
-            setTask(task);
-        });
+        if (taskId && taskId > 0) {
+            API.getData("/task/single/" + taskId, (task) => {
+                setTask(task);
+            });
+        }
     }, [taskId]);
 
     const handleClick = () => {

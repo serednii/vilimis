@@ -17,7 +17,7 @@ export const timetrackerReducer = (state, {action, ...args}) => {
         case TIMETRACKER_ACTIONS.START: {
             const {taskId} = args;
             return {
-                start: (new Date()).getTime(),
+                start: (new Date()).getTime() - ((new Date()).getTimezoneOffset() * 60000),
                 taskId: taskId
             };
         }
