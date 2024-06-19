@@ -16,7 +16,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 /**
  * @RoutePrefix /projectDate
  */
-class ProjectDateController
+class ProjectDateController extends AbstractApiController
 {
     /**
      * @var ProjectDateRepository
@@ -52,12 +52,45 @@ class ProjectDateController
      */
     public function index()
     {
-        $projectDates = $this->projectDate_repository->findBy([], [
-            "ORDER BY" => "id DESC"
-        ]);
+        try {
+            $filter = $this->parseRequestFilter();
+
+            $params = [];
+            $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
+            $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
+
+            $projectDates = $this->projectDate_repository->findBy($filter, $params);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 500
+            ]));
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "data" => $projectDates
+        ]));
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/single/{id}",
+     *  "name": "projectDate_single"
+     * }
+     */
+    public function single($id)
+    {
+        $projectDate = $this->projectDate_repository->find($id);
+
+        if (!$projectDate) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => "Nenalezeno",
+                "code" => 404
+            ]));
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "data" => $projectDate
         ]));
     }
 
@@ -74,7 +107,20 @@ class ProjectDateController
         $filesData = Request::getUploadedFiles();
 
         if (!empty($postData["name"])) {
-            $projectDate = new ProjectDate();
+
+            if (!empty($postData["id"])) {
+                $projectDate = $this->projectDate_repository->find($postData["id"]);
+
+
+                if (!$projectDate) {
+                    return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                        "message" => "Nenalezeno: $postData[id]",
+                        "code" => 404
+                    ]));
+                }
+            } else {
+                $projectDate = new ProjectDate();
+            }
             $this->mapEntityFromArray($projectDate, $postData, $filesData);
 
             EntityManager::save($projectDate);
@@ -107,7 +153,6 @@ class ProjectDateController
         EntityManager::remove($projectDate);
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-            "data" => $data,
             "message" => "Smazáno",
             "code" => 200
         ]));
@@ -115,7 +160,7 @@ class ProjectDateController
 
     private function mapEntityFromArray(ProjectDate $projectDate, array $data, array $files) {
         $projectDate->setName($data["name"]);
-        $projectDate->setDate(new \DateTime($data["date"]));
+        $projectDate->setDate(!empty($data["date"]) ? new \DateTime($data["date"]) : null);
         $projectDate->setColor($data["color"]);
         $projectDate->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
         $projectDate->setDone((bool) isset($data["done"]) ? $data["done"] : false);

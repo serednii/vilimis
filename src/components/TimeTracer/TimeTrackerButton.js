@@ -1,9 +1,12 @@
 import {faClock, faStop} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useEffect, useState} from "react";
+import {useRootContext} from "../../contexts/RootContext";
 
-const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleStop }) => {
+const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleStop, taskId }) => {
+    const { API } = useRootContext();
     const [timeSpentOnPage, setTimeSpentOnPage] = useState(0);
+    const [task, setTask] = useState(null)
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -15,6 +18,12 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
         }, 1000); // every 1 second
         return () => clearInterval(intervalId); // cleanup
     }, [timetrackerState]); // run only once on mount
+
+    useEffect(() => {
+        API.getData("/task/single/" + taskId, (task) => {
+            setTask(task);
+        });
+    }, [taskId]);
 
     const handleClick = () => {
         setIsOpen(!isOpen)
@@ -44,15 +53,15 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
                 <span>
                     {timeSpentOnPage === 0 ? ("....") : (
                         <>
-                            {tasks && tasks.length > 0 && tasks.filter(task => task.id === timetrackerState.taskId).map((task, task_index) => (
-                                <span key={task_index}>
+                            {task && "name" in task && (
+                                <span>
                                     {task.name.length > 32 ? (
                                         <>
                                             {task.name.substring(0, 32)}...
                                         </>
                                     ) : task.name}
                                 </span>
-                            ))}: &nbsp;
+                            )}: &nbsp;
                             {h>0&&(
                                 <>
                                     {h}:

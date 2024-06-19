@@ -7,42 +7,12 @@ import {TIMETRACKER_ACTIONS} from "../../reducers/timetrackerReducer";
 
 const TimeTracker = () => {
     const { API, timetrackerState, timetrackerDispatch } = useRootContext();
-    const [option, setOption] = useState([]);
-    const [tasks, setTasks] = useState([]);
+    const [taskId, setTaskId] = useState([]);
     const [isOpen, setIsOpen] = useState(false)
 
-    useEffect(() => {
-        if (!isOpen) return;
-
-        loadTasks();
-    }, [isOpen]);
-
-    useEffect(() => {
-        loadTasks();
-    }, []);
-
-    function loadTasks() {
-        API.getData("/task/list", (tasks) => {
-            setTasks(tasks);
-
-            if (tasks && tasks.length > 0) {
-                const options = [];
-                tasks.map(task => {
-                    let taskValue = {
-                        value: task.id,
-                        label: (<span>{task.name}</span>),
-                        logo: task.logo ? CONFIG.uploadDir + task.logo : ""
-                    };
-                    options.push(taskValue);
-                });
-                setOption(options);
-            }
-        });
-    }
-
-    function handleChange(task) {
-        const taskId = task.value;
+    function handleChange(taskId) {
         setIsOpen(false);
+        setTaskId(taskId);
         startTimer(taskId);
     }
 
@@ -75,8 +45,8 @@ const TimeTracker = () => {
 
     return (
         <div className="h-100 position-relative">
-            <TimeTrackerButton timetrackerState={timetrackerState} isOpen={isOpen} setIsOpen={setIsOpen} tasks={tasks} handleStop={handleStop} />
-            <TimeTrackerTask option={option} isOpen={isOpen} handleChange={handleChange} />
+            <TimeTrackerButton timetrackerState={timetrackerState} isOpen={isOpen} setIsOpen={setIsOpen} taskId={taskId} handleStop={handleStop} />
+            <TimeTrackerTask isOpen={isOpen} handleChange={handleChange} />
         </div>
     )
 

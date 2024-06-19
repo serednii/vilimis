@@ -25,12 +25,12 @@ class ProjectDate
     private $name = "";
     
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
      * @ORM\Type DATE
      * @ORM\Column date
      */
-    private $date = "";
+    private $date = null;
     
     /**
      * @var string
@@ -111,17 +111,17 @@ class ProjectDate
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDate(): \DateTime
+    public function getDate(): ?\DateTime
     {
         return $this->date;
     }
 
     /**
-     * @param \DateTime $date
+     * @param \DateTime|null $date
      */
-    public function setDate(\DateTime $date)
+    public function setDate(?\DateTime $date)
     {
         $this->date = $date;
     }

@@ -16,7 +16,21 @@ body
     .content
       margin-left: calc(300px + .5rem)
 
+.cursor-pointer
+  cursor: pointer
 
 .sidebar .nav-item > .nav-link.active
   color: #F2F4F6
   background-color: #374151
+
+.list-group-item--done
+  &:before
+    border-color: #1f2937!important
+
+  &:after
+    border-color: #1f2937!important
+    background: #1f2937!important
+
+.list-group-item--stripe
+  text-decoration: line-through
+

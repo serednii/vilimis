@@ -125,7 +125,7 @@ class ProjectDateController
 
     private function mapEntityFromArray(ProjectDate $projectDate, array $data, array $files) {
         $projectDate->setName($data["name"]);
-        $projectDate->setDate(new \DateTime($data["date"]));
+        $projectDate->setDate(!empty($data["date"]) ? new \DateTime($data["date"]) : null);
         $projectDate->setColor($data["color"]);
         $projectDate->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
         $projectDate->setDone((bool) isset($data["done"]) ? $data["done"] : false);

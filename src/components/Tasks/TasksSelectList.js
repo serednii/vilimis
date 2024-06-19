@@ -7,14 +7,15 @@ import Modal from 'react-modal';
 
 Modal.setAppElement("#root");
 
-const TasksSelectList = ({ onChange, selected }) => {
+const TasksSelectList = ({ onChange, selected, projectId, onNew }) => {
     const { API } = useRootContext();
     const [tasks, setTasks] = useState([]);
+    const [projects, setProjects] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
     const [option, setOption] = useState([]);
 
     useEffect(() => {
-        loadTasks((options) => {
+        let loadTaskCallback = (projects) => loadTasks((options) => {
             if (selected) {
                 let selectedValue = options.filter(taskValue => taskValue.value == selected);
                 if (selectedValue) {
@@ -24,19 +25,47 @@ const TasksSelectList = ({ onChange, selected }) => {
                     }
                 }
             }
-        });
-    }, []);
+        }, projects);
 
-    function loadTasks(onLoad) {
+        if (projectId) {
+            loadTaskCallback();
+        } else {
+            loadProjects(loadTaskCallback);
+        }
+    }, []);
+    function loadProjects(onLoad) {
+        API.getData("/project/list", (projects) => {
+            setProjects(projects);
+            if (onLoad) {
+                onLoad(projects); // stav setProjects se jen při prvním nastavení přese do onLoad, takže předávám jako parametr
+            }
+        });
+    }
+
+    function loadTasks(onLoad, projects) {
         API.getData("/task/list", (tasks) => {
+            if (projectId) {
+                tasks = tasks.filter(task=>(task.projectId == projectId));
+            }
             setTasks(tasks);
 
             if (tasks && tasks.length > 0) {
                 const options = [];
                 tasks.map(task => {
+                    let label = task.name;
+
+                    if (!projectId && projects && projects.length > 0) {
+                        projects.filter(project=>project.id==task.projectId).forEach(project=> {
+                            label = `
+                                `+task.name+`<br/>
+                                <small>`+project.name+`</small>
+                            `;
+                        })
+                    }
+
                     let taskValue = {
                         value: task.id,
-                        label: task.name,
+                        label: label,
                         logo: task.logo ? CONFIG.uploadDir + task.logo : ""
                     };
                     options.push(taskValue);
@@ -62,29 +91,17 @@ const TasksSelectList = ({ onChange, selected }) => {
                     onChange(selectedValue[0].value);
                 }
             }
+
+            if (onNew) {
+                onNew();
+            }
         });
     }
 
-
-    const dot = (logo = null) => ({
-        alignItems: 'center',
-        display: 'flex',
-
-        ':before': {
-            background: logo ? "url('" + logo + "') no-repeat center center / contain" : "transparent",
-            borderRadius: 3,
-            content: '" "',
-            display: 'block',
-            marginRight: 8,
-            height: 20,
-            width: 40,
-        },
-    });
-
     const colourStyles = {
-        input: (styles) => ({ ...styles, ...dot() }),
-        singleValue: (styles, { data }) => ({ ...styles, ...dot(data.logo) }),
-        option: (styles, { data }) => ({ ...styles, ...dot(data.logo) }),
+        input: (styles) => ({ ...styles }),
+        singleValue: (styles, { data }) => ({ ...styles }),
+        option: (styles, { data }) => ({ ...styles }),
     }
 
 
@@ -114,13 +131,20 @@ const TasksSelectList = ({ onChange, selected }) => {
 
     return (
         <>
-            <div className="input-group">
+            <div className="d-flex">
                 <div className={"flex-fill"}>
                     <Select
+                        placeholder={"Vybrat"}
                         value={selectedOption}
                         onChange={handleChange}
+                        isSearchable={true}
                         options={option}
                         styles={colourStyles}
+                        formatOptionLabel={function(data) {
+                            return (
+                                <span dangerouslySetInnerHTML={{ __html: data.label }} />
+                            );
+                        }}
                     />
                 </div>
                 <div className="ps-3">

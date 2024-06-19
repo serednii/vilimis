@@ -1,5 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
+import TasksSelectList from "../Tasks/TasksSelectList";
 
 // const options = [
 //     { value: 'chocolate', label: 'Chocolate' },
@@ -7,10 +8,10 @@ import Select from 'react-select';
 //     { value: 'vanilla', label: 'Vanilla' }
 // ]
 
-const TimeTrackerTask = ({ option, isOpen, handleChange }) => {
+const TimeTrackerTask = ({ isOpen, handleChange, onNew }) => {
     return (
-        isOpen && <div className='position-absolute' style={{right:0,width:"300px"}}>
-            <Select options={option} onChange={handleChange} />
+        isOpen && <div className='position-absolute' style={{zIndex:1040,right:0,width:"300px"}}>
+            <TasksSelectList onChange={handleChange} onNew={onNew}/>
         </div>
     )
 }

@@ -17,7 +17,7 @@ const TaskFormTimeTracks = ({taskId}) => {
 
         API.getData("/taskTimetrack/list", (taskTimetracks) => {
             setTaskTimetracks(taskTimetracks.filter(taskTimetrack => (
-                taskTimetrack.taskId === taskId
+                taskTimetrack.taskId == taskId
             )));
         });
 

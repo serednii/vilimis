@@ -37,6 +37,8 @@ const TaskTimetracksListDashboard = ({}) => {
         setReload(false);
     }, [reload]);
 
+    let beforeTaskTimetrack = null;
+
     return (
         <div className="card notification-card border-0 shadow">
             <div className="card-header d-flex align-items-center"><h2
@@ -59,15 +61,18 @@ const TaskTimetracksListDashboard = ({}) => {
                         "taskId" in taskTimetrack && taskTimetrack.taskId && tasks.filter(task => task.id === taskTimetrack.taskId).map((task, task_index) => (
 
                         <div key={taskTimetrack_index} className="list-group-item border-0 pb-4">
-                            <div className="mb-3">
-                                <TasksListItem
-                                    task={task}
-                                    projects={projects}
-                                    endCustomers={endCustomers}
-                                    clients={clients}
-                                    onUpdate={()=>setReload(true)}/>
-                            </div>
-                            <TimeTrackerItem taskTimetrack={taskTimetrack} />
+                            {(!beforeTaskTimetrack || beforeTaskTimetrack.taskId != taskTimetrack.taskId) && (
+                                <div className="mb-3">
+                                    <TasksListItem
+                                        task={task}
+                                        projects={projects}
+                                        endCustomers={endCustomers}
+                                        clients={clients}
+                                        onUpdate={() => setReload(true)}/>
+                                </div>
+                            )}
+                            <TimeTrackerItem taskTimetrack={taskTimetrack}/>
+                            {(beforeTaskTimetrack = taskTimetrack) && ""}
                         </div>
 
                         ))
