@@ -15,10 +15,11 @@ abstract class AbstractApiController {
             foreach ($params["filter"] as $key => $value) {
                 $i++;
 
+                $name = preg_replace('/[^\w]/', '', $key) . " = %".$i;
                 if ($i == 1) {
-                    $filter = [addslashes($key) . " = %".$i, $value];
+                    $filter = [$name, $value];
                 } else {
-                    $filter[0] .= " AND ".addslashes($key) . " = %".$i;
+                    $filter[0] .= " AND ".$name;
                     $filter[] = $value;
                 }
             }

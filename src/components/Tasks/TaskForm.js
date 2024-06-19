@@ -2,26 +2,36 @@ import React from "react";
 import TaskFormDefault from "./TaskFormDefault";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TaskFormTimeTracks from "./TaskFormTimeTracks";
+import CommentsList from "../Comments/CommentsList";
 
 const TaskForm = ({id, handleSave}) => {
 
     return (
         <>
-            <Tabs>
-                <TabList>
-                    <Tab>Nastavení</Tab>
-                    <Tab>Časové záznamy</Tab>
-                </TabList>
+            {id ? (
+                <Tabs>
+                    <TabList>
+                        <Tab>Nastavení</Tab>
+                        <Tab>Časové záznamy</Tab>
+                        <Tab>Poznámky</Tab>
+                    </TabList>
 
 
-                <TabPanel>
-                    <TaskFormDefault id={id} handleSave={handleSave}/>
-                </TabPanel>
+                    <TabPanel>
+                        <TaskFormDefault id={id} handleSave={handleSave}/>
+                    </TabPanel>
 
-                <TabPanel>
-                    <TaskFormTimeTracks taskId={id} />
-                </TabPanel>
-            </Tabs>
+                    <TabPanel>
+                        <TaskFormTimeTracks taskId={id} />
+                    </TabPanel>
+
+                    <TabPanel>
+                        <CommentsList entity="task" entityId={id} />
+                    </TabPanel>
+                </Tabs>
+            ) : (
+                <TaskFormDefault handleSave={handleSave}/>
+            )}
         </>
     );
 };
