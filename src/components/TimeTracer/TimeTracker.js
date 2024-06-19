@@ -18,7 +18,6 @@ const TimeTracker = () => {
     const timerId = useRef(null);
     const startTime = useRef(null);
 
-
     const handleSelected = (obj) => {
         setSelectedOption(obj);
         setIsShowSelect(false);
@@ -41,8 +40,9 @@ const TimeTracker = () => {
             setElapsedTime(prevElapsedTime => `${hours}:${minutes}:${seconds}`);
         }, 1000);
     }
-
+    console.log(option)
     const timeTrackerStop = () => {
+        if (!timerId.current) return
         clearInterval(timerId.current);
         timerId.current = null
         const realTime = new Date().getTime()
