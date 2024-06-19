@@ -223,7 +223,7 @@ function Root() {
 
                 <nav className="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
                     <div className="container-fluid px-0">
-                        <div className="d-flex justify-content-between w-100" id="navbarSupportedContent">
+                        <div className="d-flex justify-content-between align-items-center w-100" id="navbarSupportedContent">
                             <div className="d-flex align-items-center">
                                 <form className="navbar-search form-inline" id="navbar-search-main">
                                     <div className="input-group input-group-merge search-bar">
@@ -242,9 +242,9 @@ function Root() {
                                     </div>
                                 </form>
                             </div>
-                            <div className=''>
-                                <TimeTracker />
-                            </div>
+
+                            <TimeTracker />
+
                             <ul className="navbar-nav align-items-center">
                                 <li className="nav-item dropdown ms-lg-3">
                                     <a className="nav-link dropdown-toggle pt-1 px-0" href="#" role="button"

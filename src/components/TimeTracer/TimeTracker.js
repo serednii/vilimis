@@ -1,24 +1,57 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TimeTrackerButton from "./TimeTrackerButton";
 import TimeTrackerTask from "./TimeTrackerTask";
 import { useRootContext } from "../../contexts/RootContext";
 import { CONFIG } from "../../config";
+import TimeTrackerTimer from "./TimeTrackerTimer";
+import TimeTrackerButtonStop from "./TimeTrackerButtonStop";
+import TimeTrackerButtonStart from './TimeTrackerButtonStart';
 
 const TimeTracker = () => {
     const { API } = useRootContext();
     const [option, setOption] = useState([]);
-    const [tasks, setTasks] = useState([]);
-    const [isOpen, setIsOpen] = useState(false)
+    const [isShowSelect, setIsShowSelect] = useState(false);
+    const [isShowTimer, setIsShowTimer] = useState(false);
+    const [selectedOption, setSelectedOption] = useState([]);// вибрані дані в селекті
+    const [isLoading, setIsLoading] = useState(true);
+    const [elapsedTime, setElapsedTime] = useState('00:00:00');
+    const timerId = useRef(null);
+    const startTime = useRef(null);
 
-    useEffect(() => {
-        loadTasks();
-    }, []);
 
-    console.log(option)
+    const handleSelected = (obj) => {
+        setSelectedOption(obj);
+        setIsShowSelect(false);
+        setIsShowTimer(true);
+    }
+
+    const timeTrackerStart = () => {
+        console.log(timerId.current)
+        if (timerId.current) return;
+        const realTime = new Date().getTime()
+
+        !startTime.current ? startTime.current = realTime : startTime.current = realTime - startTime.current
+        timerId.current = setInterval(() => {
+            const now = new Date().getTime();
+            const diff = now - startTime.current;
+            const diffTime = new Date(diff);
+            const hours = Math.floor(diffTime.getHours() - 1).toString().padStart(2, '0');
+            const minutes = Math.floor(diffTime.getMinutes()).toString().padStart(2, '0');
+            const seconds = Math.floor(diffTime.getSeconds()).toString().padStart(2, '0');
+            setElapsedTime(prevElapsedTime => `${hours}:${minutes}:${seconds}`);
+        }, 1000);
+    }
+
+    const timeTrackerStop = () => {
+        clearInterval(timerId.current);
+        timerId.current = null
+        const realTime = new Date().getTime()
+        startTime.current = realTime - startTime.current
+    }
+
 
     function loadTasks() {
         API.getData("/task/list", (tasks) => {
-            setTasks(tasks);
 
             if (tasks && tasks.length > 0) {
                 const options = [];
@@ -31,18 +64,21 @@ const TimeTracker = () => {
                     options.push(taskValue);
                 });
                 setOption(options);
+                setIsLoading(false);
             }
         });
     }
 
     return (
-        <div className="h-100 position-relative">
-            <TimeTrackerButton isOpen={isOpen} setIsOpen={setIsOpen} />
-            <TimeTrackerTask option={option} isOpen={isOpen} />
+        <div className="h-100 position-relative d-flex align-items-center gap-3 ms-auto me-3">
+            {!isShowTimer && <TimeTrackerButton isShowSelect={isShowSelect} setIsShowSelect={setIsShowSelect} Select />}
+            {isShowSelect && <TimeTrackerTask loadTasks={loadTasks} setIsLoading={setIsLoading} setOption={setOption} isLoading={isLoading} selectedOption={selectedOption} handleSelected={handleSelected} option={option} />}
+            {isShowTimer && <TimeTrackerTimer timeTrackerStart={timeTrackerStart} timeTrackerStop={timeTrackerStop} elapsedTime={elapsedTime} />}
+            {isShowTimer && <TimeTrackerButtonStop timeTrackerStop={timeTrackerStop} />}
+            {isShowTimer && <TimeTrackerButtonStart timeTrackerStart={timeTrackerStart} />}
+
         </div>
     )
-
-
 
 }
 
