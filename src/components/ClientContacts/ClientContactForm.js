@@ -13,7 +13,7 @@ const clientContactBlank = {
     clientId: null
 }
 
-const ClientContactForm = ({id, handleSave}) => {
+const ClientContactForm = ({id, handleSave, clientId}) => {
     const {API} = useRootContext()
     const [clientContact, setClientContact] = useState(null);
     const [selectedClientId, setSelectedClientId] = useState(null);
@@ -53,7 +53,7 @@ const ClientContactForm = ({id, handleSave}) => {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label htmlFor="form_edit_client_id">Klient</label>
-                        <ClientsSelectList selected={clientContact.clientId}
+                        <ClientsSelectList selected={clientContact.clientId ? clientContact.clientId : (clientId?clientId:"")}
                                                 onChange={setSelectedClientId}/>
                         <input type="hidden" name="client_id" value={selectedClientId}/>
                     </div>

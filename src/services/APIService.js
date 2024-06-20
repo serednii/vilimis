@@ -7,7 +7,7 @@ class APIService {
         this.toast = toast;
     }
 
-    async getData(url, callback) {
+    async getData(url, callback, silence) {
         this.loaderDispatch({action: LOADER_ACTIONS.SHOW});
         const response = await fetch(CONFIG.api + url, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -24,7 +24,9 @@ class APIService {
         return response.json().then((data) => {
             if ("message" in data) {
                 if ("code" in data && data.code.toString().substring(0,1) === "2") {
-                    this.toast.success(data.message);
+                    if (!silence) {
+                        this.toast.success(data.message);
+                    }
                 } else if ("code" in data && data.code.toString().substring(0,1) === "4") {
                     this.toast.error(data.message);
                 } else if ("code" in data && data.code.toString().substring(0,1) === "5") {
@@ -45,7 +47,7 @@ class APIService {
         });
     }
 
-    async postData(url = '', formData, callback) {
+    async postData(url = '', formData, callback, silence) {
         this.loaderDispatch({action: LOADER_ACTIONS.SHOW});
         // Default options are marked with *
         const response = await fetch(CONFIG.api + url, {
@@ -67,7 +69,9 @@ class APIService {
         return response.json().then((data) => {
             if ("message" in data) {
                 if ("code" in data && data.code.toString().substring(0,1) === "2") {
-                    this.toast.success(data.message);
+                    if (!silence) {
+                        this.toast.success(data.message);
+                    }
                 } else if ("code" in data && data.code.toString().substring(0,1) === "4") {
                     this.toast.error(data.message);
                 } else if ("code" in data && data.code.toString().substring(0,1) === "5") {

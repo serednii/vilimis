@@ -27,21 +27,21 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="form_edit_end_customer_contact">Kontakt koncového zákazníka</label>
-                <select name="end_customer_contact" class="form-control" id="form_edit_end_customer_contact">
+                <label for="form_edit_end_customer_contact_id">Kontakt koncového zákazníka</label>
+                <select name="end_customer_contact_id" class="form-control" id="form_edit_end_customer_contact_id">
                     <option value="0">--- Vyberte ---</option>
-                    {% for end_customer_contact in end_customer_contacts %}
-                        <option value="{{ end_customer_contact.id }}"
-                                {% if end_customer_contact.id == sessionEndCustomerContact.EndCustomerContact %}
+                    {% for end_customer_contact_id in end_customer_contact_ids %}
+                        <option value="{{ end_customer_contact_id.id }}"
+                                {% if end_customer_contact_id.id == sessionEndCustomerContact.EndCustomerContactId %}
                                 selected
                                 {% endif %}
                         >
-                        {% if end_customer_contact.title %}
-                            {{ end_customer_contact.title }}
-                        {% elseif end_customer_contact.name %}
-                            {{ end_customer_contact.name }}
+                        {% if end_customer_contact_id.title %}
+                            {{ end_customer_contact_id.title }}
+                        {% elseif end_customer_contact_id.name %}
+                            {{ end_customer_contact_id.name }}
                         {% else %}
-                            #{{ end_customer_contact.id }}
+                            #{{ end_customer_contact_id.id }}
                         {% endif %}
                     </option>
                     {% endfor %}

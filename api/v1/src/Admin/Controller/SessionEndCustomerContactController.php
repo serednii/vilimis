@@ -31,17 +31,17 @@ class SessionEndCustomerContactController
     /**
      * @var EndCustomerContactRepository
      */
-    private $end_customer_contact_repository;
+    private $end_customer_contact_id_repository;
 
 
     public function __construct(
         SessionRepository $session_id_repository,
-        EndCustomerContactRepository $end_customer_contact_repository,
+        EndCustomerContactRepository $end_customer_contact_id_repository,
         SessionEndCustomerContactRepository $sessionEndCustomerContact_repository
     )
     {
         $this->session_id_repository = $session_id_repository;
-        $this->end_customer_contact_repository = $end_customer_contact_repository;
+        $this->end_customer_contact_id_repository = $end_customer_contact_id_repository;
         $this->sessionEndCustomerContact_repository = $sessionEndCustomerContact_repository;
     }
 
@@ -66,14 +66,14 @@ class SessionEndCustomerContactController
         }
 
         $session_ids = $this->session_id_repository->findBy([],["ORDER BY" => "id"]);
-        $end_customer_contacts = $this->end_customer_contact_repository->findBy([],["ORDER BY" => "id"]);
+        $end_customer_contact_ids = $this->end_customer_contact_id_repository->findBy([],["ORDER BY" => "id"]);
         $sessionEndCustomerContacts = $this->sessionEndCustomerContact_repository->findBy([], [
             "ORDER BY" => "id DESC"
         ]);
 
         return AdminResponse::createResponse("admin/sessionEndCustomerContact/index.html.twig", [
             "session_ids" => $session_ids,
-            "end_customer_contacts" => $end_customer_contacts,
+            "end_customer_contact_ids" => $end_customer_contact_ids,
             "sessionEndCustomerContacts" => $sessionEndCustomerContacts
         ]);
     }
@@ -99,12 +99,12 @@ class SessionEndCustomerContactController
         }
 
         $session_ids = $this->session_id_repository->findBy([],["ORDER BY" => "id"]);
-        $end_customer_contacts = $this->end_customer_contact_repository->findBy([],["ORDER BY" => "id"]);
+        $end_customer_contact_ids = $this->end_customer_contact_id_repository->findBy([],["ORDER BY" => "id"]);
         $sessionEndCustomerContact = $this->sessionEndCustomerContact_repository->find($id);
 
         return AdminResponse::createResponse("admin/sessionEndCustomerContact/edit.html.twig", [
             "session_ids" => $session_ids,
-            "end_customer_contacts" => $end_customer_contacts,
+            "end_customer_contact_ids" => $end_customer_contact_ids,
             "sessionEndCustomerContact" => $sessionEndCustomerContact
         ]);
     }
@@ -125,7 +125,7 @@ class SessionEndCustomerContactController
 
     private function mapEntityFromArray(SessionEndCustomerContact $sessionEndCustomerContact, array $data, array $files) {
         $sessionEndCustomerContact->setSessionId(!empty($data["session_id"]) ? (int) $data["session_id"] : null);
-        $sessionEndCustomerContact->setEndCustomerContact(!empty($data["end_customer_contact"]) ? (int) $data["end_customer_contact"] : null);
+        $sessionEndCustomerContact->setEndCustomerContactId(!empty($data["end_customer_contact_id"]) ? (int) $data["end_customer_contact_id"] : null);
     }
 
 }

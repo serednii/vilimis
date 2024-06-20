@@ -2,21 +2,38 @@ import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import Select from "react-select";
 import {CONFIG} from "../../config";
-import EndCustomerForm from "./EndCustomerForm";
+import ClientContactForm from "./ClientContactForm";
 import Modal from 'react-modal';
 
 Modal.setAppElement("#root");
 
-const EndCustomersSelectList = ({onChange, selected}) => {
+const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
     const {API} = useRootContext()
-    const [endCustomers, setEndCustomers] = useState([]);
+    const [clientContacts, setClientContacts] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
     const [option, setOption] = useState([]);
 
     useEffect(() => {
-        loadEndCustomers((options)=>{
-            if (selected) {
-                let selectedValue = options.filter(endCustomerValue => endCustomerValue.value == selected);
+        loadClientContacts((options)=>{
+            if (selected && Array.isArray(selected)) {
+                let selectedValues = [];
+                let selectedValuesIds = [];
+                selected.forEach(selectedSingle=>{
+                    let selectedValue = options.filter(clientContactValue => clientContactValue.value == selectedSingle);
+                    if (selectedValue && selectedValue[0]) {
+                        selectedValues.push(selectedValue[0]);
+                        selectedValuesIds.push(selectedValue[0].value);
+                    }
+                })
+
+                if (selectedValues.length > 0) {
+                    setSelectedOption(selectedValues);
+                }
+                if (onChange) {
+                    onChange(selectedValuesIds);
+                }
+            } else if (selected) {
+                let selectedValue = options.filter(clientContactValue => clientContactValue.value == selected);
                 if (selectedValue) {
                     setSelectedOption(selectedValue[0])
                     if (onChange) {
@@ -25,44 +42,41 @@ const EndCustomersSelectList = ({onChange, selected}) => {
                 }
             }
         });
-    }, []);
+    }, [selected, clientId]);
 
-    function loadEndCustomers(onLoad) {
-        API.getData("/endCustomer/list", (endCustomers) => {
-            setEndCustomers(endCustomers);
+    function loadClientContacts(onLoad) {
+        let url = "/clientContact/list";
+        if (clientId) {
+            url += "?filter[client_id]="+clientId;
+        }
+        API.getData(url, (clientContacts) => {
+            setClientContacts(clientContacts);
 
-            if (endCustomers && endCustomers.length > 0) {
-                const options = [];
-                endCustomers.map(endCustomer => {
-                    let endCustomerValue = {
-                        value: endCustomer.id,
-                        label: endCustomer.name,
-                        logo: endCustomer.logo ? CONFIG.uploadDir + endCustomer.logo : ""
+            const options = [];
+
+            if (clientContacts && clientContacts.length > 0) {
+                clientContacts.map(clientContact => {
+                    let clientContactValue = {
+                        value: parseInt(clientContact.id),
+                        label: clientContact.name,
+                        logo: clientContact.logo ? CONFIG.uploadDir + clientContact.logo : ""
                     };
-                    options.push(endCustomerValue);
+                    options.push(clientContactValue);
                 });
-                setOption(options);
+            }
 
-                if (onLoad) {
-                    onLoad(options);
-                }
+            setOption(options);
+
+            if (onLoad) {
+                onLoad(options);
             }
         });
     }
 
-    function onNewEndCustomer(endCustomer){
+    function onNewClientContact(clientContact){
         setIsOpen(false);
 
-        loadEndCustomers((options)=>{
-            let selectedValue = options.filter(endCustomerValue => endCustomerValue.value == endCustomer.id);
-
-            if (selectedValue) {
-                setSelectedOption(selectedValue[0])
-                if (onChange) {
-                    onChange(selectedValue[0].value);
-                }
-            }
-        });
+        loadClientContacts();
     }
 
 
@@ -89,6 +103,18 @@ const EndCustomersSelectList = ({onChange, selected}) => {
 
 
     function handleChange(value) {
+        let values = [];
+        if (value && "0" in value) {
+            value.forEach((v) => {
+                values.push(v.value);
+            });
+            setSelectedOption(value);
+            if (onChange) {
+                onChange(values);
+            }
+            return;
+        }
+
         setSelectedOption(value);
         if (onChange) {
             onChange(value.value);
@@ -115,12 +141,13 @@ const EndCustomersSelectList = ({onChange, selected}) => {
     return (
         <>
             <div className="d-flex">
-                <div className={"flex-fill"}>
+                <div className="flex-fill">
                     <Select
                         value={selectedOption}
                         onChange={handleChange}
                         options={option}
                         styles={colourStyles}
+                        isMulti={multiple}
                     />
                 </div>
                 <div className="ps-3">
@@ -144,7 +171,7 @@ const EndCustomersSelectList = ({onChange, selected}) => {
                                     aria-label="Close"></button>
                             <h2>Nový koncový zákazník</h2>
 
-                            <EndCustomerForm handleSave={onNewEndCustomer}/>
+                            <ClientContactForm clientId={clientId} handleSave={onNewClientContact}/>
                         </div>
                         </div>
                     </div>
@@ -153,4 +180,4 @@ const EndCustomersSelectList = ({onChange, selected}) => {
     );
 };
 
-export default EndCustomersSelectList;
+export default ClientContactsSelectList;

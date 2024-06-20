@@ -13,7 +13,7 @@ const endCustomerContactBlank = {
     endCustomerId: null
 }
 
-const EndCustomerContactForm = ({id, handleSave}) => {
+const EndCustomerContactForm = ({id, handleSave, endCustomerId}) => {
     const {API} = useRootContext()
     const [endCustomerContact, setEndCustomerContact] = useState(null);
     const [selectedEndCustomerId, setSelectedEndCustomerId] = useState(null);
@@ -53,7 +53,7 @@ const EndCustomerContactForm = ({id, handleSave}) => {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label htmlFor="form_edit_client_id">Koncový zákazník</label>
-                        <EndCustomersSelectList selected={endCustomerContact.endCustomerId}
+                        <EndCustomersSelectList selected={endCustomerContact.endCustomerId ? endCustomerContact.endCustomerId : (endCustomerId?endCustomerId:"")}
                                                 onChange={setSelectedEndCustomerId}/>
                         <input type="hidden" name="end_customer_id" value={selectedEndCustomerId}/>
                     </div>

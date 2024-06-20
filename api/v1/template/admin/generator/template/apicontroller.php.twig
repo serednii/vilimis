@@ -158,6 +158,31 @@ class {{ module.entityName }}Controller extends AbstractApiController
         ]));
     }
 
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "{{ module.slugSingular }}_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        ${{ module.slugPlural }} = $this->{{ module.slugSingular }}_repository->findBy($filter);
+
+        if (is_array(${{ module.slugPlural }}) && count(${{ module.slugPlural }}) > 0) {
+            foreach (${{ module.slugPlural }} as ${{ module.slugSingular }}) {
+                EntityManager::remove(${{ module.slugSingular }});
+            }
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
     private function mapEntityFromArray({{ module.entityName }} ${{ module.slugSingular }}, array $data, array $files) {
 {% for item in items %}
     {%- if item.isRelation %}

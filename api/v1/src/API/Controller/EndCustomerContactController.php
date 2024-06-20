@@ -15,7 +15,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 /**
  * @RoutePrefix /endCustomerContact
  */
-class EndCustomerContactController
+class EndCustomerContactController extends AbstractApiController
 {
     /**
      * @var EndCustomerContactRepository
@@ -51,9 +51,20 @@ class EndCustomerContactController
      */
     public function index()
     {
-        $endCustomerContacts = $this->endCustomerContact_repository->findBy([], [
-            "ORDER BY" => "id DESC"
-        ]);
+        try {
+            $filter = $this->parseRequestFilter();
+
+            $params = [];
+            $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
+            $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
+
+            $endCustomerContacts = $this->endCustomerContact_repository->findBy($filter, $params);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 500
+            ]));
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "data" => $endCustomerContacts
@@ -139,6 +150,31 @@ class EndCustomerContactController
     {
         $endCustomerContact = $this->endCustomerContact_repository->find($id);
         EntityManager::remove($endCustomerContact);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "endCustomerContact_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $endCustomerContacts = $this->endCustomerContact_repository->findBy($filter);
+
+        if (is_array($endCustomerContacts) && count($endCustomerContacts) > 0) {
+            foreach ($endCustomerContacts as $endCustomerContact) {
+                EntityManager::remove($endCustomerContact);
+            }
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "message" => "Smazáno",

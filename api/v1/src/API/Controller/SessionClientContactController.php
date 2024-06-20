@@ -158,6 +158,31 @@ class SessionClientContactController extends AbstractApiController
         ]));
     }
 
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "sessionClientContact_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $sessionClientContacts = $this->sessionClientContact_repository->findBy($filter);
+
+        if (is_array($sessionClientContacts) && count($sessionClientContacts) > 0) {
+            foreach ($sessionClientContacts as $sessionClientContact) {
+                EntityManager::remove($sessionClientContact);
+            }
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
     private function mapEntityFromArray(SessionClientContact $sessionClientContact, array $data, array $files) {
         $sessionClientContact->setSessionId(!empty($data["session_id"]) ? (int) $data["session_id"] : null);
         $sessionClientContact->setClientContactId(!empty($data["client_contact_id"]) ? (int) $data["client_contact_id"] : null);

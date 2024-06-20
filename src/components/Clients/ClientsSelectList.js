@@ -114,7 +114,7 @@ const ClientsSelectList = ({onChange, selected}) => {
 
     return (
         <>
-            <div className="input-group">
+            <div className="d-flex">
                 <div className={"flex-fill"}>
                     <Select
                         value={selectedOption}

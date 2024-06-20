@@ -7,7 +7,7 @@ import Modal from 'react-modal';
 
 Modal.setAppElement("#root");
 
-const EndCustomerContactsSelectList = ({onChange, selected, multiple}) => {
+const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustomerId}) => {
     const {API} = useRootContext()
     const [endCustomerContacts, setEndCustomerContacts] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
@@ -17,16 +17,20 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple}) => {
         loadEndCustomerContacts((options)=>{
             if (selected && Array.isArray(selected)) {
                 let selectedValues = [];
+                let selectedValuesIds = [];
                 selected.forEach(selectedSingle=>{
                     let selectedValue = options.filter(endCustomerContactValue => endCustomerContactValue.value == selectedSingle);
-                    if (selectedValue) {
+                    if (selectedValue && selectedValue[0]) {
                         selectedValues.push(selectedValue[0]);
+                        selectedValuesIds.push(selectedValue[0].value);
                     }
                 })
-                console.log("selectedValues")
-                console.log(selectedValues)
+
                 if (selectedValues.length > 0) {
                     setSelectedOption(selectedValues);
+                }
+                if (onChange) {
+                    onChange(selectedValuesIds);
                 }
             } else if (selected) {
                 let selectedValue = options.filter(endCustomerContactValue => endCustomerContactValue.value == selected);
@@ -38,27 +42,33 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple}) => {
                 }
             }
         });
-    }, []);
+    }, [selected, endCustomerId]);
 
     function loadEndCustomerContacts(onLoad) {
-        API.getData("/endCustomerContact/list", (endCustomerContacts) => {
+        let url = "/endCustomerContact/list";
+        if (endCustomerId) {
+            url += "?filter[end_customer_id]="+endCustomerId;
+        }
+        API.getData(url, (endCustomerContacts) => {
             setEndCustomerContacts(endCustomerContacts);
 
+            const options = [];
+
             if (endCustomerContacts && endCustomerContacts.length > 0) {
-                const options = [];
                 endCustomerContacts.map(endCustomerContact => {
                     let endCustomerContactValue = {
-                        value: endCustomerContact.id,
+                        value: parseInt(endCustomerContact.id),
                         label: endCustomerContact.name,
                         logo: endCustomerContact.logo ? CONFIG.uploadDir + endCustomerContact.logo : ""
                     };
                     options.push(endCustomerContactValue);
                 });
-                setOption(options);
+            }
 
-                if (onLoad) {
-                    onLoad(options);
-                }
+            setOption(options);
+
+            if (onLoad) {
+                onLoad(options);
             }
         });
     }
@@ -66,16 +76,7 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple}) => {
     function onNewEndCustomerContact(endCustomerContact){
         setIsOpen(false);
 
-        loadEndCustomerContacts((options)=>{
-            let selectedValue = options.filter(endCustomerContactValue => endCustomerContactValue.value == endCustomerContact.id);
-
-            if (selectedValue) {
-                setSelectedOption(selectedValue[0])
-                if (onChange) {
-                    onChange(selectedValue[0].value);
-                }
-            }
-        });
+        loadEndCustomerContacts();
     }
 
 
@@ -139,8 +140,8 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple}) => {
 
     return (
         <>
-            <div className="input-group">
-                <div className={"flex-fill"}>
+            <div className="d-flex">
+                <div className="flex-fill">
                     <Select
                         value={selectedOption}
                         onChange={handleChange}
@@ -170,7 +171,7 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple}) => {
                                     aria-label="Close"></button>
                             <h2>Nový koncový zákazník</h2>
 
-                            <EndCustomerContactForm handleSave={onNewEndCustomerContact}/>
+                            <EndCustomerContactForm endCustomerId={endCustomerId} handleSave={onNewEndCustomerContact}/>
                         </div>
                         </div>
                     </div>

@@ -28,9 +28,9 @@ class SessionEndCustomerContact
      * @var ?int
      *
      * @ORM\Type INT(6) UNSIGNED
-     * @ORM\Column end_customer_contact
+     * @ORM\Column end_customer_contact_id
      */
-    private $end_customer_contact = null;
+    private $end_customer_contact_id = null;
 
 
     public function __construct()
@@ -72,17 +72,17 @@ class SessionEndCustomerContact
     /**
      * @return ?int
      */
-    public function getEndCustomerContact(): ?int
+    public function getEndCustomerContactId(): ?int
     {
-        return $this->end_customer_contact;
+        return $this->end_customer_contact_id;
     }
 
     /**
-     * @param ?int $end_customer_contact
+     * @param ?int $end_customer_contact_id
      */
-    public function setEndCustomerContact(?int $end_customer_contact)
+    public function setEndCustomerContactId(?int $end_customer_contact_id)
     {
-        $this->end_customer_contact = $end_customer_contact;
+        $this->end_customer_contact_id = $end_customer_contact_id;
     }
 
 }
