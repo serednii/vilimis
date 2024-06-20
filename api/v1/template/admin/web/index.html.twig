@@ -73,6 +73,14 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="form-group">
+                <label for="form_new_logo">Logo</label>
+                <input type="file" name="logo" class="form-control" id="form_new_logo">
+                {% if web.Logo %}
+                    <img style="width:auto;height:auto;max-width:200px;max-height:200px" src="upload/{{ web.Logo }}">
+                    <br/><label><input type="checkbox" name="logo_delete"> Smazat</label>
+                {% endif %}
+            </div>
             <button type="submit" class="btn btn-default">Přidat</button>
         </form>
         <br/>

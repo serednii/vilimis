@@ -165,6 +165,39 @@ class WebController extends AbstractApiController
         $web->setAccesses($data["accesses"]);
         $web->setClientId(!empty($data["client_id"]) ? (int) $data["client_id"] : null);
         $web->setEndCustomerId(!empty($data["end_customer_id"]) ? (int) $data["end_customer_id"] : null);
+        if (!empty($files["logo"]) && $files["logo"] instanceof UploadedFileInterface) {
+            $web->setLogo($this->uploadFile($files["logo"]));
+        }
+        if (isset($data["logo_delete"])) {
+            $web->setLogo("");
+        }
+    }
+
+    private function uploadFile(UploadedFileInterface $file): string
+    {
+        $client_filename = $file->getClientFilename();
+        $filename = md5($client_filename.time()) . "." . substr($client_filename, -4);
+        $dir1 = substr($filename, 0, 2);
+        $dir2 = substr($filename, 2, 2);
+        $upload_dir = __DIR__ . "/../../../web/upload";
+        $target = $upload_dir . "/" . $dir1 . "/" . $dir2 . "/" . $filename;
+
+        if (!is_dir($upload_dir . "/" . $dir1)) {
+            @mkdir($upload_dir . "/" . $dir1);
+            @chmod($upload_dir . "/" . $dir1, 0777);
+        }
+
+        if (!is_dir($upload_dir . "/" . $dir1 . "/" . $dir2)) {
+            @mkdir($upload_dir . "/" . $dir1 . "/" . $dir2);
+            @chmod($upload_dir . "/" . $dir1 . "/" . $dir2, 0777);
+        }
+
+        if ($file->moveTo($target)) {
+            @chmod($target, 0777);
+            return $dir1 . "/" . $dir2 . "/" . $filename;
+        }
+
+        return "";
     }
 
 }

@@ -23,6 +23,7 @@ import Tasks from "./pages/Tasks";
 import TimeTracker from './components/TimeTracer/TimeTracker';
 import {TIMETRACKER_ACTIONS, timetrackerReducer} from "./reducers/timetrackerReducer";
 import ClientContact from "./pages/ClientContact";
+import Webs from "./pages/Webs";
 library.add(fas);
 
 function Root() {
@@ -128,6 +129,22 @@ function Root() {
                                         d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
                                 </span>
                                 <span className="sidebar-text">Přehled</span>
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/webs"
+                                     className="nav-link d-flex justify-content-between">
+                                <span>
+                                    <span className="sidebar-icon">
+                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd"
+                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                                                  clipRule="evenodd"></path>
+                                        </svg>
+                                    </span>
+                                    <span className="sidebar-text">Weby</span>
+                                </span>
                             </NavLink>
                         </li>
                         <li className="nav-item">
@@ -428,6 +445,8 @@ function Root() {
                     <Route path="end-customer-contact" element={<EndCustomerContact />} />
                     <Route path="client-contacts/*" element={<ClientContact />} />
                     <Route path="client-contact" element={<ClientContact />} />
+                    <Route path="webs/*" element={<Webs />} />
+                    <Route path="webs" element={<Webs />} />
                     <Route path="end-customers/*" element={<EndCustomer />} />
                     <Route path="end-customer" element={<EndCustomer />} />
                     <Route path="clients/*" element={<Clients />} />

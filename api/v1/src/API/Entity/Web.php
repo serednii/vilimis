@@ -33,6 +33,14 @@ class Web
     private $url = "";
     
     /**
+     * @var ?int
+     *
+     * @ORM\Type INT(6) UNSIGNED
+     * @ORM\Column parent_web_id
+     */
+    private $parent_web_id = null;
+
+    /**
      * @var string
      *
      * @ORM\Type VARCHAR(255)
@@ -56,6 +64,14 @@ class Web
      */
     private $end_customer_id = null;
 
+    /**
+     * @var string
+     *
+     * @ORM\Type VARCHAR(255)
+     * @ORM\Column logo
+     */
+    private $logo = "";
+    
 
     public function __construct()
     {
@@ -110,6 +126,22 @@ class Web
     }
 
     /**
+     * @return ?int
+     */
+    public function getParentWebId(): ?int
+    {
+        return $this->parent_web_id;
+    }
+
+    /**
+     * @param ?int $parent_web_id
+     */
+    public function setParentWebId(?int $parent_web_id)
+    {
+        $this->parent_web_id = $parent_web_id;
+    }
+
+    /**
      * @return string
      */
     public function getAccesses(): string
@@ -155,6 +187,22 @@ class Web
     public function setEndCustomerId(?int $end_customer_id)
     {
         $this->end_customer_id = $end_customer_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogo(): string
+    {
+        return $this->logo;
+    }
+
+    /**
+     * @param string $logo
+     */
+    public function setLogo(string $logo)
+    {
+        $this->logo = $logo;
     }
 
 }

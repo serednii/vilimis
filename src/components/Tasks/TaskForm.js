@@ -3,6 +3,7 @@ import TaskFormDefault from "./TaskFormDefault";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TaskFormTimeTracks from "./TaskFormTimeTracks";
 import CommentsList from "../Comments/CommentsList";
+import AttachmentsList from "../Attachment/AttachmentsList";
 
 const TaskForm = ({id, handleSave}) => {
 
@@ -14,6 +15,7 @@ const TaskForm = ({id, handleSave}) => {
                         <Tab>Nastavení</Tab>
                         <Tab>Časové záznamy</Tab>
                         <Tab>Poznámky</Tab>
+                        <Tab>Přílohy</Tab>
                     </TabList>
 
 
@@ -27,6 +29,10 @@ const TaskForm = ({id, handleSave}) => {
 
                     <TabPanel>
                         <CommentsList entity="task" entityId={id} />
+                    </TabPanel>
+
+                    <TabPanel>
+                        <AttachmentsList entity="task" entityId={id} />
                     </TabPanel>
                 </Tabs>
             ) : (
