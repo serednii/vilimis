@@ -1,0 +1,53 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Setkání - kontakt koncového zákazníka - úprava</h1>
+
+    <form action="{{ _router.generateUrl("admin_sessionEndCustomerContact_edit", {"id":sessionEndCustomerContact.id}) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_session_id">Setkání</label>
+                <select name="session_id" class="form-control" id="form_edit_session_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for session_id in session_ids %}
+                        <option value="{{ session_id.id }}"
+                                {% if session_id.id == sessionEndCustomerContact.SessionId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if session_id.title %}
+                            {{ session_id.title }}
+                        {% elseif session_id.name %}
+                            {{ session_id.name }}
+                        {% else %}
+                            #{{ session_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_end_customer_contact">Kontakt koncového zákazníka</label>
+                <select name="end_customer_contact" class="form-control" id="form_edit_end_customer_contact">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for end_customer_contact in end_customer_contacts %}
+                        <option value="{{ end_customer_contact.id }}"
+                                {% if end_customer_contact.id == sessionEndCustomerContact.EndCustomerContact %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if end_customer_contact.title %}
+                            {{ end_customer_contact.title }}
+                        {% elseif end_customer_contact.name %}
+                            {{ end_customer_contact.name }}
+                        {% else %}
+                            #{{ end_customer_contact.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        <button type="submit" class="btn btn-default">Uložit</button>
+    </form>
+
+{% endblock %}

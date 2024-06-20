@@ -1,0 +1,198 @@
+<?php
+
+namespace API\Controller;
+
+use API\Entity\SessionType;
+use API\Repository\SessionTypeRepository;
+use Gephart\Framework\Facade\EntityManager;
+use Gephart\Framework\Facade\Request;
+use Gephart\Framework\Facade\Router;
+use Psr\Http\Message\UploadedFileInterface;
+use API\Service\JsonSerializator;
+use Gephart\Framework\Response\JsonResponseFactory;
+
+/**
+ * @RoutePrefix /sessionType
+ */
+class SessionTypeController extends AbstractApiController
+{
+    /**
+     * @var SessionTypeRepository
+     */
+    private $sessionType_repository;
+
+    /**
+     * @var JsonResponseFactory
+     */
+    private $jsonResponseFactory;
+
+    /**
+     * @var JsonSerializator
+     */
+    private $jsonSerializator;
+
+    public function __construct(
+        SessionTypeRepository $sessionType_repository,
+        JsonResponseFactory $jsonResponseFactory,
+        JsonSerializator $jsonSerializator
+    )
+    {
+        $this->sessionType_repository = $sessionType_repository;
+        $this->jsonResponseFactory = $jsonResponseFactory;
+        $this->jsonSerializator = $jsonSerializator;
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/list",
+     *  "name": "sessionType_list"
+     * }
+     */
+    public function index()
+    {
+        try {
+            $filter = $this->parseRequestFilter();
+
+            $params = [];
+            $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
+            $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
+
+            $sessionTypes = $this->sessionType_repository->findBy($filter, $params);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 500
+            ]));
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "data" => $sessionTypes
+        ]));
+    }
+
+    /**
+     * @Route {
+     *  "rule": "/single/{id}",
+     *  "name": "sessionType_single"
+     * }
+     */
+    public function single($id)
+    {
+        $sessionType = $this->sessionType_repository->find($id);
+
+        if (!$sessionType) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => "Nenalezeno",
+                "code" => 404
+            ]));
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "data" => $sessionType
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/save",
+     *  "name": "sessionType_save"
+     * }
+     */
+    public function save()
+    {
+        $postData = Request::getParsedBody();
+        $filesData = Request::getUploadedFiles();
+
+        if (!empty($postData["name"])) {
+
+            if (!empty($postData["id"])) {
+                $sessionType = $this->sessionType_repository->find($postData["id"]);
+
+
+                if (!$sessionType) {
+                    return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                        "message" => "Nenalezeno: $postData[id]",
+                        "code" => 404
+                    ]));
+                }
+            } else {
+                $sessionType = new SessionType();
+            }
+            $this->mapEntityFromArray($sessionType, $postData, $filesData);
+
+            EntityManager::save($sessionType);
+
+
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "sessionType" => $sessionType,
+                "message" => "Uloženo",
+                "code" => 200
+            ]));
+        }
+
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Chybí data",
+            "code" => 500
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/delete/{id}",
+     *  "name": "sessionType_delete"
+     * }
+     */
+    public function delete($id)
+    {
+        $sessionType = $this->sessionType_repository->find($id);
+        EntityManager::remove($sessionType);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
+    private function mapEntityFromArray(SessionType $sessionType, array $data, array $files) {
+        $sessionType->setName($data["name"]);
+        $sessionType->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
+        $sessionType->setColor($data["color"]);
+        if (!empty($files["ico"]) && $files["ico"] instanceof UploadedFileInterface) {
+            $sessionType->setIco($this->uploadFile($files["ico"]));
+        }
+        if (isset($data["ico_delete"])) {
+            $sessionType->setIco("");
+        }
+    }
+
+    private function uploadFile(UploadedFileInterface $file): string
+    {
+        $client_filename = $file->getClientFilename();
+        $filename = md5($client_filename.time()) . "." . substr($client_filename, -4);
+        $dir1 = substr($filename, 0, 2);
+        $dir2 = substr($filename, 2, 2);
+        $upload_dir = __DIR__ . "/../../../web/upload";
+        $target = $upload_dir . "/" . $dir1 . "/" . $dir2 . "/" . $filename;
+
+        if (!is_dir($upload_dir . "/" . $dir1)) {
+            @mkdir($upload_dir . "/" . $dir1);
+            @chmod($upload_dir . "/" . $dir1, 0777);
+        }
+
+        if (!is_dir($upload_dir . "/" . $dir1 . "/" . $dir2)) {
+            @mkdir($upload_dir . "/" . $dir1 . "/" . $dir2);
+            @chmod($upload_dir . "/" . $dir1 . "/" . $dir2, 0777);
+        }
+
+        if ($file->moveTo($target)) {
+            @chmod($target, 0777);
+            return $dir1 . "/" . $dir2 . "/" . $filename;
+        }
+
+        return "";
+    }
+
+}

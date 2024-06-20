@@ -22,11 +22,22 @@ import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
 import TimeTracker from './components/TimeTracer/TimeTracker';
 import {TIMETRACKER_ACTIONS, timetrackerReducer} from "./reducers/timetrackerReducer";
+import ClientContact from "./pages/ClientContact";
 library.add(fas);
 
 function Root() {
     const [loaderState, loaderDispatch] = useReducer(loaderReducer, { show: 0 });
     const [timetrackerState, timetrackerDispatch] = useReducer(timetrackerReducer, { start: null, taskId: null });
+
+    const locale = {
+        "cs": {
+            "_months": ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro']
+        },
+        "en": {
+            "_months": ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        }
+    };
+    const locale_selected = "cs";
 
     const API = new APIService(
         loaderDispatch,
@@ -60,7 +71,8 @@ function Root() {
         timetrackerState,
         timetrackerDispatch,
         toast,
-        API
+        API,
+        locale: locale[locale_selected]
     }
 
     return (<RootContext.Provider value={providerState}>
@@ -111,23 +123,23 @@ function Root() {
                             <NavLink to="/" className="nav-link">
                                 <span className="sidebar-icon">
                                     <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg"><path
-                                            d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path
-                                                d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
+                                         xmlns="http://www.w3.org/2000/svg"><path
+                                        d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path
+                                        d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
                                 </span>
                                 <span className="sidebar-text">Přehled</span>
                             </NavLink>
                         </li>
                         <li className="nav-item">
                             <NavLink to="/tasks"
-                                className="nav-link d-flex justify-content-between">
+                                     className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
+                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd"
-                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                clipRule="evenodd"></path>
+                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                                                  clipRule="evenodd"></path>
                                         </svg>
                                     </span>
                                     <span className="sidebar-text">Úkoly</span>
@@ -136,14 +148,14 @@ function Root() {
                         </li>
                         <li className="nav-item">
                             <NavLink to="/projects"
-                                className="nav-link d-flex justify-content-between">
+                                     className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
+                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd"
-                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                clipRule="evenodd"></path>
+                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                                                  clipRule="evenodd"></path>
                                         </svg>
                                     </span>
                                     <span className="sidebar-text">Projekty</span>
@@ -152,14 +164,14 @@ function Root() {
                         </li>
                         <li className="nav-item">
                             <NavLink to="/end-customer-contacts"
-                                className="nav-link d-flex justify-content-between">
+                                     className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
+                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd"
-                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                clipRule="evenodd"></path>
+                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                                                  clipRule="evenodd"></path>
                                         </svg>
                                     </span>
                                     <span className="sidebar-text">Koncoví zákazníci - kontakty</span>
@@ -168,14 +180,14 @@ function Root() {
                         </li>
                         <li className="nav-item">
                             <NavLink to="/end-customers"
-                                className="nav-link d-flex justify-content-between">
+                                     className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
+                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd"
-                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                clipRule="evenodd"></path>
+                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                                                  clipRule="evenodd"></path>
                                         </svg>
                                     </span>
                                     <span className="sidebar-text">Koncoví zákazníci</span>
@@ -183,15 +195,31 @@ function Root() {
                             </NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink to="/clients"
-                                className="nav-link d-flex justify-content-between">
+                            <NavLink to="/client-contacts"
+                                     className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
+                                             xmlns="http://www.w3.org/2000/svg">
                                             <path fillRule="evenodd"
-                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                clipRule="evenodd"></path>
+                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                                                  clipRule="evenodd"></path>
+                                        </svg>
+                                    </span>
+                                    <span className="sidebar-text">Klienti - kontakty</span>
+                                </span>
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink to="/clients"
+                                     className="nav-link d-flex justify-content-between">
+                                <span>
+                                    <span className="sidebar-icon">
+                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd"
+                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
+                                                  clipRule="evenodd"></path>
                                         </svg>
                                     </span>
                                     <span className="sidebar-text">Klienti</span>
@@ -200,12 +228,12 @@ function Root() {
                         </li>
                         <li className="nav-item ">
                             <NavLink to="/entity"
-                                className="nav-link d-flex justify-content-between">
+                                     className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg"><path
-                                                d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                                             xmlns="http://www.w3.org/2000/svg"><path
+                                            d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                                     </span>
                                     <span className="sidebar-text">Entity</span>
                                 </span>
@@ -213,12 +241,12 @@ function Root() {
                         </li>
                         <li className="nav-item ">
                             <NavLink to="/workflow"
-                                className="nav-link d-flex justify-content-between">
+                                     className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg"><path
-                                                d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                                             xmlns="http://www.w3.org/2000/svg"><path
+                                            d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                                     </span>
                                     <span className="sidebar-text">Workflow</span>
                                 </span>
@@ -227,14 +255,14 @@ function Root() {
                         <li role="separator" className="dropdown-divider mt-4 mb-3 border-gray-700"></li>
                         <li className="nav-item">
                             <a href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/quick-start/"
-                                target="_blank"
-                                className="nav-link d-flex align-items-center">
+                               target="_blank"
+                               className="nav-link d-flex align-items-center">
                                 <span className="sidebar-icon">
                                     <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                        xmlns="http://www.w3.org/2000/svg"><path
-                                            fillRule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                            clipRule="evenodd"></path></svg>
+                                         xmlns="http://www.w3.org/2000/svg"><path
+                                        fillRule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                        clipRule="evenodd"></path></svg>
                                 </span>
                                 <span className="sidebar-text">Dokumentace
                                 </span>
@@ -254,10 +282,10 @@ function Root() {
                                     <div className="input-group input-group-merge search-bar">
                                         <span className="input-group-text" id="topbar-addon">
                                             <svg className="icon icon-xs" x-description="Heroicon name: solid/search"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path fillRule="evenodd"
-                                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                                                     clipRule="evenodd"></path>
                                             </svg>
                                         </span>
@@ -398,6 +426,8 @@ function Root() {
                     <Route index element={<Home />} />
                     <Route path="end-customer-contacts/*" element={<EndCustomerContact />} />
                     <Route path="end-customer-contact" element={<EndCustomerContact />} />
+                    <Route path="client-contacts/*" element={<ClientContact />} />
+                    <Route path="client-contact" element={<ClientContact />} />
                     <Route path="end-customers/*" element={<EndCustomer />} />
                     <Route path="end-customer" element={<EndCustomer />} />
                     <Route path="clients/*" element={<Clients />} />

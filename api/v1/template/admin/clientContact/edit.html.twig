@@ -1,0 +1,60 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Klient - kontakt - úprava</h1>
+
+    <form action="{{ _router.generateUrl("admin_clientContact_edit", {"id":clientContact.id}) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Jméno</label>
+                <input value="{{ clientContact.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_surname">Přijmení</label>
+                <input value="{{ clientContact.Surname }}" type="text" name="surname" class="form-control" id="form_edit_surname">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_position">Pozice</label>
+                <input value="{{ clientContact.Position }}" type="text" name="position" class="form-control" id="form_edit_position">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_client_id">Koncový zákazník</label>
+                <select name="client_id" class="form-control" id="form_edit_client_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for client_id in client_ids %}
+                        <option value="{{ client_id.id }}"
+                                {% if client_id.id == clientContact.ClientId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if client_id.title %}
+                            {{ client_id.title }}
+                        {% elseif client_id.name %}
+                            {{ client_id.name }}
+                        {% else %}
+                            #{{ client_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_phone">Telefon</label>
+                <input value="{{ clientContact.Phone }}" type="text" name="phone" class="form-control" id="form_edit_phone">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_email">Email</label>
+                <input value="{{ clientContact.Email }}" type="text" name="email" class="form-control" id="form_edit_email">
+            </div>
+            <div class="form-group">
+                <label for="form_new_photo">Foto</label>
+                <input type="file" name="photo" class="form-control" id="form_new_photo">
+                {% if clientContact.Photo %}
+                    <img style="width:auto;height:auto;max-width:200px;max-height:200px" src="upload/{{ clientContact.Photo }}">
+                    <br/><label><input type="checkbox" name="photo_delete"> Smazat</label>
+                {% endif %}
+            </div>
+        <button type="submit" class="btn btn-default">Uložit</button>
+    </form>
+
+{% endblock %}

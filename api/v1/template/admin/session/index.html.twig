@@ -1,0 +1,115 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Setkání</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_session") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ session.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_datetime_of_session">Čas</label>
+                <input value="{{ session.DatetimeOfSession.format("Y-m-d H:i") }}" type="datetime-local" name="datetime_of_session" class="form-control" id="form_edit_datetime_of_session">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_description">Přepis</label>
+                <textarea class="form-control js-wysiwyg" name="description" rows="10" id="form_edit_description">{{ session.Description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_session_type_id">Typ setkání</label>
+                <select name="session_type_id" class="form-control" id="form_edit_session_type_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for session_type_id in session_type_ids %}
+                        <option value="{{ session_type_id.id }}">
+                        {% if session_type_id.title %}
+                            {{ session_type_id.title }}
+                        {% elseif session_type_id.name %}
+                            {{ session_type_id.name }}
+                        {% else %}
+                            #{{ session_type_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_client_id">Klient</label>
+                <select name="client_id" class="form-control" id="form_edit_client_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for client_id in client_ids %}
+                        <option value="{{ client_id.id }}">
+                        {% if client_id.title %}
+                            {{ client_id.title }}
+                        {% elseif client_id.name %}
+                            {{ client_id.name }}
+                        {% else %}
+                            #{{ client_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_end_customer_id">Koncový zákazník</label>
+                <select name="end_customer_id" class="form-control" id="form_edit_end_customer_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for end_customer_id in end_customer_ids %}
+                        <option value="{{ end_customer_id.id }}">
+                        {% if end_customer_id.title %}
+                            {{ end_customer_id.title }}
+                        {% elseif end_customer_id.name %}
+                            {{ end_customer_id.name }}
+                        {% else %}
+                            #{{ end_customer_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_project_id">Projekt</label>
+                <select name="project_id" class="form-control" id="form_edit_project_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for project_id in project_ids %}
+                        <option value="{{ project_id.id }}">
+                        {% if project_id.title %}
+                            {{ project_id.title }}
+                        {% elseif project_id.name %}
+                            {{ project_id.name }}
+                        {% else %}
+                            #{{ project_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for session in sessions %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_session_edit", {"id":session.id}) }}">{{ session.Name }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_session_edit", {"id":session.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_session_delete", {"id":session.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

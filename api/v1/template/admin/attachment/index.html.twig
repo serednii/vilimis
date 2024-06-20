@@ -1,0 +1,59 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Příloha</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_attachment") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ attachment.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_entity">Entita</label>
+                <input value="{{ attachment.Entity }}" type="text" name="entity" class="form-control" id="form_edit_entity">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_entity_id">ID entity</label>
+                <input value="{{ attachment.EntityId }}" type="number" name="entity_id" class="form-control" id="form_edit_entity_id">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_created">Čas vytvoření</label>
+                <input value="{{ attachment.Created.format("Y-m-d H:i") }}" type="datetime-local" name="created" class="form-control" id="form_edit_created">
+            </div>
+            <div class="form-group">
+                <label for="form_new_file">Soubor</label>
+                <input type="file" name="file" class="form-control" id="form_new_file">
+                {% if attachment.File %}
+                    <a href="upload/{{ attachment.File }}" target="_blank">zobrazit</a>
+                    <br/><label><input type="checkbox" name="file_delete"> Smazat</label>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for attachment in attachments %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_attachment_edit", {"id":attachment.id}) }}">{{ attachment.Name }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_attachment_edit", {"id":attachment.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_attachment_delete", {"id":attachment.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

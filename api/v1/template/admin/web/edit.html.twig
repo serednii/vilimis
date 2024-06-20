@@ -1,0 +1,86 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Web - úprava</h1>
+
+    <form action="{{ _router.generateUrl("admin_web_edit", {"id":web.id}) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ web.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_url">URL</label>
+                <input value="{{ web.Url }}" type="text" name="url" class="form-control" id="form_edit_url">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_parent_web_id">Nadřazený web</label>
+                <select name="parent_web_id" class="form-control" id="form_edit_parent_web_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for parent_web_id in parent_web_ids %}
+                        <option value="{{ parent_web_id.id }}"
+                                {% if parent_web_id.id == web.ParentWebId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if parent_web_id.title %}
+                            {{ parent_web_id.title }}
+                        {% elseif parent_web_id.name %}
+                            {{ parent_web_id.name }}
+                        {% else %}
+                            #{{ parent_web_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_accesses">Přístupy</label>
+                <input value="{{ web.Accesses }}" type="text" name="accesses" class="form-control" id="form_edit_accesses">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_client_id">Klient</label>
+                <select name="client_id" class="form-control" id="form_edit_client_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for client_id in client_ids %}
+                        <option value="{{ client_id.id }}"
+                                {% if client_id.id == web.ClientId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if client_id.title %}
+                            {{ client_id.title }}
+                        {% elseif client_id.name %}
+                            {{ client_id.name }}
+                        {% else %}
+                            #{{ client_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_end_customer_id">Koncový zákazník</label>
+                <select name="end_customer_id" class="form-control" id="form_edit_end_customer_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for end_customer_id in end_customer_ids %}
+                        <option value="{{ end_customer_id.id }}"
+                                {% if end_customer_id.id == web.EndCustomerId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if end_customer_id.title %}
+                            {{ end_customer_id.title }}
+                        {% elseif end_customer_id.name %}
+                            {{ end_customer_id.name }}
+                        {% else %}
+                            #{{ end_customer_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        <button type="submit" class="btn btn-default">Uložit</button>
+    </form>
+
+{% endblock %}

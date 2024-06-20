@@ -1,0 +1,53 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Setkání - kontakt klienta - úprava</h1>
+
+    <form action="{{ _router.generateUrl("admin_sessionClientContact_edit", {"id":sessionClientContact.id}) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_session_id">Setkání</label>
+                <select name="session_id" class="form-control" id="form_edit_session_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for session_id in session_ids %}
+                        <option value="{{ session_id.id }}"
+                                {% if session_id.id == sessionClientContact.SessionId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if session_id.title %}
+                            {{ session_id.title }}
+                        {% elseif session_id.name %}
+                            {{ session_id.name }}
+                        {% else %}
+                            #{{ session_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_client_contact_id">Kontakt klienta</label>
+                <select name="client_contact_id" class="form-control" id="form_edit_client_contact_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for client_contact_id in client_contact_ids %}
+                        <option value="{{ client_contact_id.id }}"
+                                {% if client_contact_id.id == sessionClientContact.ClientContactId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if client_contact_id.title %}
+                            {{ client_contact_id.title }}
+                        {% elseif client_contact_id.name %}
+                            {{ client_contact_id.name }}
+                        {% else %}
+                            #{{ client_contact_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        <button type="submit" class="btn btn-default">Uložit</button>
+    </form>
+
+{% endblock %}

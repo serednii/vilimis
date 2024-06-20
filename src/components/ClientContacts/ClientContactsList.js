@@ -2,20 +2,20 @@ import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import {NavLink} from "react-router-dom";
 
-const EndCustomerContactsList = ({}) => {
+const ClientContactsList = ({}) => {
     const {API} = useRootContext()
-    const [endCustomers, setEndConsumers] = useState([]);
+    const [clients, setEndConsumers] = useState([]);
 
     useEffect(() => {
-        API.getData("/endCustomerContact/list", (endCustomers) => {
-            setEndConsumers(endCustomers);
+        API.getData("/clientContact/list", (clients) => {
+            setEndConsumers(clients);
         });
     }, []);
 
     function handleDelete(id) {
-        API.getData("/endCustomerContact/delete/"+id, ()=>{
-            API.getData("/endCustomerContact/list", (endCustomers) => {
-                setEndConsumers(endCustomers);
+        API.getData("/clientContact/delete/"+id, ()=>{
+            API.getData("/clientContact/list", (clients) => {
+                setEndConsumers(clients);
             });
         });
     }
@@ -23,11 +23,11 @@ const EndCustomerContactsList = ({}) => {
     return (
         <>
             <div className="d-flex justify-content-between w-100 flex-wrap">
-                <div className="mb-3 mb-lg-0"><h1 className="h4">Koncoví zákazníci - kontakty</h1></div>
+                <div className="mb-3 mb-lg-0"><h1 className="h4">Klienti - kontakty</h1></div>
             </div>
 
             <div className="my-3">
-                <NavLink to="/end-customer-contacts/new" className="btn btn-primary" type="button">Nový koncový zákazník - kontakt</NavLink>
+                <NavLink to="/client-contacts/new" className="btn btn-primary" type="button">Nový klient - kontakt</NavLink>
             </div>
 
             <div className="card border-0 shadow mb-4">
@@ -45,23 +45,23 @@ const EndCustomerContactsList = ({}) => {
                             </tr>
                             </thead>
                             <tbody>
-                            {endCustomers && endCustomers.length && endCustomers.map((endCustomer, endCustomer_key) => (
-                                <tr key={endCustomer_key}>
-                                    <td><NavLink to={"/end-customer-contacts/edit/" + endCustomer.id}
-                                                 className="text-primary fw-bold">{endCustomer.id}</NavLink></td>
+                            {clients && clients.length && clients.map((client, client_key) => (
+                                <tr key={client_key}>
+                                    <td><NavLink to={"/client-contacts/edit/" + client.id}
+                                                 className="text-primary fw-bold">{client.id}</NavLink></td>
                                     <td className="fw-bold ">
-                                        {endCustomer.name}
+                                        {client.name}
                                     </td>
                                     <td className="fw-bold ">
-                                        {endCustomer.surname}
+                                        {client.surname}
                                     </td>
-                                    <td> {endCustomer.phone}</td>
-                                    <td> {endCustomer.email}</td>
+                                    <td> {client.phone}</td>
+                                    <td> {client.email}</td>
                                     <td>
-                                        <NavLink to={"/end-customer-contacts/edit/" + endCustomer.id}
+                                        <NavLink to={"/client-contacts/edit/" + client.id}
                                                  className="btn btn-sm btn-primary" type="button">Upravit</NavLink>
                                         <button
-                                            onClick={() => window.confirm("Opravdu smazat?") && handleDelete(endCustomer.id)}
+                                            onClick={() => window.confirm("Opravdu smazat?") && handleDelete(client.id)}
                                             className="btn btn-sm btn-danger" type="button">Smazat
                                         </button>
                                     </td>
@@ -76,4 +76,4 @@ const EndCustomerContactsList = ({}) => {
     );
 };
 
-export default EndCustomerContactsList;
+export default ClientContactsList;
