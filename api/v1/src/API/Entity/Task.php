@@ -64,6 +64,30 @@ class Task
      */
     private $dead_line_date = null;
     
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column closed
+     */
+    private $closed = false;
+    
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column archived
+     */
+    private $archived = false;
+    
+    /**
+     * @var bool
+     *
+     * @ORM\Type INT(9)
+     * @ORM\Column priority
+     */
+    private $priority = false;
+    
 
     public function __construct()
     {
@@ -179,6 +203,54 @@ class Task
     public function setDeadLineDate(?\DateTime $dead_line_date)
     {
         $this->dead_line_date = $dead_line_date;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClosed(): bool
+    {
+        return $this->closed;
+    }
+
+    /**
+     * @param bool $closed
+     */
+    public function setClosed(bool $closed)
+    {
+        $this->closed = $closed;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    /**
+     * @param bool $archived
+     */
+    public function setArchived(bool $archived)
+    {
+        $this->archived = $archived;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param int $priority
+     */
+    public function setPriority(int $priority)
+    {
+        $this->priority = $priority;
     }
 
 }

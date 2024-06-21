@@ -23603,6 +23603,13 @@ label {
     background: #fff
 }
 
+.dropzone-nohover {
+    min-height: 150px;
+    border: 2px dashed #4b5563;
+    background: #fff;
+    border-radius: .5rem;
+}
+
 .dropzone:hover {
     background-color: #e5e7eb
 }

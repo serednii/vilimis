@@ -77,6 +77,39 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="form-group">
+                <label for="form_edit_web_id">Web</label>
+                <select name="web_id" class="form-control" id="form_edit_web_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for web_id in web_ids %}
+                        <option value="{{ web_id.id }}">
+                        {% if web_id.title %}
+                            {{ web_id.title }}
+                        {% elseif web_id.name %}
+                            {{ web_id.name }}
+                        {% else %}
+                            #{{ web_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input {% if project.Closed %}checked{% endif %} type="checkbox" name="closed" value="1">
+                    Uzavřeno
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input {% if project.Archived %}checked{% endif %} type="checkbox" name="archived" value="1">
+                    Archivováno
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_priority">Priorita</label>
+                <input value="{{ project.Priority }}" type="number" name="priority" class="form-control" id="form_edit_priority">
+            </div>
             <button type="submit" class="btn btn-default">Přidat</button>
         </form>
         <br/>

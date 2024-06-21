@@ -16,7 +16,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 /**
  * @RoutePrefix /task
  */
-class TaskController
+class TaskController extends AbstractApiController
 {
     /**
      * @var TaskRepository
@@ -52,9 +52,20 @@ class TaskController
      */
     public function index()
     {
-        $tasks = $this->task_repository->findBy([], [
-            "ORDER BY" => "id DESC"
-        ]);
+        try {
+            $filter = $this->parseRequestFilter();
+
+            $params = [];
+            $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
+            $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
+
+            $tasks = $this->task_repository->findBy($filter, $params);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 500
+            ]));
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "data" => $tasks
@@ -147,6 +158,31 @@ class TaskController
         ]));
     }
 
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "task_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $tasks = $this->task_repository->findBy($filter);
+
+        if (is_array($tasks) && count($tasks) > 0) {
+            foreach ($tasks as $task) {
+                EntityManager::remove($task);
+            }
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
     private function mapEntityFromArray(Task $task, array $data, array $files) {
         $task->setName($data["name"]);
         $task->setHourBudget(isset($data["hour_budget"]) ? (int) $data["hour_budget"] : 0);
@@ -154,6 +190,9 @@ class TaskController
         $task->setTaskStatusId(!empty($data["task_status_id"]) ? (int) $data["task_status_id"] : null);
         $task->setDescription($data["description"]);
         $task->setDeadLineDate(!empty($data["dead_line_date"]) ? new \DateTime($data["dead_line_date"]) : null);
+        $task->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
+        $task->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
+        $task->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
 }

@@ -37,3 +37,40 @@ body
 .list-group-item--stripe
   text-decoration: line-through
 
+.card-item-wrap
+  &:before
+    position: absolute
+    content: ""
+    top: -0.48rem
+    left: 0
+    width: 100%
+    height: 0.24rem
+    background: black
+    border-radius: 1rem
+    opacity: .4
+    transition: all .2s
+    opacity: 0
+
+  &:after
+    position: absolute
+    content: ""
+    bottom: -0.48rem
+    left: 0
+    width: 100%
+    height: 0.24rem
+    background: black
+    border-radius: 1rem
+    opacity: .4
+    transition: all .2s
+    opacity: 0
+
+.card-item-wrap-overTop
+  z-index: 999
+  &:before
+    opacity: .4
+
+.card-item-wrap-overDown:after
+  opacity: .4
+
+.card-item-wrap-overDown + .card-item-wrap-overTop:before
+  opacity: 0!important

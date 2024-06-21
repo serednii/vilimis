@@ -2,8 +2,8 @@
 
 namespace API\Controller;
 
-use API\Entity\TaskStatus;
-use API\Repository\TaskStatusRepository;
+use API\Entity\Task;
+use API\Repository\TaskRepository;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -12,14 +12,14 @@ use API\Service\JsonSerializator;
 use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
- * @RoutePrefix /taskStatus
+ * @RoutePrefix /taskPriority
  */
-class TaskStatusController extends AbstractApiController
+class TaskPriorityController extends AbstractApiController
 {
     /**
-     * @var TaskStatusRepository
+     * @var TasRepository
      */
-    private $taskStatus_repository;
+    private $task_repository;
 
     /**
      * @var JsonResponseFactory
@@ -32,71 +32,22 @@ class TaskStatusController extends AbstractApiController
     private $jsonSerializator;
 
     public function __construct(
-        TaskStatusRepository $taskStatus_repository,
+        TaskRepository $task_repository,
         JsonResponseFactory $jsonResponseFactory,
         JsonSerializator $jsonSerializator
     )
     {
-        $this->taskStatus_repository = $taskStatus_repository;
+        $this->task_repository = $task_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
     }
 
-    /**
-     * @Route {
-     *  "rule": "/list",
-     *  "name": "taskStatus_list"
-     * }
-     */
-    public function index()
-    {
-        try {
-            $filter = $this->parseRequestFilter();
-
-            $params = [];
-            $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
-            $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
-
-            $taskStatuses = $this->taskStatus_repository->findBy($filter, $params);
-        } catch (\Exception $exception) {
-            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-                "message" => $exception->getMessage(),
-                "code" => 500
-            ]));
-        }
-
-        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-            "data" => $taskStatuses
-        ]));
-    }
-
-    /**
-     * @Route {
-     *  "rule": "/single/{id}",
-     *  "name": "taskStatus_single"
-     * }
-     */
-    public function single($id)
-    {
-        $taskStatus = $this->taskStatus_repository->find($id);
-
-        if (!$taskStatus) {
-            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-                "message" => "Nenalezeno",
-                "code" => 404
-            ]));
-        }
-
-        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-            "data" => $taskStatus
-        ]));
-    }
 
 
     /**
      * @Route {
      *  "rule": "/save",
-     *  "name": "taskStatus_save"
+     *  "name": "taskPriority_save"
      * }
      */
     public function save()
@@ -104,28 +55,19 @@ class TaskStatusController extends AbstractApiController
         $postData = Request::getParsedBody();
         $filesData = Request::getUploadedFiles();
 
-        if (!empty($postData["name"])) {
+        if (!empty($postData["tasks"]) && is_array($postData["tasks"])) {
+            foreach ($postData["tasks"]["id"] as $key=>$id) {
+                /** @var Task $task */
+                $task = $this->task_repository->find($id);
 
-            if (!empty($postData["id"])) {
-                $taskStatus = $this->taskStatus_repository->find($postData["id"]);
-
-
-                if (!$taskStatus) {
-                    return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-                        "message" => "Nenalezeno: $postData[id]",
-                        "code" => 404
-                    ]));
+                if ($task) {
+                    $task->setPriority($postData["tasks"]["priority"][$key]);
+                    $task->setTaskStatusId($postData["tasks"]["taskStatusId"][$key]);
+                    EntityManager::save($task);
                 }
-            } else {
-                $taskStatus = new TaskStatus();
             }
-            $this->mapEntityFromArray($taskStatus, $postData, $filesData);
-
-            EntityManager::save($taskStatus);
-
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-                "taskStatus" => $taskStatus,
                 "message" => "Uloženo",
                 "code" => 200
             ]));

@@ -1,8 +1,8 @@
 import React, {useEffect} from "react";
 import {Route, Routes} from "react-router-dom";
-import TasksList from "../components/Tasks/TasksList";
 import TaskNew from "../components/Tasks/TaskNew";
 import TaskEdit from "../components/Tasks/TaskEdit";
+import TasksKanban from "../components/Tasks/TasksKanban";
 
 const Tasks = ({}) => {
     useEffect(() => {
@@ -13,7 +13,7 @@ const Tasks = ({}) => {
         <Routes>
             <Route path="edit/:id" element={<TaskEdit/>}/>
             <Route path="new" element={<TaskNew/>}/>
-            <Route path="*" element={<TasksList/>}/>
+            <Route path="*" element={<TasksKanban/>}/>
         </Routes>
     );
 }

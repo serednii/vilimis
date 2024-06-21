@@ -130,6 +130,9 @@ class TaskController
         $task->setTaskStatusId(!empty($data["task_status_id"]) ? (int) $data["task_status_id"] : null);
         $task->setDescription($data["description"]);
         $task->setDeadLineDate(!empty($data["dead_line_date"]) ? new \DateTime($data["dead_line_date"]) : null);
+        $task->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
+        $task->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
+        $task->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
 }

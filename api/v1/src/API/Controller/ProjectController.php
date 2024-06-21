@@ -7,6 +7,7 @@ use API\Repository\ProjectRepository;
 use API\Repository\ClientRepository;
 use API\Repository\EndCustomerRepository;
 use API\Repository\ProjectStatusRepository;
+use API\Repository\WebRepository;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -17,7 +18,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 /**
  * @RoutePrefix /project
  */
-class ProjectController
+class ProjectController extends AbstractApiController
 {
     /**
      * @var ProjectRepository
@@ -53,9 +54,20 @@ class ProjectController
      */
     public function index()
     {
-        $projects = $this->project_repository->findBy([], [
-            "ORDER BY" => "id DESC"
-        ]);
+        try {
+            $filter = $this->parseRequestFilter();
+
+            $params = [];
+            $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
+            $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
+
+            $projects = $this->project_repository->findBy($filter, $params);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 500
+            ]));
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "data" => $projects
@@ -148,6 +160,31 @@ class ProjectController
         ]));
     }
 
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "project_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $projects = $this->project_repository->findBy($filter);
+
+        if (is_array($projects) && count($projects) > 0) {
+            foreach ($projects as $project) {
+                EntityManager::remove($project);
+            }
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
     private function mapEntityFromArray(Project $project, array $data, array $files) {
         $project->setName($data["name"]);
         $project->setBudget(isset($data["budget"]) ? (int) $data["budget"] : 0);
@@ -156,6 +193,10 @@ class ProjectController
         $project->setHourRate(isset($data["hour_rate"]) ? (int) $data["hour_rate"] : 0);
         $project->setHourBudget(isset($data["hour_budget"]) ? (int) $data["hour_budget"] : 0);
         $project->setProjectStatusId(!empty($data["project_status_id"]) ? (int) $data["project_status_id"] : null);
+        $project->setWebId(!empty($data["web_id"]) ? (int) $data["web_id"] : null);
+        $project->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
+        $project->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
+        $project->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
 }
