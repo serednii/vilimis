@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import TimeTrackerButton from "./TimeTrackerButton";
 import TimeTrackerTask from "./TimeTrackerTask";
 import { useRootContext } from "../../contexts/RootContext";
@@ -40,6 +40,7 @@ const TimeTracker = () => {
             setElapsedTime(prevElapsedTime => `${hours}:${minutes}:${seconds}`);
         }, 1000);
     }
+
     console.log(option)
     const timeTrackerStop = () => {
         if (!timerId.current) return

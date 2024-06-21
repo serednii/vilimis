@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import './styles/index.sass';
 import Workflow from "./pages/Workflow";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
@@ -21,11 +21,12 @@ import EndCustomerContact from "./pages/EndCustomerContact";
 import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
 import TimeTracker from './components/TimeTracer/TimeTracker';
+import Breadcrumb from './components/Breadcrumb/Breadcrumb';
 library.add(fas);
 
 function Root() {
     const [loaderState, loaderDispatch] = useReducer(loaderReducer, { show: 0 });
-
+    const [urlToTitle, setUrlToTitle] = useState('')
     const API = new APIService(
         loaderDispatch,
         toast
@@ -35,7 +36,9 @@ function Root() {
         loaderState,
         loaderDispatch,
         toast,
-        API
+        API,
+        setUrlToTitle,
+        urlToTitle,
     }
 
     return (<RootContext.Provider value={providerState}>
@@ -320,7 +323,9 @@ function Root() {
 
 
                 <div className="py-4">
-                    <nav aria-label="breadcrumb" className="d-none d-md-inline-block">
+
+                    <Breadcrumb />
+                    {/* <nav aria-label="breadcrumb" className="d-none d-md-inline-block">
                         <ol className="breadcrumb breadcrumb-dark breadcrumb-transparent">
                             <li className="breadcrumb-item"><a href="#">
                                 <svg className="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -332,7 +337,7 @@ function Root() {
                             <li className="breadcrumb-item"><a href="#">Workflow</a></li>
                             <li className="breadcrumb-item active" aria-current="page">Editace</li>
                         </ol>
-                    </nav>
+                    </nav> */}
                     {/*<div className="d-flex justify-content-between w-100 flex-wrap">
                     <div className="mb-3 mb-lg-0"><h1 className="h4">Obchodní příležitost - změna stavu na
                         odesláno</h1>

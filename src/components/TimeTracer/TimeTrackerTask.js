@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Select from 'react-select';
-import './tracker.sass';
+
 
 const options = [
     { value: 'chocolate', label: 'Chocolate' },
@@ -19,9 +19,9 @@ const options = [
 const TimeTrackerTask = ({ option, handleSelected, selectedOption, loadTasks, isLoading, setOption, setIsLoading }) => {
 
     useEffect(() => {
-        // loadTasks();
+        loadTasks();
         const timeout = setTimeout(() => {
-            setOption(options)
+            // setOption(options)
             setIsLoading(false)
         }, 1000)
         return () => clearTimeout(timeout)
