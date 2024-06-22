@@ -6,6 +6,7 @@ use Admin\Generator\Type\BoolType;
 use Admin\Generator\Type\DateTimeType;
 use Admin\Generator\Type\DateType;
 use Admin\Generator\Type\FileType;
+use Admin\Generator\Type\FloatType;
 use Admin\Generator\Type\ImageType;
 use Admin\Generator\Type\IntType;
 use Admin\Generator\Type\TextareaType;
@@ -33,6 +34,7 @@ class Types
 
         $this->triggerHook([
             IntType::class,
+            FloatType::class,
             BoolType::class,
             DateType::class,
             DateTimeType::class,
