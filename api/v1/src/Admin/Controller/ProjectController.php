@@ -8,7 +8,6 @@ use API\Repository\ProjectRepository;
 use API\Repository\ClientRepository;
 use API\Repository\EndCustomerRepository;
 use API\Repository\ProjectStatusRepository;
-use API\Repository\WebRepository;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -40,24 +39,17 @@ class ProjectController
      */
     private $project_status_id_repository;
 
-    /**
-     * @var WebRepository
-     */
-    private $web_id_repository;
-
 
     public function __construct(
         ClientRepository $client_id_repository,
         EndCustomerRepository $end_customer_id_repository,
         ProjectStatusRepository $project_status_id_repository,
-        WebRepository $web_id_repository,
         ProjectRepository $project_repository
     )
     {
         $this->client_id_repository = $client_id_repository;
         $this->end_customer_id_repository = $end_customer_id_repository;
         $this->project_status_id_repository = $project_status_id_repository;
-        $this->web_id_repository = $web_id_repository;
         $this->project_repository = $project_repository;
     }
 
@@ -84,7 +76,6 @@ class ProjectController
         $client_ids = $this->client_id_repository->findBy([],["ORDER BY" => "id"]);
         $end_customer_ids = $this->end_customer_id_repository->findBy([],["ORDER BY" => "id"]);
         $project_status_ids = $this->project_status_id_repository->findBy([],["ORDER BY" => "id"]);
-        $web_ids = $this->web_id_repository->findBy([],["ORDER BY" => "id"]);
         $projects = $this->project_repository->findBy([], [
             "ORDER BY" => "id DESC"
         ]);
@@ -93,7 +84,6 @@ class ProjectController
             "client_ids" => $client_ids,
             "end_customer_ids" => $end_customer_ids,
             "project_status_ids" => $project_status_ids,
-            "web_ids" => $web_ids,
             "projects" => $projects
         ]);
     }
@@ -121,14 +111,12 @@ class ProjectController
         $client_ids = $this->client_id_repository->findBy([],["ORDER BY" => "id"]);
         $end_customer_ids = $this->end_customer_id_repository->findBy([],["ORDER BY" => "id"]);
         $project_status_ids = $this->project_status_id_repository->findBy([],["ORDER BY" => "id"]);
-        $web_ids = $this->web_id_repository->findBy([],["ORDER BY" => "id"]);
         $project = $this->project_repository->find($id);
 
         return AdminResponse::createResponse("admin/project/edit.html.twig", [
             "client_ids" => $client_ids,
             "end_customer_ids" => $end_customer_ids,
             "project_status_ids" => $project_status_ids,
-            "web_ids" => $web_ids,
             "project" => $project
         ]);
     }
@@ -155,10 +143,6 @@ class ProjectController
         $project->setHourRate(isset($data["hour_rate"]) ? (int) $data["hour_rate"] : 0);
         $project->setHourBudget(isset($data["hour_budget"]) ? (int) $data["hour_budget"] : 0);
         $project->setProjectStatusId(!empty($data["project_status_id"]) ? (int) $data["project_status_id"] : null);
-        $project->setWebId(!empty($data["web_id"]) ? (int) $data["web_id"] : null);
-        $project->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
-        $project->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
-        $project->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
 }

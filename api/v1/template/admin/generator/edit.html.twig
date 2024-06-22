@@ -91,3 +91,19 @@
     </form>
 
 {% endblock %}
+
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="assets/admin/js/drag-arrange.js"></script>
+    <script>
+        function generatorItemModeInit() {
+            $('.js-generator-item').arrangeable({dragSelector: '.js-generator-item-move'});
+        }
+        generatorItemModeInit();
+    </script>
+
+
+{% endblock %}

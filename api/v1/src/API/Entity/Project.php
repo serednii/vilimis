@@ -72,38 +72,6 @@ class Project
      */
     private $project_status_id = null;
 
-    /**
-     * @var ?int
-     *
-     * @ORM\Type INT(6) UNSIGNED
-     * @ORM\Column web_id
-     */
-    private $web_id = null;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Type TINYINT(1)
-     * @ORM\Column closed
-     */
-    private $closed = false;
-    
-    /**
-     * @var bool
-     *
-     * @ORM\Type TINYINT(1)
-     * @ORM\Column archived
-     */
-    private $archived = false;
-    
-    /**
-     * @var bool
-     *
-     * @ORM\Type INT(9)
-     * @ORM\Column priority
-     */
-    private $priority = false;
-    
 
     public function __construct()
     {
@@ -235,70 +203,6 @@ class Project
     public function setProjectStatusId(?int $project_status_id)
     {
         $this->project_status_id = $project_status_id;
-    }
-
-    /**
-     * @return ?int
-     */
-    public function getWebId(): ?int
-    {
-        return $this->web_id;
-    }
-
-    /**
-     * @param ?int $web_id
-     */
-    public function setWebId(?int $web_id)
-    {
-        $this->web_id = $web_id;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isClosed(): bool
-    {
-        return $this->closed;
-    }
-
-    /**
-     * @param bool $closed
-     */
-    public function setClosed(bool $closed)
-    {
-        $this->closed = $closed;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isArchived(): bool
-    {
-        return $this->archived;
-    }
-
-    /**
-     * @param bool $archived
-     */
-    public function setArchived(bool $archived)
-    {
-        $this->archived = $archived;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPriority(): int
-    {
-        return $this->priority;
-    }
-
-    /**
-     * @param int $priority
-     */
-    public function setPriority(int $priority)
-    {
-        $this->priority = $priority;
     }
 
 }

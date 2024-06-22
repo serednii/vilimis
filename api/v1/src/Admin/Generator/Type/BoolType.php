@@ -58,7 +58,8 @@ EOL;
         return <<<EOL
             <div class="checkbox">
                 <label>
-                    <input {{ "{%" }} if {{ module.slugSingular }}.{{ item.slugInCamel }} {{ "%}" }}checked{{ "{%" }} endif {{ "%}" }} type="checkbox" name="{{ item.slug }}" value="1">
+                    <input {{ "{%" }} if {{ module.slugSingular }}.{{ item.slugInCamel }} {{ "%}" }}checked{{ "{%" }} endif {{ "%}" }} type="checkbox" name="{{ item.slug }}" value="1" 
+                {% if item.required %}required="required"{% endif %}>
                     {{ item.name }}
                 </label>
             </div>

@@ -63,7 +63,8 @@ EOL;
         return <<<EOL
             <div class="form-group">
                 <label for="form_new_{{ item.slug }}">{{ item.name }}</label>
-                <input type="file" name="{{ item.slug }}" class="form-control" id="form_new_{{ item.slug }}">
+                <input type="file" name="{{ item.slug }}" class="form-control" id="form_new_{{ item.slug }}"
+                {% if item.required %}required="required"{% endif %}>
                 {{ "{%" }} if {{ module.slugSingular }}.{{ item.slugInCamel }} {{ "%}" }}
                     <img style="width:auto;height:auto;max-width:200px;max-height:200px" src="upload/{{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }} {{ "}}" }}">
                     <br/><label><input type="checkbox" name="{{ item.slug }}_delete"> Smazat</label>

@@ -58,7 +58,8 @@ EOL;
         return <<<EOL
             <div class="form-group">
                 <label for="form_edit_{{ item.slug }}">{{ item.name }}</label>
-                <input value="{{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }}.format("Y-m-d H:i") {{ "}}" }}" type="datetime-local" name="{{ item.slug }}" class="form-control" id="form_edit_{{ item.slug }}">
+                <input value="{{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }}.format("Y-m-d H:i") {{ "}}" }}" type="datetime-local" name="{{ item.slug }}" class="form-control" id="form_edit_{{ item.slug }}"
+                {% if item.required %}required="required"{% endif %}>
             </div>
 EOL;
 

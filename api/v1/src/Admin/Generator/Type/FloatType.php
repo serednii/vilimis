@@ -2,23 +2,23 @@
 
 namespace Admin\Generator\Type;
 
-final class TextType implements TypeInterface
+final class FloatType implements TypeInterface
 {
     public function getName(): string
     {
-        return "text";
+        return "float";
     }
 
     public function getEntityProperty(): string
     {
         return <<<EOL
     /**
-     * @var string
+     * @var float
      *
-     * @ORM\Type VARCHAR(255)
+     * @ORM\Type DOUBLE(7,5)
      * @ORM\Column {{ item.slug }}
      */
-    private \${{ item.slug }} = "";
+    private \${{ item.slug }} = false;
     
 EOL;
 
@@ -28,17 +28,17 @@ EOL;
     {
         return <<<EOL
     /**
-     * @return string
+     * @return float
      */
-    public function get{{ item.slugInCamel }}(): string
+    public function get{{ item.slugInCamel }}(): float
     {
         return \$this->{{ item.slug }};
     }
 
     /**
-     * @param string \${{ item.slug }}
+     * @param float \${{ item.slug }}
      */
-    public function set{{ item.slugInCamel }}(string \${{ item.slug }})
+    public function set{{ item.slugInCamel }}(float \${{ item.slug }})
     {
         \$this->{{ item.slug }} = \${{ item.slug }};
     }
@@ -49,7 +49,7 @@ EOL;
     public function getSet(): string
     {
         return <<<EOL
-        \${{ module.slugSingular }}->set{{ item.slugInCamel }}(\$data["{{ item.slug }}"]);
+        \${{ module.slugSingular }}->set{{ item.slugInCamel }}(isset(\$data["{{ item.slug }}"]) ? (float) \$data["{{ item.slug }}"] : 0);
 EOL;
     }
 
@@ -58,7 +58,7 @@ EOL;
         return <<<EOL
             <div class="form-group">
                 <label for="form_edit_{{ item.slug }}">{{ item.name }}</label>
-                <input value="{{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }} {{ "}}" }}" type="text" name="{{ item.slug }}" class="form-control" id="form_edit_{{ item.slug }}"
+                <input value="{{ "{{" }} {{ module.slugSingular }}.{{ item.slugInCamel }} {{ "}}" }}" type="number" name="{{ item.slug }}" class="form-control" id="form_edit_{{ item.slug }}"
                 {% if item.required %}required="required"{% endif %}>
             </div>
 EOL;
@@ -75,6 +75,6 @@ EOL;
 
     public function getPriority(): int
     {
-        return 600;
+        return 400;
     }
 }

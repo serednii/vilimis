@@ -5,7 +5,6 @@ namespace API\Controller;
 use API\Entity\Task;
 use API\Repository\TaskRepository;
 use API\Repository\ProjectRepository;
-use API\Repository\TaskStatusRepository;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -187,12 +186,6 @@ class TaskController extends AbstractApiController
         $task->setName($data["name"]);
         $task->setHourBudget(isset($data["hour_budget"]) ? (int) $data["hour_budget"] : 0);
         $task->setProjectId(!empty($data["project_id"]) ? (int) $data["project_id"] : null);
-        $task->setTaskStatusId(!empty($data["task_status_id"]) ? (int) $data["task_status_id"] : null);
-        $task->setDescription($data["description"]);
-        $task->setDeadLineDate(!empty($data["dead_line_date"]) ? new \DateTime($data["dead_line_date"]) : null);
-        $task->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
-        $task->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
-        $task->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
 }

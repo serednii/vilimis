@@ -7,7 +7,6 @@ use API\Repository\ProjectRepository;
 use API\Repository\ClientRepository;
 use API\Repository\EndCustomerRepository;
 use API\Repository\ProjectStatusRepository;
-use API\Repository\WebRepository;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -193,10 +192,6 @@ class ProjectController extends AbstractApiController
         $project->setHourRate(isset($data["hour_rate"]) ? (int) $data["hour_rate"] : 0);
         $project->setHourBudget(isset($data["hour_budget"]) ? (int) $data["hour_budget"] : 0);
         $project->setProjectStatusId(!empty($data["project_status_id"]) ? (int) $data["project_status_id"] : null);
-        $project->setWebId(!empty($data["web_id"]) ? (int) $data["web_id"] : null);
-        $project->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
-        $project->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
-        $project->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
 }

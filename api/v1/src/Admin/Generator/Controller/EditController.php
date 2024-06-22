@@ -117,7 +117,7 @@ class EditController
         $module->setName($data["name"]);
         $module->setSlugPlural($data["slug_plural"]);
         $module->setSlugSingular($data["slug_singular"]);
-        $module->setInMenu((bool)isset($data["in_menu"]) ? $data["in_menu"] : false);
+        $module->setInMenu(isset($data["in_menu"]) ? (bool) $data["in_menu"] : false);
         $module->setIcon($data["icon"]);
     }
 
@@ -131,6 +131,8 @@ class EditController
             $item->setName($item_data["name"]);
             $item->setSlug($item_data["slug"]);
             $item->setType($item_data["type"]);
+            $item->setRequired(isset($item_data["required"]) ? (bool) $item_data["required"] : false);
+            $item->setTableShow(isset($item_data["tableShow"]) ? (bool) $item_data["tableShow"] : false);
             $item->setModuleId($id);
 
             $items[] = $item;

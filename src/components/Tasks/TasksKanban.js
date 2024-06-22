@@ -42,9 +42,11 @@ const TasksKanban = ({}) => {
                 API.getData("/task/list?order=priority", (tasks) => {
                     let taskSorted = {};
 
-                    taskStatuses.forEach(taskStatus => {
-                        taskSorted[taskStatus.id] = tasks.filter(task => task.taskStatusId == taskStatus.id)
-                    })
+                    if (tasks && tasks.length > 0) {
+                        taskStatuses.forEach(taskStatus => {
+                            taskSorted[taskStatus.id] = tasks.filter(task => task.taskStatusId == taskStatus.id)
+                        })
+                    }
 
                     setTasks(taskSorted)
                 });

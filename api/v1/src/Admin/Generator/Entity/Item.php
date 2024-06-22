@@ -5,7 +5,6 @@ namespace Admin\Generator\Entity;
 /**
  * @ORM\Table generator_item
  * @ORM\Translation
- * @Serializable
  */
 class Item
 {
@@ -43,20 +42,28 @@ class Item
     private $type = "";
 
     /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column required
+     */
+    private $required = "";
+
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column table_show
+     */
+    private $table_show = "";
+
+    /**
      * @var int
      *
      * @ORM\Type int
      * @ORM\Column module_id
      */
     private $module_id = "";
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Type int
-     * @ORM\Column sort
-     */
-    private $sort = 0;
 
     /**
      * @return int
@@ -154,25 +161,41 @@ class Item
         $this->module_id = $module_id;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getSort(): ?int
-    {
-        return $this->sort;
-    }
-
-    /**
-     * @param int|null $sort
-     */
-    public function setSort(?int $sort): void
-    {
-        $this->sort = $sort;
-    }
-
     public function isRelation()
     {
-        $repository = __DIR__ . "/../../../API/Repository/" . $this->getType() . "Repository.php";
+        $repository = __DIR__ . "/../../../App/Repository/" . $this->getType() . "Repository.php";
         return file_exists($repository);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired(): bool
+    {
+        return $this->required;
+    }
+
+    /**
+     * @param bool $required
+     */
+    public function setRequired(bool $required)
+    {
+        $this->required = $required;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTableShow(): bool
+    {
+        return $this->table_show;
+    }
+
+    /**
+     * @param bool $table_show
+     */
+    public function setTableShow(bool $table_show)
+    {
+        $this->table_show = $table_show;
     }
 }

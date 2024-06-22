@@ -158,6 +158,31 @@ class ProjectDateController extends AbstractApiController
         ]));
     }
 
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "projectDate_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $projectDates = $this->projectDate_repository->findBy($filter);
+
+        if (is_array($projectDates) && count($projectDates) > 0) {
+            foreach ($projectDates as $projectDate) {
+                EntityManager::remove($projectDate);
+            }
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
     private function mapEntityFromArray(ProjectDate $projectDate, array $data, array $files) {
         $projectDate->setName($data["name"]);
         $projectDate->setDate(!empty($data["date"]) ? new \DateTime($data["date"]) : null);
