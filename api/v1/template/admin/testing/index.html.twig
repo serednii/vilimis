@@ -1,0 +1,45 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>testovaci</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_testing") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Nazev</label>
+                <input value="{{ testing.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_dalsi">dalsi</label>
+                <textarea class="form-control" name="dalsi" rows="10" id="form_edit_dalsi"
+                >{{ testing.Dalsi }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for testing in testings %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_testing_edit", {"id":testing.id}) }}">{{ testing.Name }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_testing_edit", {"id":testing.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_testing_delete", {"id":testing.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}
