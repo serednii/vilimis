@@ -8,6 +8,7 @@ function containsNumber(value) {
 
 const Breadcrumb = () => {
   const location = useLocation();
+  console.log(location)
   const pathName = location.pathname;
   //Відкидаємо перший пустий символ, що означає головна сторінка і там де є тільки число
   const breadcrumbs = pathName
