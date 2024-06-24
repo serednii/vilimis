@@ -31,14 +31,19 @@ final class LoginController
     {
         $postData = Request::getParsedBody();
 
+        $message = null;
+
         if (!empty($postData["email"]) && !empty($postData["password"])) {
             $email = $postData["email"];
             $password = $postData["password"];
-            if ($this->authenticator->authorise($email, $password)) {
+            try {
+                $this->authenticator->authorise($email, $password);
                 Router::redirectTo("admin_homepage");
+            } catch (\Exception $exception) {
+                $message = $exception->getMessage();
             }
         }
 
-        return AdminResponse::createResponse("admin/login.html.twig");
+        return AdminResponse::createResponse("admin/login.html.twig", ["message"=>$message]);
     }
 }

@@ -27,7 +27,7 @@ class UserListener
         $user = $this->authenticator->getUser();
 
         $data = array_merge([
-            "user" => $user
+            "_user" => $user
         ], $event->getParam("data"));
 
         $event->setParams([

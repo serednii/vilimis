@@ -11,6 +11,9 @@ use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
 use Psr\Http\Message\UploadedFileInterface;
+{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
+use Gephart\Security\Configuration\SecurityConfiguration;{% set break = true %}
+{% endif %}{% endfor %}
 
 /**
  * @Security ROLE_ADMIN
@@ -30,16 +33,31 @@ class {{ module.entityName }}Controller
     private ${{ item.slug }}_repository;
 
 {% endif %}{% endfor %}
+{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
+    /**
+     * @var SecurityConfiguration
+     */
+    private $security_configuration;
+{% set break = true %}
+{% endif %}{% endfor %}
 
     public function __construct(
 {% for item in items %}{% if item.isRelation and item.slug != module.slugSingular %}
         {{ item.type }}Repository ${{ item.slug }}_repository,
+{% endif %}{% endfor %}
+{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
+        SecurityConfiguration $security_configuration,
+{% set break = true %}
 {% endif %}{% endfor %}
         {{ module.entityName }}Repository ${{ module.slugSingular }}_repository
     )
     {
 {% for item in items %}{% if item.isRelation and item.slug != module.slugSingular %}
         $this->{{ item.slug }}_repository = ${{ item.slug }}_repository;
+{% endif %}{% endfor %}
+{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
+        $this->security_configuration = $security_configuration;
+{% set break = true %}
 {% endif %}{% endfor %}
         $this->{{ module.slugSingular }}_repository = ${{ module.slugSingular }}_repository;
     }
@@ -127,6 +145,10 @@ class {{ module.entityName }}Controller
     }
 
     private function mapEntityFromArray({{ module.entityName }} ${{ module.slugSingular }}, array $data, array $files) {
+{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
+        $securityProvider = $this->security_configuration->get("provider")["Admin\Security\Provider\DBProvider"];
+{% set break = true %}
+{% endif %}{% endfor %}
 {% for item in items %}
     {%- if item.isRelation %}
         ${{ module.slugSingular }}->set{{ item.slugInCamel }}(!empty($data["{{ item.slug }}"]) ? (int) $data["{{ item.slug }}"] : null);{{- "\n" -}}

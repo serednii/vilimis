@@ -9,6 +9,12 @@
       "algorithm": "bcrypt",
       "cost": "10",
       "salt": "testsalt"
+    },
+    "Admin\\Security\\Provider\\DBProvider": {
+      "entity": "Gephart\\Security\\Entity\\User",
+      "algorithm": "bcrypt",
+      "cost": "10",
+      "salt": "is426ftihl"
     }
   },
   "users": {

@@ -2,11 +2,13 @@
 
 namespace API\Entity;
 
+use Gephart\Security\Entity\UserInterface;
+
 /**
  * @ORM\Table user
  * @Serializable
  */
-class User
+class User implements UserInterface
 {
 
     /**
@@ -20,9 +22,17 @@ class User
      * @var string
      *
      * @ORM\Type VARCHAR(255)
-     * @ORM\Column email
+     * @ORM\Column username
      */
-    private $email = "";
+    private $username = "";
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type VARCHAR(255)
+     * @ORM\Column password
+     */
+    private $password = "";
     
     /**
      * @var string
@@ -41,12 +51,76 @@ class User
     private $surname = "";
     
     /**
+     * @var ?int
+     *
+     * @ORM\Type INT(6) UNSIGNED
+     * @ORM\Column team_id
+     */
+    private $team_id = null;
+
+    /**
      * @var string
      *
      * @ORM\Type VARCHAR(255)
-     * @ORM\Column password
+     * @ORM\Column position
      */
-    private $password = "";
+    private $position = "";
+    
+    /**
+     * @var ?int
+     *
+     * @ORM\Type INT(6) UNSIGNED
+     * @ORM\Column parent_user_id
+     */
+    private $parent_user_id = null;
+
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Type DATETIME
+     * @ORM\Column created
+     */
+    private $created = null;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type VARCHAR(255)
+     * @ORM\Column avatar
+     */
+    private $avatar = "";
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type TEXT
+     * @ORM\Column roles
+     */
+    private $roles = "";
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type TEXT
+     * @ORM\Column rights
+     */
+    private $rights = "";
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type VARCHAR(255)
+     * @ORM\Column phone
+     */
+    private $phone = "";
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type VARCHAR(255)
+     * @ORM\Column perm_login_hash
+     */
+    private $perm_login_hash = "";
     
 
     public function __construct()
@@ -72,17 +146,33 @@ class User
     /**
      * @return string
      */
-    public function getEmail(): string
+    public function getUsername(): string
     {
-        return $this->email;
+        return $this->username;
     }
 
     /**
-     * @param string $email
+     * @param string $username
      */
-    public function setEmail(string $email)
+    public function setUsername(string $username)
     {
-        $this->email = $email;
+        $this->username = $username;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password)
+    {
+        $this->password = $password;
     }
 
     /**
@@ -118,19 +208,161 @@ class User
     }
 
     /**
-     * @return string
+     * @return ?int
      */
-    public function getPassword(): string
+    public function getTeamId(): ?int
     {
-        return $this->password;
+        return $this->team_id;
     }
 
     /**
-     * @param string $password
+     * @param ?int $team_id
      */
-    public function setPassword(string $password)
+    public function setTeamId(?int $team_id)
     {
-        $this->password = $password;
+        $this->team_id = $team_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPosition(): string
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param string $position
+     */
+    public function setPosition(string $position)
+    {
+        $this->position = $position;
+    }
+
+    /**
+     * @return ?int
+     */
+    public function getParentUserId(): ?int
+    {
+        return $this->parent_user_id;
+    }
+
+    /**
+     * @param ?int $parent_user_id
+     */
+    public function setParentUserId(?int $parent_user_id)
+    {
+        $this->parent_user_id = $parent_user_id;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getCreated(): ?\DateTime
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param \DateTime|null $created
+     */
+    public function setCreated(?\DateTime $created)
+    {
+        $this->created = $created;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatar(): string
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param string $avatar
+     */
+    public function setAvatar(string $avatar)
+    {
+        $this->avatar = $avatar;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getRoles(): ?array
+    {
+        try {
+            return json_decode($this->roles);
+        } catch (\Exception $exception) {
+            return [];
+        } 
+    }
+
+    /**
+     * @param array|string|null $roles
+     */
+    public function setRoles(array|string|null $roles)
+    {
+        if (is_array($roles)) {
+            $roles = json_encode($roles);
+        }
+        $this->roles = $roles;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getRights(): ?array
+    {
+        try {
+            return json_decode($this->rights);
+        } catch (\Exception $exception) {
+            return [];
+        } 
+    }
+
+    /**
+     * @param array|string|null $rights
+     */
+    public function setRights(array|string|null $rights)
+    {
+        if (is_array($rights)) {
+            $rights = json_encode($rights);
+        }
+        $this->rights = $rights;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone(): string
+    {
+        return $this->phone;
+    }
+
+    /**
+     * @param string $phone
+     */
+    public function setPhone(string $phone)
+    {
+        $this->phone = $phone;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPermLoginHash(): string
+    {
+        return $this->perm_login_hash;
+    }
+
+    /**
+     * @param string $perm_login_hash
+     */
+    public function setPermLoginHash(string $perm_login_hash)
+    {
+        $this->perm_login_hash = $perm_login_hash;
     }
 
 }

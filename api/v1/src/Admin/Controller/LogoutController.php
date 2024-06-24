@@ -29,10 +29,6 @@ final class LogoutController
     {
         $this->authenticator->unauthorise();
 
-        try {
-            Router::redirectTo("homepage");
-        } catch (\Exception $exception) {
-            Router::redirectTo("app\controller\defaultcontroller_index");
-        }
+        Router::redirectTo("admin_login");
     }
 }

@@ -17,20 +17,24 @@
     <div class="jumbotron">
         <div id="logo">
             <a href="{{ _router.generateUrl("admin_homepage") }}">
-                <img src="img/gephart.svg" alt="Gephart"/>
+                <img src="img/gephart-is-black-yellow.svg" alt="Gephart"/>
             </a>
         </div>
 
+        {% if message %}
+            <p class="alert alert-danger">{{ message }}</p>
+        {% endif %}
+
         <form action="{{ _route.generateUrl("admin_login") }}" method="post">
             <div class="form-group">
-                <label for="exampleInputEmail1">Email</label>
+                <label for="exampleInputEmail1">E-mail</label>
                 <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
+                <label for="exampleInputPassword1">Heslo</label>
                 <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
+            <button type="submit" class="btn btn-default">Přihlásit</button>
         </form>
     </div>
 </div>

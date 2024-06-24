@@ -2,11 +2,16 @@
 
 namespace API\Entity;
 
+{% if module.entityName == "User" %}
+use Gephart\Security\Entity\UserInterface;
+{% endif %}
+
 /**
  * @ORM\Table {{ module.slugSingular }}
  * @Serializable
  */
-class {{ module.entityName }}
+class {{ module.entityName }}{% if module.entityName == "User" %} implements UserInterface{% endif %}
+
 {
 
     /**

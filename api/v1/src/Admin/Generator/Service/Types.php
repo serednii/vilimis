@@ -2,6 +2,7 @@
 
 namespace Admin\Generator\Service;
 
+use Admin\Generator\Type\ArrayType;
 use Admin\Generator\Type\BoolType;
 use Admin\Generator\Type\DateTimeType;
 use Admin\Generator\Type\DateType;
@@ -9,6 +10,7 @@ use Admin\Generator\Type\FileType;
 use Admin\Generator\Type\FloatType;
 use Admin\Generator\Type\ImageType;
 use Admin\Generator\Type\IntType;
+use Admin\Generator\Type\PasswordType;
 use Admin\Generator\Type\TextareaType;
 use Admin\Generator\Type\TextType;
 use Admin\Generator\Type\TypeInterface;
@@ -42,7 +44,9 @@ class Types
             ImageType::class,
             TextareaType::class,
             WysiwygType::class,
-            TextType::class
+            ArrayType::class,
+            TextType::class,
+            PasswordType::class
         ]);
     }
 

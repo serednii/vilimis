@@ -2,29 +2,25 @@
 
 namespace API\Controller;
 
-use API\Entity\{{ module.entityName }};
-{% for entity in entities %}
-use API\Repository\{{ entity }}Repository;
-{% endfor %}
+use API\Entity\User;
+use API\Repository\UserRepository;
+use API\Repository\TeamRepository;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
 use Psr\Http\Message\UploadedFileInterface;
 use API\Service\JsonSerializator;
 use Gephart\Framework\Response\JsonResponseFactory;
-{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
-use Gephart\Security\Configuration\SecurityConfiguration;{% set break = true %}
-{% endif %}{% endfor %}
-
+use Gephart\Security\Configuration\SecurityConfiguration;
 /**
- * @RoutePrefix /{{ module.slugSingular }}
+ * @RoutePrefix /user
  */
-class {{ module.entityName }}Controller extends AbstractApiController
+class UserController extends AbstractApiController
 {
     /**
-     * @var {{ module.entityName }}Repository
+     * @var UserRepository
      */
-    private ${{ module.slugSingular }}_repository;
+    private $user_repository;
 
     /**
      * @var JsonResponseFactory
@@ -36,37 +32,28 @@ class {{ module.entityName }}Controller extends AbstractApiController
      */
     private $jsonSerializator;
 
-{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
     /**
      * @var SecurityConfiguration
      */
     private $security_configuration;
-{% set break = true %}
-{% endif %}{% endfor %}
 
     public function __construct(
-        {{ module.entityName }}Repository ${{ module.slugSingular }}_repository,
-{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
+        UserRepository $user_repository,
         SecurityConfiguration $security_configuration,
-{% set break = true %}
-{% endif %}{% endfor %}
         JsonResponseFactory $jsonResponseFactory,
         JsonSerializator $jsonSerializator
     )
     {
-        $this->{{ module.slugSingular }}_repository = ${{ module.slugSingular }}_repository;
+        $this->user_repository = $user_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
-{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
         $this->security_configuration = $security_configuration;
-{% set break = true %}
-{% endif %}{% endfor %}
     }
 
     /**
      * @Route {
      *  "rule": "/list",
-     *  "name": "{{ module.slugSingular }}_list"
+     *  "name": "user_list"
      * }
      */
     public function index()
@@ -78,7 +65,7 @@ class {{ module.entityName }}Controller extends AbstractApiController
             $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
             $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
 
-            ${{ module.slugPlural }} = $this->{{ module.slugSingular }}_repository->findBy($filter, $params);
+            $users = $this->user_repository->findBy($filter, $params);
         } catch (\Exception $exception) {
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "message" => $exception->getMessage(),
@@ -87,21 +74,21 @@ class {{ module.entityName }}Controller extends AbstractApiController
         }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-            "data" => ${{ module.slugPlural }}
+            "data" => $users
         ]));
     }
 
     /**
      * @Route {
      *  "rule": "/single/{id}",
-     *  "name": "{{ module.slugSingular }}_single"
+     *  "name": "user_single"
      * }
      */
     public function single($id)
     {
-        ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($id);
+        $user = $this->user_repository->find($id);
 
-        if (!${{ module.slugSingular }}) {
+        if (!$user) {
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "message" => "Nenalezeno",
                 "code" => 404
@@ -109,7 +96,7 @@ class {{ module.entityName }}Controller extends AbstractApiController
         }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-            "data" => ${{ module.slugSingular }}
+            "data" => $user
         ]));
     }
 
@@ -117,7 +104,7 @@ class {{ module.entityName }}Controller extends AbstractApiController
     /**
      * @Route {
      *  "rule": "/save",
-     *  "name": "{{ module.slugSingular }}_save"
+     *  "name": "user_save"
      * }
      */
     public function save()
@@ -125,28 +112,28 @@ class {{ module.entityName }}Controller extends AbstractApiController
         $postData = Request::getParsedBody();
         $filesData = Request::getUploadedFiles();
 
-        if (!empty($postData["{{ items[0].slug }}"])) {
+        if (!empty($postData["username"])) {
 
             if (!empty($postData["id"])) {
-                ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($postData["id"]);
+                $user = $this->user_repository->find($postData["id"]);
 
 
-                if (!${{ module.slugSingular }}) {
+                if (!$user) {
                     return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                         "message" => "Nenalezeno: $postData[id]",
                         "code" => 404
                     ]));
                 }
             } else {
-                ${{ module.slugSingular }} = new {{ module.entityName }}();
+                $user = new User();
             }
-            $this->mapEntityFromArray(${{ module.slugSingular }}, $postData, $filesData);
+            $this->mapEntityFromArray($user, $postData, $filesData);
 
-            EntityManager::save(${{ module.slugSingular }});
+            EntityManager::save($user);
 
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
-                "{{ module.slugSingular }}" => ${{ module.slugSingular }},
+                "user" => $user,
                 "message" => "Uloženo",
                 "code" => 200
             ]));
@@ -163,13 +150,13 @@ class {{ module.entityName }}Controller extends AbstractApiController
     /**
      * @Route {
      *  "rule": "/delete/{id}",
-     *  "name": "{{ module.slugSingular }}_delete"
+     *  "name": "user_delete"
      * }
      */
     public function delete($id)
     {
-        ${{ module.slugSingular }} = $this->{{ module.slugSingular }}_repository->find($id);
-        EntityManager::remove(${{ module.slugSingular }});
+        $user = $this->user_repository->find($id);
+        EntityManager::remove($user);
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "message" => "Smazáno",
@@ -181,18 +168,18 @@ class {{ module.entityName }}Controller extends AbstractApiController
     /**
      * @Route {
      *  "rule": "/deleteByFilter",
-     *  "name": "{{ module.slugSingular }}_deleteByFilter"
+     *  "name": "user_deleteByFilter"
      * }
      */
     public function deleteByFilter()
     {
         $filter = $this->parseRequestFilter();
 
-        ${{ module.slugPlural }} = $this->{{ module.slugSingular }}_repository->findBy($filter);
+        $users = $this->user_repository->findBy($filter);
 
-        if (is_array(${{ module.slugPlural }}) && count(${{ module.slugPlural }}) > 0) {
-            foreach (${{ module.slugPlural }} as ${{ module.slugSingular }}) {
-                EntityManager::remove(${{ module.slugSingular }});
+        if (is_array($users) && count($users) > 0) {
+            foreach ($users as $user) {
+                EntityManager::remove($user);
             }
         }
 
@@ -202,28 +189,35 @@ class {{ module.entityName }}Controller extends AbstractApiController
         ]));
     }
 
-    private function mapEntityFromArray({{ module.entityName }} ${{ module.slugSingular }}, array $data, array $files) {
-{% set break = false %}{% for item in items %}{% if not break and item.type == "password" %}
+    private function mapEntityFromArray(User $user, array $data, array $files) {
         $securityProvider = $this->security_configuration->get("provider")["Admin\Security\Provider\DBProvider"];
-{% set break = true %}
-{% endif %}{% endfor %}
-{% for item in items %}
-    {%- if item.isRelation %}
-        ${{ module.slugSingular }}->set{{ item.slugInCamel }}(!empty($data["{{ item.slug }}"]) ? (int) $data["{{ item.slug }}"] : null);{{- "\n" -}}
-    {%- else -%}
-        {%- for type in types -%}
-            {%- if item.type == type.name -%}
-                {{- include(template_from_string(type.set), {"item": item}) -}}
-                {{- "\n" -}}
-            {%- endif -%}
-        {%- endfor -%}
-    {%- endif -%}
-{% endfor %}
+        $user->setUsername($data["username"]);
+        if ($data["password"]) {
+            $password = $data["password"];
+            if (!empty($provider["salt"])) {
+                $password .= $securityProvider["salt"];
+            }
+            $password_hash = password_hash($password, PASSWORD_BCRYPT, ["cost" => $securityProvider["cost"]]);
+            $user->setPassword($password_hash);
+        }
+        $user->setName($data["name"]);
+        $user->setSurname($data["surname"]);
+        $user->setTeamId(!empty($data["team_id"]) ? (int) $data["team_id"] : null);
+        $user->setPosition($data["position"]);
+        $user->setParentUserId(!empty($data["parent_user_id"]) ? (int) $data["parent_user_id"] : null);
+        $user->setCreated(!empty($data["created"]) ? new \DateTime($data["created"]) : null);
+        if (!empty($files["avatar"]) && $files["avatar"] instanceof UploadedFileInterface) {
+            $user->setAvatar($this->uploadFile($files["avatar"]));
+        }
+        if (isset($data["avatar_delete"])) {
+            $user->setAvatar("");
+        }
+        $user->setRoles(explode(";", $data["roles"]));
+        $user->setRights(explode(";", $data["rights"]));
+        $user->setPhone($data["phone"]);
+        $user->setPermLoginHash($data["perm_login_hash"]);
     }
 
-{% set break = false %}
-{% for item in items  %}{% if not break %}
-{% if item.type == "file" or item.type == "image" %}
     private function uploadFile(UploadedFileInterface $file): string
     {
         $client_filename = $file->getClientFilename();
@@ -251,7 +245,4 @@ class {{ module.entityName }}Controller extends AbstractApiController
         return "";
     }
 
-{% set break = true %}
-{% endif %}
-{% endif %}{% endfor %}
 }

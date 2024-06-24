@@ -1,0 +1,89 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Tým</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_team") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ team.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_parent_team_id">Nadřízený tým</label>
+                <select name="parent_team_id" class="form-control" id="form_edit_parent_team_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for parent_team_id in parent_team_ids %}
+                        <option value="{{ parent_team_id.id }}">
+                        {% if parent_team_id.title %}
+                            {{ parent_team_id.title }}
+                        {% elseif parent_team_id.name %}
+                            {{ parent_team_id.name }}
+                        {% else %}
+                            #{{ parent_team_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_priority">Priorita</label>
+                <input step="1" value="{{ team.Priority }}" type="number" name="priority" class="form-control" id="form_edit_priority"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_default_roles">Výchozí role</label>
+                <textarea class="form-control" name="default_roles" rows="10" id="form_edit_default_roles"
+                >{{ team.DefaultRoles }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_default_rights">Výchozí práva</label>
+                <textarea class="form-control" name="default_rights" rows="10" id="form_edit_default_rights"
+                >{{ team.DefaultRights }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_manager_user_id">Manager týmu</label>
+                <select name="manager_user_id" class="form-control" id="form_edit_manager_user_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for manager_user_id in manager_user_ids %}
+                        <option value="{{ manager_user_id.id }}">
+                        {% if manager_user_id.title %}
+                            {{ manager_user_id.title }}
+                        {% elseif manager_user_id.name %}
+                            {{ manager_user_id.name }}
+                        {% else %}
+                            #{{ manager_user_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for team in teams %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_team_edit", {"id":team.id}) }}">{{ team.Name }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_team_edit", {"id":team.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_team_delete", {"id":team.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}
