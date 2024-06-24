@@ -2,21 +2,28 @@ import Home from "../pages/Home";
 import {LOADER_ACTIONS} from "../reducers/loaderReducer";
 import {CONFIG} from "../config";
 class APIService {
-    constructor(loaderDispatch, toast) {
+    constructor(loaderDispatch, toast, jwt) {
         this.loaderDispatch = loaderDispatch;
         this.toast = toast;
+        this.jwt = jwt;
     }
 
     async getData(url, callback, silence) {
+        const headers = {
+            "Content-type": "application/json;charset=utf-8",
+            "Accept": "application/json",
+        };
+        if (this.jwt) {
+            headers.Authorization = "Bearer " + this.jwt;
+        }
+        console.log(this.jwt);
         this.loaderDispatch({action: LOADER_ACTIONS.SHOW});
         const response = await fetch(CONFIG.api + url, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
             credentials: 'same-origin', // include, *same-origin, omit
-            headers: {
-                "Accept": "application/json"
-            },
+            headers: headers,
             redirect: 'follow', // manual, *follow, error
             referrerPolicy: 'no-referrer'
         });

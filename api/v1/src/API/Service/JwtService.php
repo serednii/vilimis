@@ -87,11 +87,12 @@ final class JwtService
         }
 
         list($header, $payload, $signature) = $tks;
+        $signature = $this->base64urlDecode($signature);
 
         $hash = \hash_hmac("sha256", $header.".".$payload, $securityProvider["salt"], true);
 
         if (hash_equals($hash, $signature)) {
-            return $payload;
+            return json_decode($this->base64URLDecode($payload), true);
         }
         return false;
     }

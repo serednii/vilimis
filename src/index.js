@@ -25,9 +25,13 @@ import {TIMETRACKER_ACTIONS, timetrackerReducer} from "./reducers/timetrackerRed
 import ClientContact from "./pages/ClientContact";
 import Webs from "./pages/Webs";
 import Breadcrumb from './components/Breadcrumb/Breadcrumb';
+import Login from "./pages/Login";
 library.add(fas);
 
 function Root() {
+    const [user, setUser] = useState(null);
+    const [showUserDropdown, setShowUserDropdown] = useState(false);
+    const [jwt, setJwt] = useState(null);
     const [loaderState, loaderDispatch] = useReducer(loaderReducer, { show: 0 });
     const [timetrackerState, timetrackerDispatch] = useReducer(timetrackerReducer, { start: null, taskId: null });
 
@@ -44,7 +48,8 @@ function Root() {
     const [urlToTitle, setUrlToTitle] = useState('')
     const API = new APIService(
         loaderDispatch,
-        toast
+        toast,
+        jwt
     );
 
     useEffect(() => {
@@ -52,7 +57,6 @@ function Root() {
         if (timetrackerData) {
             try {
                 const timetracker = JSON.parse(timetrackerData);
-                console.log(timetracker);
                 if (timetracker && "taskId" in timetracker && "start" in timetracker) {
                     timetrackerDispatch({
                         action: TIMETRACKER_ACTIONS.SET_START,
@@ -62,6 +66,33 @@ function Root() {
             } catch (e) {console.log(e)}
         }
     }, []);
+
+    const logout = () => {
+        localStorage.clear();
+        setJwt(null);
+    }
+
+    useEffect(() => {
+        if (!jwt) {
+            let jwtLocal = localStorage.getItem("jwt");
+            setJwt(jwtLocal)
+        }
+    }, []);
+
+    useEffect(() => {
+        if (jwt) {
+            console.log(jwt);
+            const userId = JSON.parse(window.atob(jwt.split(".")[1].replace("-","+").replace("_","/"))).id;
+
+            if (userId) {
+                API.getData("/user/single/" + userId, (user) => {
+                    setUser(user);
+                });
+                return;
+            }
+        }
+        setUser(null);
+    }, [jwt]);
 
     useEffect(() => {
         localStorage.setItem("timetracker", JSON.stringify(timetrackerState));
@@ -78,9 +109,12 @@ function Root() {
         locale: locale[locale_selected],
         setUrlToTitle,
         urlToTitle,
+        setJwt
     }
 
     return (<RootContext.Provider value={providerState}>
+
+        {user ? (
 
         <BrowserRouter>
             <nav id="sidebarMenu" className="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
@@ -322,7 +356,7 @@ function Root() {
 
                             <ul className="navbar-nav align-items-center">
                                 <li className="nav-item dropdown ms-lg-3">
-                                    <a className="nav-link dropdown-toggle pt-1 px-0" href="#" role="button"
+                                    <button onClick={()=>setShowUserDropdown(!showUserDropdown)} className="nav-link dropdown-toggle pt-1 px-0" href="#" role="button"
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">
                                         <div className="media d-flex align-items-center">
@@ -334,9 +368,11 @@ function Root() {
                                                     className="mb-0 font-small fw-bold text-gray-900">Michal Katuščák</span>
                                             </div>
                                         </div>
-                                    </a>
-                                    <div className="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
-                                        <a className="dropdown-item d-flex align-items-center" href="#">
+                                    </button>
+                                    <div className="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1"
+                                        style={{opacity:showUserDropdown?1:0,pointerEvents:showUserDropdown?"all":"none"}}
+                                    >
+                                        {/*<a className="dropdown-item d-flex align-items-center" href="#">
                                             <svg className="dropdown-icon text-gray-400 me-2" fill="currentColor"
                                                 viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -376,16 +412,16 @@ function Root() {
                                             </svg>
                                             Support
                                         </a>
-                                        <div role="separator" className="dropdown-divider my-1"></div>
-                                        <a className="dropdown-item d-flex align-items-center" href="#">
+                                        <div role="separator" className="dropdown-divider my-1"></div>*/}
+                                        <button onClick={logout} className="dropdown-item d-flex align-items-center" href="#">
                                             <svg className="dropdown-icon text-danger me-2" fill="none"
                                                 stroke="currentColor"
                                                 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                             </svg>
-                                            Logout
-                                        </a>
+                                            Odhlásit
+                                        </button>
                                     </div>
                                 </li>
                             </ul>
@@ -470,6 +506,13 @@ function Root() {
             </main>
 
         </BrowserRouter>
+        ) : (
+            <BrowserRouter>
+                <Routes>
+                <Route path="*" element={<Login />} />
+                </Routes>
+            </BrowserRouter>
+        )}
     </RootContext.Provider>)
 }
 

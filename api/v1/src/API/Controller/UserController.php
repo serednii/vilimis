@@ -13,6 +13,7 @@ use API\Service\JsonSerializator;
 use Gephart\Framework\Response\JsonResponseFactory;
 use Gephart\Security\Configuration\SecurityConfiguration;
 /**
+ * @Security ROLE_USER
  * @RoutePrefix /user
  */
 class UserController extends AbstractApiController

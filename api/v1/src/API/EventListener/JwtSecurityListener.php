@@ -98,9 +98,14 @@ class JwtSecurityListener
 
             $headers = Request::getHeaders();
             if (!isset($headers['authorization']) && !isset($headers['authorization'][0])) {
-                $this->jsonResponse->render([
-                    "message" => "Neoprávněný přístup. Chybí JWT token v hlavičce"
-                ], 401);
+                if (!empty($headers["content-type"])
+                    && !empty($headers["content-type"][0])
+                    && strpos($headers["content-type"][0], "/json") !== false) {
+                    $this->jsonResponse->render([
+                        "message" => "Neoprávněný přístup. Chybí JWT token v hlavičce"
+                    ], 401);
+                }
+                return false;
             }
 
             $jwt = str_replace("Bearer ", "", $headers["authorization"][0]);
