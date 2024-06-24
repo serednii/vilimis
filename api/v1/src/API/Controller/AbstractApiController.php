@@ -2,9 +2,18 @@
 
 namespace API\Controller;
 
+use API\Entity\User;
 use Gephart\Framework\Facade\Request;
 
 abstract class AbstractApiController {
+    /** @var ?User */
+    protected $user = null;
+
+    protected function processJwtLogin()
+    {
+
+    }
+
     protected function parseRequestFilter()
     {
         $params = Request::getQueryParams();

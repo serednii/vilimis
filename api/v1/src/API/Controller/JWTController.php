@@ -6,9 +6,9 @@ use Admin\Security\Provider\DBProvider;
 use API\Entity\User;
 use API\Repository\UserRepository;
 use API\Service\JsonSerializator;
+use API\Service\JwtService;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Response\JsonResponseFactory;
-use Gephart\Http\Stream;
 use Gephart\Security\Configuration\SecurityConfiguration;
 
 
@@ -37,12 +37,18 @@ final class JWTController
      */
     private $provider;
 
+    /**
+     * @var JwtService
+     */
+    private JwtService $jwtService;
+
     public function __construct(
         UserRepository $user_repository,
         SecurityConfiguration $security_configuration,
         JsonResponseFactory $jsonResponseFactory,
         JsonSerializator $jsonSerializator,
-        DBProvider $provider
+        DBProvider $provider,
+        JwtService $jwtService
     )
     {
         $this->user_repository = $user_repository;
@@ -50,6 +56,7 @@ final class JWTController
         $this->jsonSerializator = $jsonSerializator;
         $this->security_configuration = $security_configuration;
         $this->provider = $provider;
+        $this->jwtService = $jwtService;
     }
 
     /**
@@ -98,23 +105,14 @@ final class JWTController
             ]), 500);
         }
 
-        $header = json_encode([
-            "alg" => "HS256",
-            "typ" => "JWT"
-        ]);
-        $header = $this->base64urlEncode($header);
-
-        $payload = json_encode([
-            "id" => $user->getId(),
-            "name" => $user->getUsername()
-        ]);
-
-        $payload = $this->base64urlEncode($payload);
-
-        $signature = hash_hmac("sha256", $header . "." . $payload, $securityProvider["salt"], true);
-        $signature = $this->base64urlEncode($signature);
-
-        $jwt = $header . "." . $payload . "." . $signature;
+        try {
+            $jwt = $this->jwtService->generate($user);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 500
+            ]), 500);
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "jwt" => $jwt,
@@ -122,9 +120,4 @@ final class JWTController
         ]));
     }
 
-    private function base64URLEncode(string $text): string
-    {
-
-        return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($text));
-    }
 }

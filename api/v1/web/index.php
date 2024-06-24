@@ -29,17 +29,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 include_once __DIR__ . "/../vendor/autoload.php";
 
 error_reporting(E_ALL ^ E_DEPRECATED);
-//ini_set("display_error", 0);
 
 $request = (new RequestFactory())->createFromGlobals();
 
 error_reporting(E_ALL ^ E_DEPRECATED);
-//ini_set("display_error", 0);
 $kernel = new Kernel($request);
 
 $kernel->registerServices([
     \Admin\EventListener\MenuListener::class,
-    \Admin\EventListener\UserListener::class
+    \Admin\EventListener\UserListener::class,
+    \API\EventListener\JwtSecurityListener::class
 ]);
 
 
@@ -49,5 +48,4 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 $response = $kernel->run();
 
 error_reporting(E_ALL ^ E_DEPRECATED);
-//ini_set("display_error", 0);
 echo $kernel->render($response);

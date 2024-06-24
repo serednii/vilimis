@@ -46,6 +46,7 @@ class ProjectController extends AbstractApiController
     }
 
     /**
+     * @Security ROLE_USER
      * @Route {
      *  "rule": "/list",
      *  "name": "project_list"

@@ -4,6 +4,7 @@ namespace Admin\Security\Provider;
 
 use API\Entity\User;
 use API\Repository\UserRepository;
+use Gephart\Framework\Facade\Request;
 use Gephart\ORM\EntityManager;
 use Gephart\Security\Configuration\SecurityConfiguration;
 use Gephart\Security\Entity\UserInterface;
@@ -53,6 +54,8 @@ class DBProvider implements ProviderInterface
      */
     public function authorise(string $username, string $password)
     {
+        $headers = Request::getHeaders();
+
         $securityProvider = $this->security_configuration->get("provider")["Admin\Security\Provider\DBProvider"];
 
         $users = $this->user_repository->findBy(["username = %1", $username]);
@@ -129,6 +132,11 @@ class DBProvider implements ProviderInterface
 
         setcookie('gephartis_permlogin_hash', $permlogin_hash, time()+(3600*24*7), "/");
         $this->sessions->set("user", $user);
+    }
+
+    public function getUserFromExternal(UserInterface $user)
+    {
+        $this->setUser($user);
     }
 
 }
