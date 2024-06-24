@@ -1,12 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Select from 'react-select';
 import TasksSelectList from "../Tasks/TasksSelectList";
 
-// const options = [
-//     { value: 'chocolate', label: 'Chocolate' },
-//     { value: 'strawberry', label: 'Strawberry' },
-//     { value: 'vanilla', label: 'Vanilla' }
-// ]
 
 const TimeTrackerTask = ({ isOpen, handleChange, onNew }) => {
     return (

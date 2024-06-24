@@ -1,9 +1,21 @@
-import React from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ProjectForm from "./ProjectForm";
+import { useRootContext } from "../../contexts/RootContext";
 
-const ProjectNew = ({}) => {
+const title = 'Projekty/';
+
+const ProjectNew = ({ }) => {
     const navigate = useNavigate();
+    const { setUrlToTitle } = useRootContext()
+
+    useEffect(() => {
+        setUrlToTitle({
+            setUrlToTitle: {
+                ['projects']: title
+            }
+        })
+    }, [])
 
     function handleSave(project) {
         if (project && "id" in project) {
@@ -20,7 +32,7 @@ const ProjectNew = ({}) => {
 
             <div className="card border-0 shadow mb-4">
                 <div className="card-body">
-                    <ProjectForm handleSave={handleSave}/>
+                    <ProjectForm handleSave={handleSave} />
                 </div>
             </div>
         </>

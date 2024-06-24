@@ -1,5 +1,4 @@
-
-.ReactModal__Overlay  {
+.ReactModal__Overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -10,7 +9,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     outline: 0;
-    background-color: rgba(17, 24, 39, .5)!important;
+    background-color: rgba(17, 24, 39, .5) !important;
 }
 
 .ReactModal__Overlay--after-open {
@@ -132,7 +131,7 @@
     border-bottom-left-radius: 0.4375rem;
 }
 
-.modal-footer > * {
+.modal-footer>* {
     margin: 0.25rem;
 }
 
@@ -160,6 +159,7 @@
 }
 
 @media (min-width: 992px) {
+
     .modal-lg,
     .modal-xl {
         max-width: 800px;

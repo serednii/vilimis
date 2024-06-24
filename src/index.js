@@ -1,5 +1,5 @@
 import { createRoot } from 'react-dom/client';
-import React, {useEffect, useReducer} from "react";
+import React, {useEffect, useReducer, useState} from "react";
 import './styles/index.sass';
 import Workflow from "./pages/Workflow";
 import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
@@ -24,6 +24,7 @@ import TimeTracker from './components/TimeTracer/TimeTracker';
 import {TIMETRACKER_ACTIONS, timetrackerReducer} from "./reducers/timetrackerReducer";
 import ClientContact from "./pages/ClientContact";
 import Webs from "./pages/Webs";
+import Breadcrumb from './components/Breadcrumb/Breadcrumb';
 library.add(fas);
 
 function Root() {
@@ -40,6 +41,7 @@ function Root() {
     };
     const locale_selected = "cs";
 
+    const [urlToTitle, setUrlToTitle] = useState('')
     const API = new APIService(
         loaderDispatch,
         toast
@@ -73,7 +75,9 @@ function Root() {
         timetrackerDispatch,
         toast,
         API,
-        locale: locale[locale_selected]
+        locale: locale[locale_selected],
+        setUrlToTitle,
+        urlToTitle,
     }
 
     return (<RootContext.Provider value={providerState}>
@@ -293,7 +297,7 @@ function Root() {
 
                 <nav className="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
                     <div className="container-fluid px-0">
-                        <div className="d-flex justify-content-between w-100" id="navbarSupportedContent">
+                        <div className="d-flex justify-content-between align-items-center w-100" id="navbarSupportedContent">
                             <div className="d-flex align-items-center">
                                 <form className="navbar-search form-inline" id="navbar-search-main">
                                     <div className="input-group input-group-merge search-bar">
@@ -313,9 +317,9 @@ function Root() {
                                 </form>
                             </div>
                             <div className="flex-fill"></div>
-                            <div className=''>
-                                <TimeTracker />
-                            </div>
+
+                            <TimeTracker />
+
                             <ul className="navbar-nav align-items-center">
                                 <li className="nav-item dropdown ms-lg-3">
                                     <a className="nav-link dropdown-toggle pt-1 px-0" href="#" role="button"
@@ -391,7 +395,9 @@ function Root() {
 
 
                 <div className="py-4">
-                    <nav aria-label="breadcrumb" className="d-none d-md-inline-block">
+
+                    <Breadcrumb />
+                    {/* <nav aria-label="breadcrumb" className="d-none d-md-inline-block">
                         <ol className="breadcrumb breadcrumb-dark breadcrumb-transparent">
                             <li className="breadcrumb-item"><a href="#">
                                 <svg className="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -403,7 +409,7 @@ function Root() {
                             <li className="breadcrumb-item"><a href="#">Workflow</a></li>
                             <li className="breadcrumb-item active" aria-current="page">Editace</li>
                         </ol>
-                    </nav>
+                    </nav> */}
                     {/*<div className="d-flex justify-content-between w-100 flex-wrap">
                     <div className="mb-3 mb-lg-0"><h1 className="h4">Obchodní příležitost - změna stavu na
                         odesláno</h1>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import TimeTrackerButton from "./TimeTrackerButton";
 import TimeTrackerTask from "./TimeTrackerTask";
 import { useRootContext } from "../../contexts/RootContext";
@@ -49,8 +49,6 @@ const TimeTracker = () => {
             <TimeTrackerTask isOpen={isOpen} handleChange={handleChange} />
         </div>
     )
-
-
 
 }
 

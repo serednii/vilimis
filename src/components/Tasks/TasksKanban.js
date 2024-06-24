@@ -47,7 +47,7 @@ const TasksKanban = ({}) => {
                             taskSorted[taskStatus.id] = tasks.filter(task => task.taskStatusId == taskStatus.id)
                         })
                     }
-
+console.log(tasks)
                     setTasks(taskSorted)
                 });
             }
@@ -135,6 +135,7 @@ const TasksKanban = ({}) => {
         return ("...");
     }
 
+    console.log(tasks[1])
 
     return (
         <>
