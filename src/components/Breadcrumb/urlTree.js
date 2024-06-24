@@ -1,4 +1,9 @@
 export const urlTree = {
+  webs: {
+    webs: "Weby",
+    new: "Nový web",
+    edit: "Úprava webu ",
+  },
   projects: {
     projects: "Projekty",
     new: "Nový projekt",

@@ -8,13 +8,13 @@ function containsNumber(value) {
 
 const Breadcrumb = () => {
   const location = useLocation();
-  console.log(location)
   const pathName = location.pathname;
-  //Відкидаємо перший пустий символ, що означає головна сторінка і там де є тільки число
+  const [id] = pathName.split('/').filter(crumb => containsNumber(crumb));
+  //We discard the first empty character, which means the main page and the last id
   const breadcrumbs = pathName
     .split("/")
     .filter((crumb) => crumb && !containsNumber(crumb));
-  console.log(breadcrumbs);
+
   return (
     <>
       {pathName !== "/" && (
@@ -50,7 +50,7 @@ const Breadcrumb = () => {
                 case 1:
                   return (
                     <li key={index} className="breadcrumb-item">
-                      <span>{urlTree[breadcrumbs[0]] && urlTree[breadcrumbs[0]][el]}</span>
+                      <span>{urlTree[breadcrumbs[0]] && urlTree[breadcrumbs[0]][el]}  {id && (`/  ${id}`) }</span>
                     </li>
                   );
               }
