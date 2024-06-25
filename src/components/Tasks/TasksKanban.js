@@ -39,7 +39,7 @@ const TasksKanban = ({}) => {
             setTaskStatuses(taskStatuses);
 
             if (taskStatuses && taskStatuses.length > 0) {
-                API.getData("/task/list?order=priority", (tasks) => {
+                API.getData("/task/list?order=priority&filter_or_null[archived]=0&filter_or_null[closed]=0", (tasks) => {
                     let taskSorted = {};
 
                     if (tasks && tasks.length > 0) {
@@ -47,7 +47,7 @@ const TasksKanban = ({}) => {
                             taskSorted[taskStatus.id] = tasks.filter(task => task.taskStatusId == taskStatus.id)
                         })
                     }
-console.log(tasks)
+
                     setTasks(taskSorted)
                 });
             }
@@ -68,7 +68,6 @@ console.log(tasks)
 
 
     const moveCard = (dragIndex, hoverIndex, taskStatusId, hoverTaskStatusId) => {
-        console.log(dragIndex, hoverIndex, taskStatusId, hoverTaskStatusId);
         if (!taskStatusId) {
             return;
         }
@@ -135,8 +134,6 @@ console.log(tasks)
         return ("...");
     }
 
-    console.log(tasks[1])
-
     return (
         <>
 
@@ -155,7 +152,7 @@ console.log(tasks)
                     <div className="row d-flex flex-nowrap">
                         {taskStatuses.map((taskStatus, taskStatus_index) => (
                             <TasksKanbanColumn key={taskStatus.id}
-                                               setReloat={setReload}
+                                               setReload={setReload}
                                                tasks={tasks[taskStatus.id]}
                                                taskStatus={taskStatus}
                                                clients={clients}

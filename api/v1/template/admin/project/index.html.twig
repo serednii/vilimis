@@ -12,11 +12,13 @@
         <form action="{{ _router.generateUrl("admin_project") }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="form_edit_name">Název</label>
-                <input value="{{ project.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+                <input value="{{ project.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_budget">Rozpočet</label>
-                <input value="{{ project.Budget }}" type="number" name="budget" class="form-control" id="form_edit_budget">
+                <input step="1" value="{{ project.Budget }}" type="number" name="budget" class="form-control" id="form_edit_budget"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_client_id">Klient</label>
@@ -54,11 +56,13 @@
             </div>
             <div class="form-group">
                 <label for="form_edit_hour_rate">Hodinová sazba</label>
-                <input value="{{ project.HourRate }}" type="number" name="hour_rate" class="form-control" id="form_edit_hour_rate">
+                <input step="1" value="{{ project.HourRate }}" type="number" name="hour_rate" class="form-control" id="form_edit_hour_rate"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_hour_budget">Hodinový rozpočet</label>
-                <input value="{{ project.HourBudget }}" type="number" name="hour_budget" class="form-control" id="form_edit_hour_budget">
+                <input step="1" value="{{ project.HourBudget }}" type="number" name="hour_budget" class="form-control" id="form_edit_hour_budget"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_project_status_id">Stav projektu</label>
@@ -76,6 +80,42 @@
                     </option>
                     {% endfor %}
                 </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_web_id">Web</label>
+                <select name="web_id" class="form-control" id="form_edit_web_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for web_id in web_ids %}
+                        <option value="{{ web_id.id }}">
+                        {% if web_id.title %}
+                            {{ web_id.title }}
+                        {% elseif web_id.name %}
+                            {{ web_id.name }}
+                        {% else %}
+                            #{{ web_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input {% if project.Closed %}checked{% endif %} type="checkbox" name="closed" value="1" 
+                >
+                    Uzavřeno
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input {% if project.Archived %}checked{% endif %} type="checkbox" name="archived" value="1" 
+                >
+                    Archivováno
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_priority">Priorita</label>
+                <input step="1" value="{{ project.Priority }}" type="number" name="priority" class="form-control" id="form_edit_priority"
+                >
             </div>
             <button type="submit" class="btn btn-default">Přidat</button>
         </form>

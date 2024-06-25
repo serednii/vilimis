@@ -1,11 +1,11 @@
 import React from "react";
-import TaskForm from "./TaskForm";
+import ProjectForm from "./ProjectForm";
 import Modal from 'react-modal';
 
 Modal.setAppElement("#root");
 
-const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id }) => {
-    function onNewTask(task) {
+const ProjectFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id }) => {
+    function onNewProject(project) {
         setIsOpen(false);
 
         if (callback) {
@@ -29,9 +29,9 @@ const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callbac
                             <button onClick={onRequestClose} type="button" className="btn-close float-end"
                                     data-bs-dismiss="modal"
                                     aria-label="Close"></button>
-                            <h2>Úkol #{id}</h2>
+                            <h2>Projekt #{id}</h2>
 
-                            <TaskForm handleSave={onNewTask} id={id}/>
+                            <ProjectForm handleSave={onNewProject} id={id}/>
                         </div>
                     </div>
                 </div>
@@ -40,4 +40,4 @@ const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callbac
     );
 };
 
-export default TaskFormModal;
+export default ProjectFormModal;

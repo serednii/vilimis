@@ -58,7 +58,7 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustome
                 endCustomerContacts.map(endCustomerContact => {
                     let endCustomerContactValue = {
                         value: parseInt(endCustomerContact.id),
-                        label: endCustomerContact.name,
+                        label: endCustomerContact.name + " " + endCustomerContact.surname + (endCustomerContact.position ? " ("+endCustomerContact.position+")" : ""),
                         logo: endCustomerContact.logo ? CONFIG.uploadDir + endCustomerContact.logo : ""
                     };
                     options.push(endCustomerContactValue);

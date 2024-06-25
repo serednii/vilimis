@@ -122,6 +122,14 @@ class User implements UserInterface
      */
     private $perm_login_hash = "";
     
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column active
+     */
+    private $active = false;
+    
 
     public function __construct()
     {
@@ -363,6 +371,22 @@ class User implements UserInterface
     public function setPermLoginHash(string $perm_login_hash)
     {
         $this->perm_login_hash = $perm_login_hash;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param bool $active
+     */
+    public function setActive(bool $active)
+    {
+        $this->active = $active;
     }
 
 }

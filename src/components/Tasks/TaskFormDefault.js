@@ -57,6 +57,7 @@ const TaskFormDefault = ({id, handleSave}) => {
         <>
             {task && "name" in task && (
                 <form onSubmit={handleSubmit}>
+                    <input type="hidden" name="priority" value={task.priority}/>
                     <div className="row">
                         <div className="col-12 col-md-8">
                             <div className="mb-3">
@@ -78,6 +79,27 @@ const TaskFormDefault = ({id, handleSave}) => {
                                                         onChange={setSelectedTaskStatusId}/>
                                 <input type="hidden" name="task_status_id" value={selectedTaskStatusId}/>
                             </div>
+
+
+                            <div className="form-check form-switch">
+                                <input className="form-check-input"
+                                       name="closed"
+                                       defaultChecked={task.closed}
+                                       type="checkbox"
+                                       id="form_edit_closed"/>
+                                <label className="form-check-label" htmlFor="form_edit_closed">Uzavřeno</label>
+                            </div>
+
+                            <div className="form-check form-switch">
+                                <input className="form-check-input"
+                                       defaultChecked={task.archived}
+                                       name="archived"
+                                       type="checkbox"
+                                       id="form_edit_archived"/>
+                                <label className="form-check-label" htmlFor="form_edit_archived">Archivováno</label>
+                            </div>
+
+
                             <div className="mb-3">
                                 <label htmlFor="form_edit_dead_line_date">Termín</label>
                                 <input defaultValue={task.deadLineDateFormated} type="datetime-local"

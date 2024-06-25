@@ -155,6 +155,7 @@ class UserController
         $user->setRights(explode(";", $data["rights"]));
         $user->setPhone($data["phone"]);
         $user->setPermLoginHash($data["perm_login_hash"]);
+        $user->setActive((bool) isset($data["active"]) ? $data["active"] : false);
     }
 
     private function uploadFile(UploadedFileInterface $file): string

@@ -103,6 +103,13 @@
                 <input value="{{ user.PermLoginHash }}" type="text" name="perm_login_hash" class="form-control" id="form_edit_perm_login_hash"
                 >
             </div>
+            <div class="checkbox">
+                <label>
+                    <input {% if user.Active %}checked{% endif %} type="checkbox" name="active" value="1" 
+                >
+                    Je aktivní?
+                </label>
+            </div>
             <button type="submit" class="btn btn-default">Přidat</button>
         </form>
         <br/>

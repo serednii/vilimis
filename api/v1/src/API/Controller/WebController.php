@@ -14,7 +14,6 @@ use API\Service\JsonSerializator;
 use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
- * @Security ROLE_USER
  * @RoutePrefix /web
  */
 class WebController extends AbstractApiController

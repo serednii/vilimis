@@ -2,23 +2,23 @@
 
 namespace API\Controller;
 
-use API\Entity\Task;
-use API\Entity\TaskStatus;
-use API\Repository\TaskRepository;
+use API\Entity\Project;
+use API\Entity\ProjectStatus;
+use API\Repository\ProjectRepository;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use API\Service\JsonSerializator;
 use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
- * @RoutePrefix /taskPriority
+ * @RoutePrefix /projectPriority
  */
-class TaskPriorityController extends AbstractApiController
+class ProjectPriorityController extends AbstractApiController
 {
     /**
-     * @var TaskRepository
+     * @var ProjectRepository
      */
-    private $task_repository;
+    private $project_repository;
 
     /**
      * @var JsonResponseFactory
@@ -31,12 +31,12 @@ class TaskPriorityController extends AbstractApiController
     private $jsonSerializator;
 
     public function __construct(
-        TaskRepository $task_repository,
+        ProjectRepository $project_repository,
         JsonResponseFactory $jsonResponseFactory,
         JsonSerializator $jsonSerializator
     )
     {
-        $this->task_repository = $task_repository;
+        $this->project_repository = $project_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
     }
@@ -46,7 +46,7 @@ class TaskPriorityController extends AbstractApiController
     /**
      * @Route {
      *  "rule": "/save",
-     *  "name": "taskPriority_save"
+     *  "name": "projectPriority_save"
      * }
      */
     public function save()
@@ -54,15 +54,15 @@ class TaskPriorityController extends AbstractApiController
         $postData = Request::getParsedBody();
         $filesData = Request::getUploadedFiles();
 
-        if (!empty($postData["tasks"]) && is_array($postData["tasks"])) {
-            foreach ($postData["tasks"]["id"] as $key=>$id) {
-                /** @var Task $task */
-                $task = $this->task_repository->find($id);
+        if (!empty($postData["projects"]) && is_array($postData["projects"])) {
+            foreach ($postData["projects"]["id"] as $key=>$id) {
+                /** @var Project $project */
+                $project = $this->project_repository->find($id);
 
-                if ($task) {
-                    $task->setPriority($postData["tasks"]["priority"][$key]);
-                    $task->setTaskStatusId($postData["tasks"]["taskStatusId"][$key]);
-                    EntityManager::save($task);
+                if ($project) {
+                    $project->setPriority($postData["projects"]["priority"][$key]);
+                    $project->setProjectStatusId($postData["projects"]["projectStatusId"][$key]);
+                    EntityManager::save($project);
                 }
             }
 
@@ -83,13 +83,13 @@ class TaskPriorityController extends AbstractApiController
     /**
      * @Route {
      *  "rule": "/delete/{id}",
-     *  "name": "taskStatus_delete"
+     *  "name": "projectStatus_delete"
      * }
      */
     public function delete($id)
     {
-        $taskStatus = $this->taskStatus_repository->find($id);
-        EntityManager::remove($taskStatus);
+        $projectStatus = $this->projectStatus_repository->find($id);
+        EntityManager::remove($projectStatus);
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "message" => "Smazáno",
@@ -101,18 +101,18 @@ class TaskPriorityController extends AbstractApiController
     /**
      * @Route {
      *  "rule": "/deleteByFilter",
-     *  "name": "taskStatus_deleteByFilter"
+     *  "name": "projectStatus_deleteByFilter"
      * }
      */
     public function deleteByFilter()
     {
         $filter = $this->parseRequestFilter();
 
-        $taskStatuses = $this->taskStatus_repository->findBy($filter);
+        $projectStatuses = $this->projectStatus_repository->findBy($filter);
 
-        if (is_array($taskStatuses) && count($taskStatuses) > 0) {
-            foreach ($taskStatuses as $taskStatus) {
-                EntityManager::remove($taskStatus);
+        if (is_array($projectStatuses) && count($projectStatuses) > 0) {
+            foreach ($projectStatuses as $projectStatus) {
+                EntityManager::remove($projectStatus);
             }
         }
 
@@ -122,10 +122,10 @@ class TaskPriorityController extends AbstractApiController
         ]));
     }
 
-    private function mapEntityFromArray(TaskStatus $taskStatus, array $data, array $files) {
-        $taskStatus->setName($data["name"]);
-        $taskStatus->setColor($data["color"]);
-        $taskStatus->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
+    private function mapEntityFromArray(ProjectStatus $projectStatus, array $data, array $files) {
+        $projectStatus->setName($data["name"]);
+        $projectStatus->setColor($data["color"]);
+        $projectStatus->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
 }

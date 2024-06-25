@@ -19,7 +19,7 @@ const TasksListDashboard = ({}) => {
     useEffect(() => {
         if (!reload) return;
 
-        API.getData("/task/list", (tasks) => {
+        API.getData("/task/list?filter_or_null[archived]=0&filter_or_null[closed]=0", (tasks) => {
             setTasks(tasks);
         });
         API.getData("/client/list", (clients) => {

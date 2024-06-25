@@ -13,7 +13,6 @@ use API\Service\JsonSerializator;
 use Gephart\Framework\Response\JsonResponseFactory;
 use Gephart\Security\Configuration\SecurityConfiguration;
 /**
- * @Security ROLE_USER
  * @RoutePrefix /user
  */
 class UserController extends AbstractApiController
@@ -217,6 +216,7 @@ class UserController extends AbstractApiController
         $user->setRights(explode(";", $data["rights"]));
         $user->setPhone($data["phone"]);
         $user->setPermLoginHash($data["perm_login_hash"]);
+        $user->setActive((bool) isset($data["active"]) ? $data["active"] : false);
     }
 
     private function uploadFile(UploadedFileInterface $file): string
