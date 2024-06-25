@@ -1,16 +1,16 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {useRootContext} from "../../contexts/RootContext";
-import {NavLink} from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useRootContext } from "../../contexts/RootContext";
+import { NavLink } from "react-router-dom";
 import TasksKanbanItem from "./TasksKanbanItem";
 import TasksListItem from "./TasksListItem";
-import {HTML5Backend} from "react-dnd-html5-backend";
-import {DndProvider} from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
 import TasksKanbanColumn from "./TasksKanbanColumn";
 import update from 'immutability-helper'
 import TaskFormModal from "./TaskFormModal";
 
-const TasksKanban = ({}) => {
-    const {API} = useRootContext()
+const TasksKanban = ({ }) => {
+    const { API } = useRootContext()
     const [tasks, setTasks] = useState([]);
     const [taskStatuses, setTaskStatuses] = useState([]);
     const [clients, setClients] = useState([]);
@@ -47,7 +47,7 @@ const TasksKanban = ({}) => {
                             taskSorted[taskStatus.id] = tasks.filter(task => task.taskStatusId == taskStatus.id)
                         })
                     }
-console.log(tasks)
+                    console.log(tasks)
                     setTasks(taskSorted)
                 });
             }
@@ -75,23 +75,23 @@ console.log(tasks)
 
         if (taskStatusId == hoverTaskStatusId) {
             setTasks((prevCards) => {
-                    prevCards[taskStatusId] = update(prevCards[taskStatusId], {
-                        $splice: [
-                            [dragIndex, 1],
-                            [hoverIndex, 0, prevCards[taskStatusId][dragIndex]],
-                        ]
-                    })
+                prevCards[taskStatusId] = update(prevCards[taskStatusId], {
+                    $splice: [
+                        [dragIndex, 1],
+                        [hoverIndex, 0, prevCards[taskStatusId][dragIndex]],
+                    ]
+                })
 
-                    let formData = new FormData;
-                    prevCards[taskStatusId].forEach((card, index)=>{
-                        formData.append("tasks[id][]", card.id);
-                        formData.append("tasks[priority][]", index);
-                        formData.append("tasks[taskStatusId][]", taskStatusId);
-                    });
-                    API.postData("/taskPriority/save", formData);
+                let formData = new FormData;
+                prevCards[taskStatusId].forEach((card, index) => {
+                    formData.append("tasks[id][]", card.id);
+                    formData.append("tasks[priority][]", index);
+                    formData.append("tasks[taskStatusId][]", taskStatusId);
+                });
+                API.postData("/taskPriority/save", formData);
 
-                    return prevCards;
-                }
+                return prevCards;
+            }
             )
         } else if (taskStatusId > 0) {
             setTasks((prevCards) => {
@@ -111,12 +111,12 @@ console.log(tasks)
                 });
 
                 let formData = new FormData;
-                prevCards[taskStatusId].forEach((card, index)=>{
+                prevCards[taskStatusId].forEach((card, index) => {
                     formData.append("tasks[id][]", card.id);
                     formData.append("tasks[priority][]", index);
                     formData.append("tasks[taskStatusId][]", taskStatusId);
                 });
-                prevCards[hoverTaskStatusId].forEach((card, index)=>{
+                prevCards[hoverTaskStatusId].forEach((card, index) => {
                     formData.append("tasks[id][]", card.id);
                     formData.append("tasks[priority][]", index);
                     formData.append("tasks[taskStatusId][]", hoverTaskStatusId);
@@ -127,7 +127,7 @@ console.log(tasks)
                 return prevCards;
             });
         }
-        setReload((prev)=>prev+1);
+        setReload((prev) => prev + 1);
 
     };
 
@@ -155,26 +155,26 @@ console.log(tasks)
                     <div className="row d-flex flex-nowrap">
                         {taskStatuses.map((taskStatus, taskStatus_index) => (
                             <TasksKanbanColumn key={taskStatus.id}
-                                               setReloat={setReload}
-                                               tasks={tasks[taskStatus.id]}
-                                               taskStatus={taskStatus}
-                                               clients={clients}
-                                               endCustomers={endCustomers}
-                                               projects={projects}
-                                               moveCard={moveCard}/>
+                                setReloat={setReload}
+                                tasks={tasks[taskStatus.id]}
+                                taskStatus={taskStatus}
+                                clients={clients}
+                                endCustomers={endCustomers}
+                                projects={projects}
+                                moveCard={moveCard} />
                         ))}
                     </div>
                 </div>
             </DndProvider>
 
-                {modalIsOpen && (
-                    <TaskFormModal
-                        isOpen={modalIsOpen}
-                        onAfterOpen={afterOpenModal}
-                        onRequestClose={closeModal}
-                        setIsOpen={setIsOpen}
-                        callback={()=>setReload(true)}/>
-                )}
+            {modalIsOpen && (
+                <TaskFormModal
+                    isOpen={modalIsOpen}
+                    onAfterOpen={afterOpenModal}
+                    onRequestClose={closeModal}
+                    setIsOpen={setIsOpen}
+                    callback={() => setReload(true)} />
+            )}
         </>
     );
 };

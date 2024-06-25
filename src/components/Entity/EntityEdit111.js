@@ -1,37 +1,34 @@
 import { EntityContextProvider } from "./EntityContext";
 import { entityReducer, ENTITY_ACTIONS } from "../../reducers/entityReducer";
-import React, { useReducer, useState, useEffect, useRef } from "react";
+import React, { useReducer, useState, useEffect } from "react";
 import { CONFIG } from "../../config";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
+import { ACTIONS } from "../../reducer";
 import EntityDraggableElement from "./EntityDraggableElement";
 import { useParams } from "react-router-dom";
 import { useRootContext } from "../../contexts/RootContext";
 import { LOADER_ACTIONS } from "../../reducers/loaderReducer";
-import EntityEditFormModal from "./EntityEditFormModal";
 
-export const INITIAL_STATE = {
+const INITIAL_STATE = {
     entities: {},
     properties: {},
     propertiesSelected: {},
-    status: {},
+    status: {}
 }
 
 const EntityEdit = () => {
     const { id } = useParams();
-    const changeId = useRef(0);
     const [init, setInit] = useState(true);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(true);
     const [state, dispatch] = useReducer(entityReducer, INITIAL_STATE);
     const entity = Array.from(state.entities).find(e => e.id == id);
-    const [modalIsOpen, setModalIsOpen] = useState(false);
+
     const { loaderDispatch, toast } = useRootContext()
-    // console.log(state.propertiesSelected)
 
     const move = (fromIndex, toIndex) =>
         dispatch({ action: ENTITY_ACTIONS.MOVE_PROPERTY, fromIndex, toIndex });
-
     const find = (_id) => Array.from(state.propertiesSelected).findIndex((entity) => entity.id == _id)
 
     useEffect(() => {
@@ -106,6 +103,7 @@ const EntityEdit = () => {
         return false;
     }
 
+
     const sendItemsForm = async (event) => {
         event.preventDefault();
 
@@ -118,37 +116,14 @@ const EntityEdit = () => {
 
         await postData(CONFIG.api + CONFIG.endpointEntityItemsEdit, object);
         setInit(!init);
+
         return false;
     }
 
-    const handleOpenModal = (id) => {
-        changeId.current = id
-        setModalIsOpen(true)
-    }
-
-    const closeModal = () => {
-        changeId.current = null;
-        setModalIsOpen(false)
-    }
-
-    const changPropertiesSelectedObjId = (obj) => {
-        closeModal();
-        dispatch({
-            action: ENTITY_ACTIONS.CHANGE_PROPERTY,
-            obj
-        });
-    }
-
-    const handleDelete = (entityId) => {
-        dispatch({
-            action: ENTITY_ACTIONS.DELETE_PROPERTY,
-            entityId
-        });
-    }
 
     return (
         <EntityContextProvider
-            value={{ ...state, dispatch, find, move, changPropertiesSelectedObjId, id: changeId.current }}
+            value={{ ...state, dispatch, find, move }}
         >
             {loading ? (
                 <p>Načítání ...</p>
@@ -225,59 +200,41 @@ const EntityEdit = () => {
 
                                 <DndProvider backend={HTML5Backend}>
                                     <div className={"gephart-generator-entity-list"}>
-
-                                        <div className="table-responsive">
-                                            <table className="table table-centered table-nowrap mb-0 rounded">
-                                                {/* <thead className="thead-light">
-                                                    <tr>
-                                                        <th className="border-0 rounded-start">Název</th>
-                                                        <th className="border-0">Slug</th>
-                                                        <th className="border-0">Typ</th>
-                                                        <th className="border-0 rounded-end">Akce</th>
-                                                    </tr>
-                                                </thead> */}
-                                                {Array.from(state.propertiesSelected).map((item, key) => (<>
-                                                    <EntityDraggableElement id={item.id} key={item.id} index={key}>
-                                                        <input type="hidden" name={"id[" + key + "]"} value={item.id} />
-                                                        <input type="hidden" name={"sort[" + key + "]"} value={key} />
-                                                        <tbody>
-                                                            <tr>
-                                                                <td >
-                                                                    <input type="text" readOnly
-                                                                        name={"name[" + key + "]"} value={item.name}
-                                                                        className="form-control" id={"property-name_" + key}
-                                                                    />
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" readOnly
-                                                                        name={"slug[" + key + "]"} value={item.slug}
-                                                                        className="form-control" id={"property-slug_" + key}
-                                                                    />
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" readOnly
-                                                                        name={"type[" + key + "]"} value={item.type}
-                                                                        className="form-control" id={"property-type_" + key}
-                                                                    />
-                                                                </td>
-                                                                <td>
-                                                                    <button
-                                                                        className="btn btn-sm btn-primary mx-1"
-                                                                        onClick={() => handleOpenModal(item.id)}
-                                                                        type="button"
-                                                                    >Upravit</button>
-                                                                    <button
-                                                                        onClick={() => window.confirm("Opravdu smazat?") && handleDelete(item.id)}
-                                                                        className="btn btn-sm btn-danger mx-1" type="button">Smazat</button>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </EntityDraggableElement>
-                                                </>
-                                                ))}
-                                            </table>
-                                        </div>
-
+                                        {Array.from(state.propertiesSelected).map((item, key) => (
+                                            <EntityDraggableElement id={item.id} key={item.id} index={key}>
+                                                <input type="hidden" name={"id[" + key + "]"} value={item.id} />
+                                                <input type="hidden" name={"sort[" + key + "]"} value={key} />
+                                                <div className="row">
+                                                    <div className="col-12 col-md-auto">
+                                                        <div className="mb-4">
+                                                            <label htmlFor={"property-name_" + key}>Název</label>
+                                                            <input type="text"
+                                                                name={"name[" + key + "]"} defaultValue={item.name}
+                                                                className="form-control" id={"property-name_" + key}
+                                                                required />
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-12 col-md-auto">
+                                                        <div className="mb-4">
+                                                            <label htmlFor={"property-slug_" + key}>Slug</label>
+                                                            <input type="text"
+                                                                name={"slug[" + key + "]"} defaultValue={item.slug}
+                                                                className="form-control" id={"property-slug_" + key}
+                                                                required />
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-12 col-md-auto">
+                                                        <div className="mb-4">
+                                                            <label htmlFor={"property-type_" + key}>Typ</label>
+                                                            <input type="text"
+                                                                name={"type[" + key + "]"} defaultValue={item.type}
+                                                                className="form-control" id={"property-type_" + key}
+                                                                required />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </EntityDraggableElement>
+                                        ))}
                                         <div className={"gephart-generator-entity-item-wrap"}>
                                             <button onClick={() => dispatch({ action: ENTITY_ACTIONS.ADD_PROPERTY, entityId: id })} type="button" className={"btn btn-secondary"}>
                                                 Přidat
@@ -288,15 +245,6 @@ const EntityEdit = () => {
 
                             </div>
                         </form>
-
-                        {modalIsOpen && (
-                            <EntityEditFormModal
-                                setModalIsOpen={setModalIsOpen}
-                                id={changeId.current}
-                                isOpen={modalIsOpen}
-                                onRequestClose={closeModal}
-                            />
-                        )}
 
                     </div>
                 )

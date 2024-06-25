@@ -1,8 +1,8 @@
-import React, {useRef, useState} from "react";
+import React, { useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import styles from "../../styles";
-import {heightBetweenCursorAndMiddle} from "../../utils";
-import {useEntityContext} from "./EntityContext";
+import { heightBetweenCursorAndMiddle } from "../../utils";
+import { useEntityContext } from "./EntityContext";
 
 const EntityDraggableElement = ({
   id,
@@ -23,7 +23,7 @@ const EntityDraggableElement = ({
       isDragging: monitor.getItem() && monitor.getItem().id === id
     }),
   });
-  const [{isOver, isOverCurrent, canDrop}, drop] = useDrop({
+  const [{ isOver, isOverCurrent, canDrop }, drop] = useDrop({
     accept: "entity",
     collect: (monitor) => ({
       isOver: monitor.isOver(),
@@ -42,17 +42,17 @@ const EntityDraggableElement = ({
 
       // When the elements have the same parent
       // We perform the move when the mouse has crossed half of the element height
-      const height = heightBetweenCursorAndMiddle(refPreview.current, monitor)+24;
+      const height = heightBetweenCursorAndMiddle(refPreview.current, monitor) + 24;
       let destination;
       const elementIndex = find(element.id);
 
-        if ((elementIndex < index && height < 0)) {
-          index--;
-        }
-        if (elementIndex > index && height > 0) {
-          index++;
-        }
-        destination = index;
+      if ((elementIndex < index && height < 0)) {
+        index--;
+      }
+      if (elementIndex > index && height > 0) {
+        index++;
+      }
+      destination = index;
 
       const source = elementIndex;
 
@@ -68,7 +68,7 @@ const EntityDraggableElement = ({
       if (element.id === id) {
         return;
       }
-      const height = heightBetweenCursorAndMiddle(refPreview.current, monitor)+24;
+      const height = heightBetweenCursorAndMiddle(refPreview.current, monitor) + 24;
 
       if (height < 0) {
         isTop = true;
@@ -87,20 +87,19 @@ const EntityDraggableElement = ({
   drop(refPreview);
   const draggingStyle = isDragging ? "gephart-generator-entity-item-wrap-dragging" : null;
   const overStyle = isOverCurrent && canDrop ? "gephart-generator-entity-item-wrap-over" : null;
-  const topStyle = isOverCurrent && isTop ? "gephart-generator-entity-item-wrap-overTop": null;
-  const downStyle = isOverCurrent && isDown ? "gephart-generator-entity-item-wrap-overDown": null;
+  const topStyle = isOverCurrent && isTop ? "gephart-generator-entity-item-wrap-overTop" : null;
+  const downStyle = isOverCurrent && isDown ? "gephart-generator-entity-item-wrap-overDown" : null;
 
   return (
     <div ref={refPreview}  {...props}
-         className={["gephart-generator-entity-item-wrap", draggingStyle, overStyle, topStyle, downStyle].join(" ")}>
+      className={["gephart-generator-entity-item-wrap", draggingStyle, overStyle, topStyle, downStyle].join(" ")}>
       <div ref={drag} style={styles.draggable} />
       <div className={"clearfix"}>
-      <div className={"gephart-generator-entity-item"}>
-
-        <div className="gephart-generator-entity-item-text">
-      {children}
+        <div className={"gephart-generator-entity-item"}>
+          <div className="gephart-generator-entity-item-text">
+            {children}
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );
