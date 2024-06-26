@@ -2,6 +2,7 @@
 
 namespace API\Entity;
 
+
 /**
  * @ORM\Table client
  * @Serializable

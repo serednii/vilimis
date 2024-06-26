@@ -1,20 +1,25 @@
 import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import {NavLink} from "react-router-dom";
+import {CONFIG} from "../../config";
 
 const ClientsList = ({}) => {
     const {API} = useRootContext()
-    const [clients, setClients] = useState([]);
+    const [clients, setClients] = useState([])
+    const [clientContacts, setClientContacts] = useState([]);
 
     useEffect(() => {
-        API.getData("/client/list", (clients) => {
+        API.getData("/client/list?order=name", (clients) => {
             setClients(clients);
+        });
+        API.getData("/clientContact/list", (clientContacts) => {
+            setClientContacts(clientContacts);
         });
     }, []);
 
     function handleDelete(id) {
         API.getData("/client/delete/"+id, ()=>{
-            API.getData("/client/list", (clients) => {
+            API.getData("/client/list?order=name", (clients) => {
                 setClients(clients);
             });
         });
@@ -29,6 +34,53 @@ const ClientsList = ({}) => {
             <div className="my-3">
                 <NavLink to="/clients/new" className="btn btn-primary" type="button">Nový klient</NavLink>
             </div>
+            {clients && clients.length && clients.map((client) => (
+                <div className="card border-0 shadow mb-4" key={client.id}>
+                    <div className="card-body">
+                        {client.logo && client.logo.length > 0 && (
+                            <img src={CONFIG.uploadDir + client.logo} className="float-end"
+                                 style={{maxWidth: "200px"}}/>
+                        )}
+
+                        <h2 className="h5 mb-3">{client.name}</h2>
+
+                        <table className="table table-bordered w-auto mb-3">
+                            <tbody>
+                            <tr>
+                                <td>IČ:</td>
+                                <td>{client.ic}</td>
+                            </tr>
+                            <tr>
+                                <td>DIČ:</td>
+                                <td>{client.dic}</td>
+                            </tr>
+                            <tr>
+                                <td>Adresa:</td>
+                                <td>{client.address}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table className="table table-bordered table-centered table-nowrap mb-0">
+                            <tbody>
+                            {clientContacts?.filter(clientContact => clientContact.clientId == client.id)?.map(clientContact => (
+                                    <tr key={clientContact.id}>
+                                        <td>
+                                            {clientContact.photo && clientContact.photo.length > 0 && (
+                                                <img src={CONFIG.uploadDir + clientContact.photo}
+                                                     style={{maxWidth: "40px"}}/>
+                                            )}
+                                        </td>
+                                        <td>{clientContact.name} {clientContact.surname}</td>
+                                        <td>{clientContact.position}</td>
+                                        <td>{clientContact.email}</td>
+                                        <td>{clientContact.phone}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+                ))}
 
             <div className="card border-0 shadow mb-4">
                 <div className="card-body">

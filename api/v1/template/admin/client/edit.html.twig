@@ -7,39 +7,48 @@
     <form action="{{ _router.generateUrl("admin_client_edit", {"id":client.id}) }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="form_edit_name">Název</label>
-                <input value="{{ client.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+                <input value="{{ client.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_address">Adresa</label>
-                <textarea class="form-control" name="address" rows="10" id="form_edit_address">{{ client.Address }}</textarea>
+                <textarea class="form-control" name="address" rows="10" id="form_edit_address"
+                >{{ client.Address }}</textarea>
             </div>
             <div class="form-group">
                 <label for="form_edit_ic">IČ</label>
-                <input value="{{ client.Ic }}" type="text" name="ic" class="form-control" id="form_edit_ic">
+                <input value="{{ client.Ic }}" type="text" name="ic" class="form-control" id="form_edit_ic"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_dic">DIČ</label>
-                <input value="{{ client.Dic }}" type="text" name="dic" class="form-control" id="form_edit_dic">
+                <input value="{{ client.Dic }}" type="text" name="dic" class="form-control" id="form_edit_dic"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_hour_rate">Hodinová sazba</label>
-                <input value="{{ client.HourRate }}" type="number" name="hour_rate" class="form-control" id="form_edit_hour_rate">
+                <input step="1" value="{{ client.HourRate }}" type="number" name="hour_rate" class="form-control" id="form_edit_hour_rate"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_email">Email</label>
-                <input value="{{ client.Email }}" type="text" name="email" class="form-control" id="form_edit_email">
+                <input value="{{ client.Email }}" type="text" name="email" class="form-control" id="form_edit_email"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_phone">Telefon</label>
-                <input value="{{ client.Phone }}" type="text" name="phone" class="form-control" id="form_edit_phone">
+                <input value="{{ client.Phone }}" type="text" name="phone" class="form-control" id="form_edit_phone"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_web">Web</label>
-                <input value="{{ client.Web }}" type="text" name="web" class="form-control" id="form_edit_web">
+                <input value="{{ client.Web }}" type="text" name="web" class="form-control" id="form_edit_web"
+                >
             </div>
             <div class="form-group">
                 <label for="form_new_logo">Logo</label>
-                <input type="file" name="logo" class="form-control" id="form_new_logo">
+                <input type="file" name="logo" class="form-control" id="form_new_logo"
+                >
                 {% if client.Logo %}
                     <img style="width:auto;height:auto;max-width:200px;max-height:200px" src="upload/{{ client.Logo }}">
                     <br/><label><input type="checkbox" name="logo_delete"> Smazat</label>

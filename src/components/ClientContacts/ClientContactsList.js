@@ -4,18 +4,18 @@ import {NavLink} from "react-router-dom";
 
 const ClientContactsList = ({}) => {
     const {API} = useRootContext()
-    const [clients, setEndConsumers] = useState([]);
+    const [clientContacts, setClientContacts] = useState([]);
 
     useEffect(() => {
-        API.getData("/clientContact/list", (clients) => {
-            setEndConsumers(clients);
+        API.getData("/clientContact/list", (clientContacts) => {
+            setClientContacts(clientContacts);
         });
     }, []);
 
     function handleDelete(id) {
         API.getData("/clientContact/delete/"+id, ()=>{
-            API.getData("/clientContact/list", (clients) => {
-                setEndConsumers(clients);
+            API.getData("/clientContact/list", (clientContacts) => {
+                setClientContacts(clientContacts);
             });
         });
     }
@@ -45,7 +45,7 @@ const ClientContactsList = ({}) => {
                             </tr>
                             </thead>
                             <tbody>
-                            {clients && clients.length && clients.map((client, client_key) => (
+                            {clientContacts && clientContacts.length && clientContacts.map((client, client_key) => (
                                 <tr key={client_key}>
                                     <td><NavLink to={"/client-contacts/edit/" + client.id}
                                                  className="text-primary fw-bold">{client.id}</NavLink></td>

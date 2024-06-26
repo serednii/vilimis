@@ -14,7 +14,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 /**
  * @RoutePrefix /client
  */
-class ClientController
+class ClientController extends AbstractApiController
 {
     /**
      * @var ClientRepository
@@ -30,6 +30,7 @@ class ClientController
      * @var JsonSerializator
      */
     private $jsonSerializator;
+
 
     public function __construct(
         ClientRepository $client_repository,
@@ -50,9 +51,20 @@ class ClientController
      */
     public function index()
     {
-        $clients = $this->client_repository->findBy([], [
-            "ORDER BY" => "id DESC"
-        ]);
+        try {
+            $filter = $this->parseRequestFilter();
+
+            $params = [];
+            $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
+            $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
+
+            $clients = $this->client_repository->findBy($filter, $params);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 500
+            ]));
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "data" => $clients
@@ -138,6 +150,31 @@ class ClientController
     {
         $client = $this->client_repository->find($id);
         EntityManager::remove($client);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "client_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $clients = $this->client_repository->findBy($filter);
+
+        if (is_array($clients) && count($clients) > 0) {
+            foreach ($clients as $client) {
+                EntityManager::remove($client);
+            }
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "message" => "Smazáno",
