@@ -3,6 +3,7 @@ import {CONFIG} from "../../config";
 import ProjectFormModal from "../Projects/ProjectFormModal";
 import {useDrag, useDrop} from 'react-dnd'
 import {heightBetweenCursorAndMiddle} from "../../utils";
+import BudgetCalculator from "../../utils/BudgetCalculator";
 
 const ProjectsKanbanItem = ({index, id, onUpdate, project, endCustomers, clients, moveCard, projectStatusId}) => {
     let dateP1 = new Date((new Date()).getTime() + 24 * 60 * 60 * 1000);
@@ -127,6 +128,8 @@ const ProjectsKanbanItem = ({index, id, onUpdate, project, endCustomers, clients
     const topStyle = isOverCurrent && isTop ? " card-item-wrap-overTop": "";
     const downStyle = isOverCurrent && isDown ? " card-item-wrap-overDown": "";
 
+    let tmpClient = null;
+
     return (
         <>
             <div ref={ref} style={{opacity: isDragging ? 0.5 : 1}} className={"card card-item-wrap border-0 shadow p-4 "+ topStyle+ downStyle}
@@ -185,11 +188,26 @@ const ProjectsKanbanItem = ({index, id, onUpdate, project, endCustomers, clients
                                         {project.name}
                                         {"clientId" in project && project.clientId && clients.filter(client => client.id === project.clientId).map((client, client_index) => (
                                             <React.Fragment key={client_index}>
+                                                {(tmpClient = client) && ""}
                                                 &nbsp;/ {client.name}
                                             </React.Fragment>
                                         ))}
                                     </React.Fragment>
                             </p></div>
+                        {project.spendingTime > 0 ? (
+                            <>
+                                <div>
+                                    Strávený čas: {(new BudgetCalculator(project.spendingTime, null, project, tmpClient)).calculareSpendingHoursNicely()}
+                                    {project?.hourBudget > 0 && (
+                                        <>
+                                        &nbsp;
+                                    (zbývá: {(new BudgetCalculator(project.spendingTime, null, project, tmpClient)).calculateLeftHoursBudgetNicely()})
+                                        </>
+                                    )}<br/>
+                                    Častka: {(new BudgetCalculator(project.spendingTime, null, project, tmpClient)).calculareForInvoincingNicely("Kč")}
+                                </div>
+                            </>
+                        ): ""}
                     </div>
 
 

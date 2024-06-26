@@ -37,10 +37,17 @@ const ClientsList = ({}) => {
             {clients && clients.length && clients.map((client) => (
                 <div className="card border-0 shadow mb-4" key={client.id}>
                     <div className="card-body">
-                        {client.logo && client.logo.length > 0 && (
-                            <img src={CONFIG.uploadDir + client.logo} className="float-end"
-                                 style={{maxWidth: "200px"}}/>
-                        )}
+                        <div className="float-end text-end">
+
+                            <div className="mb-3">
+                            <NavLink to={"/clients/edit/"+client.id} className="btn btn-sm btn-primary" type="button">Upravit</NavLink>
+
+                            </div>
+                            {client.logo && client.logo.length > 0 && (
+                                <img src={CONFIG.uploadDir + client.logo}
+                                     style={{maxWidth: "200px"}}/>
+                            )}
+                        </div>
 
                         <h2 className="h5 mb-3">{client.name}</h2>
 
@@ -74,6 +81,10 @@ const ClientsList = ({}) => {
                                         <td>{clientContact.position}</td>
                                         <td>{clientContact.email}</td>
                                         <td>{clientContact.phone}</td>
+                                        <td>
+
+                                            <NavLink to={"/client-contacts/edit/"+clientContact.id} className="btn btn-sm btn-primary" type="button">Upravit</NavLink>
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -82,6 +93,7 @@ const ClientsList = ({}) => {
                 </div>
                 ))}
 
+            {/*
             <div className="card border-0 shadow mb-4">
                 <div className="card-body">
                     <div className="table-responsive">
@@ -127,6 +139,7 @@ const ClientsList = ({}) => {
                     </div>
                 </div>
             </div>
+                    */}
         </>
     );
 };

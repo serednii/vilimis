@@ -7,6 +7,8 @@ use API\Entity\{{ module.entityName }};
 {% for entity in entities %}
 use API\Repository\{{ entity }}Repository;
 {% endfor %}
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -21,6 +23,13 @@ use Gephart\Security\Configuration\SecurityConfiguration;{% set break = true %}
  */
 class {{ module.entityName }}Controller
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var {{ module.entityName }}Repository
      */
@@ -49,6 +58,7 @@ class {{ module.entityName }}Controller
         SecurityConfiguration $security_configuration,
 {% set break = true %}
 {% endif %}{% endfor %}
+        EventManager $eventManager,
         {{ module.entityName }}Repository ${{ module.slugSingular }}_repository
     )
     {
@@ -59,6 +69,7 @@ class {{ module.entityName }}Controller
         $this->security_configuration = $security_configuration;
 {% set break = true %}
 {% endif %}{% endfor %}
+        $this->eventManager = $eventManager;
         $this->{{ module.slugSingular }}_repository = ${{ module.slugSingular }}_repository;
     }
 
@@ -113,6 +124,7 @@ class {{ module.entityName }}Controller
             $this->mapEntityFromArray(${{ module.slugSingular }}, $postData, $filesData);
 
             EntityManager::save(${{ module.slugSingular }});
+            ${{ module.slugSingular }} = $this->triggerSave(${{ module.slugSingular }});
 
             Router::redirectTo("admin_{{ module.slugSingular }}_edit", ["id"=>${{ module.slugSingular }}->getId()]);
         }
@@ -196,4 +208,17 @@ class {{ module.entityName }}Controller
 {% set break = true %}
 {% endif %}
 {% endif %}{% endfor %}
+
+    private function triggerSave({{ module.entityName }} ${{ module.slugSingular }}): {{ module.entityName }}
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "{{ module.slugSingular }}" => ${{ module.slugSingular }}
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("{{ module.slugSingular }}");
+    }
 }

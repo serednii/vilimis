@@ -9,6 +9,8 @@ use API\Repository\ClientRepository;
 use API\Repository\EndCustomerRepository;
 use API\Repository\ProjectStatusRepository;
 use API\Repository\WebRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -20,6 +22,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class ProjectController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ProjectRepository
      */
@@ -51,6 +60,7 @@ class ProjectController
         EndCustomerRepository $end_customer_id_repository,
         ProjectStatusRepository $project_status_id_repository,
         WebRepository $web_id_repository,
+        EventManager $eventManager,
         ProjectRepository $project_repository
     )
     {
@@ -58,6 +68,7 @@ class ProjectController
         $this->end_customer_id_repository = $end_customer_id_repository;
         $this->project_status_id_repository = $project_status_id_repository;
         $this->web_id_repository = $web_id_repository;
+        $this->eventManager = $eventManager;
         $this->project_repository = $project_repository;
     }
 
@@ -114,6 +125,7 @@ class ProjectController
             $this->mapEntityFromArray($project, $postData, $filesData);
 
             EntityManager::save($project);
+            $project = $this->triggerSave($project);
 
             Router::redirectTo("admin_project_edit", ["id"=>$project->getId()]);
         }
@@ -159,6 +171,20 @@ class ProjectController
         $project->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
         $project->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
         $project->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
+        $project->setSpendingTime(isset($data["spending_time"]) ? (int) $data["spending_time"] : 0);
     }
 
+
+    private function triggerSave(Project $project): Project
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "project" => $project
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("project");
+    }
 }

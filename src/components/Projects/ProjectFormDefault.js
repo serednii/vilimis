@@ -55,6 +55,8 @@ const ProjectFormDefault = ({id, handleSave}) => {
         <>
             {project && "name" in project && (
                 <form onSubmit={handleSubmit}>
+                    <input type="hidden" name="spending_time" value={project.spendingTime}/>
+
                     <div className="mb-3">
                         <label htmlFor="form_edit_client_id">Klient</label>
                         <ClientsSelectList selected={project.clientId} onChange={setSelectedClientId}/>
@@ -67,7 +69,8 @@ const ProjectFormDefault = ({id, handleSave}) => {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="form_edit_client_id">Stav projektu</label>
-                        <ProjectStatusesSelectList selected={project.projectStatusId} onChange={setSelectedProjectStatusId}/>
+                        <ProjectStatusesSelectList selected={project.projectStatusId}
+                                                   onChange={setSelectedProjectStatusId}/>
                         <input type="hidden" name="project_status_id" value={selectedProjectStatusId}/>
                     </div>
                     <div className="mb-3">

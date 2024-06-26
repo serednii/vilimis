@@ -2,25 +2,45 @@ import React from "react";
 import ProjectFormDefault from "./ProjectFormDefault";
 import ProjectDatesList from "../ProjectDates/ProjectDatesList";
 import SessionsList from "../Sessions/SessionsList";
+import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
+import CommentsList from "../Comments/CommentsList";
+import AttachmentsList from "../Attachment/AttachmentsList";
 
 const ProjectForm = ({id, handleSave}) => {
     return (
         <>
             {id && id > 0 ? (
-                <div className="row">
-                    <div className="col-12 col-md-6">
-                        <h5>Nastavení</h5>
-                        <ProjectFormDefault id={id} handleSave={handleSave}/>
-                    </div>
-                    <div className="col-12 col-md-3">
-                        <h5>Data projektu</h5>
-                        <ProjectDatesList projectId={id}/>
-                    </div>
-                    <div className="col-12 col-md-3">
-                        <h5>Setkání</h5>
-                        <SessionsList projectId={id}/>
-                    </div>
-                </div>
+                <Tabs>
+                    <TabList>
+                        <Tab>Nastavení</Tab>
+                        <Tab>Poznámky</Tab>
+                        <Tab>Přílohy</Tab>
+                    </TabList>
+                    <TabPanel>
+                        <div className="row">
+                            <div className="col-12 col-md-6">
+                                <h5>Nastavení</h5>
+                                <ProjectFormDefault id={id} handleSave={handleSave}/>
+                            </div>
+                            <div className="col-12 col-md-3">
+                                <h5>Data projektu</h5>
+                                <ProjectDatesList projectId={id}/>
+                            </div>
+                            <div className="col-12 col-md-3">
+                                <h5>Setkání</h5>
+                                <SessionsList projectId={id}/>
+                            </div>
+                        </div>
+                    </TabPanel>
+
+                    <TabPanel>
+                        <CommentsList entity="project" entityId={id} />
+                    </TabPanel>
+
+                    <TabPanel>
+                        <AttachmentsList entity="project" entityId={id} />
+                    </TabPanel>
+                </Tabs>
             ) : (
                 <ProjectFormDefault id={id} handleSave={handleSave}/>
             )}

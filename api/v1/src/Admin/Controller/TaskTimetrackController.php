@@ -6,6 +6,8 @@ use Admin\Facade\AdminResponse;
 use API\Entity\TaskTimetrack;
 use API\Repository\TaskTimetrackRepository;
 use API\Repository\TaskRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -17,6 +19,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class TaskTimetrackController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var TaskTimetrackRepository
      */
@@ -30,10 +39,12 @@ class TaskTimetrackController
 
     public function __construct(
         TaskRepository $task_id_repository,
+        EventManager $eventManager,
         TaskTimetrackRepository $taskTimetrack_repository
     )
     {
         $this->task_id_repository = $task_id_repository;
+        $this->eventManager = $eventManager;
         $this->taskTimetrack_repository = $taskTimetrack_repository;
     }
 
@@ -84,6 +95,7 @@ class TaskTimetrackController
             $this->mapEntityFromArray($taskTimetrack, $postData, $filesData);
 
             EntityManager::save($taskTimetrack);
+            $taskTimetrack = $this->triggerSave($taskTimetrack);
 
             Router::redirectTo("admin_taskTimetrack_edit", ["id"=>$taskTimetrack->getId()]);
         }
@@ -113,8 +125,21 @@ class TaskTimetrackController
 
     private function mapEntityFromArray(TaskTimetrack $taskTimetrack, array $data, array $files) {
         $taskTimetrack->setTaskId(!empty($data["task_id"]) ? (int) $data["task_id"] : null);
-        $taskTimetrack->setDatetimeStart(new \DateTime($data["datetime_start"]));
-        $taskTimetrack->setDatetimeStop(new \DateTime($data["datetime_stop"]));
+        $taskTimetrack->setDatetimeStart(!empty($data["datetime_start"]) ? new \DateTime($data["datetime_start"]) : null);
+        $taskTimetrack->setDatetimeStop(!empty($data["datetime_stop"]) ? new \DateTime($data["datetime_stop"]) : null);
     }
 
+
+    private function triggerSave(TaskTimetrack $taskTimetrack): TaskTimetrack
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "taskTimetrack" => $taskTimetrack
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("taskTimetrack");
+    }
 }

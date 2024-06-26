@@ -5,6 +5,8 @@ namespace Admin\Controller;
 use Admin\Facade\AdminResponse;
 use API\Entity\TaskStatus;
 use API\Repository\TaskStatusRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -16,6 +18,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class TaskStatusController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var TaskStatusRepository
      */
@@ -105,4 +114,17 @@ class TaskStatusController
         $taskStatus->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
+
+    private function triggerSave(TaskStatus $taskStatus): TaskStatus
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "taskStatus" => $taskStatus
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("taskStatus");
+    }
 }

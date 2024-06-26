@@ -8,6 +8,8 @@ import {DndProvider} from "react-dnd";
 import TasksKanbanColumn from "./TasksKanbanColumn";
 import update from 'immutability-helper'
 import TaskFormModal from "./TaskFormModal";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import TasksKanbanSettingsModal from "./TasksKanbanSettingsModal";
 
 const TasksKanban = ({}) => {
     const {API} = useRootContext()
@@ -19,17 +21,33 @@ const TasksKanban = ({}) => {
     const [projects, setProjects] = useState([]);
     const [endCustomers, setEndCustomers] = useState([]);
 
+    const defaultSettingsLocal = localStorage.getItem("tasks_kanban_settings");
+    const defaultSettings = defaultSettingsLocal ? JSON.parse(defaultSettingsLocal) : {
+        showArchived: false,
+        showClosed: false,
+        showTaskStatuses: null
+    };
+
+    const [settings, setSettings] = useState(defaultSettings);
+
+    useEffect(() => {
+        if (settings.showTaskStatuses === null && taskStatuses?.length > 0) {
+            settings.showTaskStatuses = taskStatuses.map((taskStatus)=>taskStatus.id);
+        }
+        localStorage.setItem("tasks_kanban_settings", JSON.stringify(settings));
+    }, [settings]);
 
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
+    const [modalIsSettingsOpen, setIsSettingsOpen] = React.useState(false);
     const [modalTaskId, setModalTaskId] = React.useState(0);
-
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-    }
 
     function closeModal() {
         setIsOpen(false);
+    }
+
+    function closeSettingsModal() {
+        setIsSettingsOpen(false);
     }
 
     useEffect(() => {
@@ -39,7 +57,14 @@ const TasksKanban = ({}) => {
             setTaskStatuses(taskStatuses);
 
             if (taskStatuses && taskStatuses.length > 0) {
-                API.getData("/task/list?order=priority&filter_or_null[archived]=0&filter_or_null[closed]=0", (tasks) => {
+                let url = "/task/list?order=priority";
+                if (!settings.showArchived) {
+                    url += "&filter_or_null[archived]=0";
+                }
+                if (!settings.showClosed) {
+                    url += "&filter_or_null[closed]=0";
+                }
+                API.getData(url, (tasks) => {
                     let taskSorted = {};
 
                     if (tasks && tasks.length > 0) {
@@ -82,7 +107,7 @@ const TasksKanban = ({}) => {
                     })
 
                     let formData = new FormData;
-                    prevCards[taskStatusId].forEach((card, index)=>{
+                    prevCards[taskStatusId].forEach((card, index) => {
                         formData.append("tasks[id][]", card.id);
                         formData.append("tasks[priority][]", index);
                         formData.append("tasks[taskStatusId][]", taskStatusId);
@@ -110,12 +135,12 @@ const TasksKanban = ({}) => {
                 });
 
                 let formData = new FormData;
-                prevCards[taskStatusId].forEach((card, index)=>{
+                prevCards[taskStatusId].forEach((card, index) => {
                     formData.append("tasks[id][]", card.id);
                     formData.append("tasks[priority][]", index);
                     formData.append("tasks[taskStatusId][]", taskStatusId);
                 });
-                prevCards[hoverTaskStatusId].forEach((card, index)=>{
+                prevCards[hoverTaskStatusId].forEach((card, index) => {
                     formData.append("tasks[id][]", card.id);
                     formData.append("tasks[priority][]", index);
                     formData.append("tasks[taskStatusId][]", hoverTaskStatusId);
@@ -126,7 +151,7 @@ const TasksKanban = ({}) => {
                 return prevCards;
             });
         }
-        setReload((prev)=>prev+1);
+        setReload((prev) => prev + 1);
 
     };
 
@@ -142,15 +167,29 @@ const TasksKanban = ({}) => {
             </div>
 
             <div className="my-3">
-                <button onClick={() => {
-                    setIsOpen(true)
-                }} className="btn btn-primary" type="button">Nový úkol</button>
+                <div className="row">
+                    <div className="col-6">
+                        <button onClick={() => setIsOpen(true)}
+                                className="btn btn-secondary d-inline-flex align-items-center me-2">
+                            <FontAwesomeIcon icon={["fas", "plus"]} className="me-2"/>
+                            Nový úkol
+                        </button>
+                    </div>
+                    <div className="col-6 text-end">
+                        <div className="btn-group">
+                            <button onClick={() => setIsSettingsOpen(true)}
+                                    className="btn btn-gray-800">
+                                <FontAwesomeIcon icon={["fas", "gear"]}/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <DndProvider backend={HTML5Backend}>
                 <div className="container-fluid kanban-container py-4 px-0">
                     <div className="row d-flex flex-nowrap">
-                        {taskStatuses.map((taskStatus, taskStatus_index) => (
+                        {taskStatuses.filter(taskStatus=>settings.showTaskStatuses?.includes(taskStatus.id)).map((taskStatus, taskStatus_index) => (
                             <TasksKanbanColumn key={taskStatus.id}
                                                setReload={setReload}
                                                tasks={tasks[taskStatus.id]}
@@ -164,14 +203,25 @@ const TasksKanban = ({}) => {
                 </div>
             </DndProvider>
 
-                {modalIsOpen && (
-                    <TaskFormModal
-                        isOpen={modalIsOpen}
-                        onAfterOpen={afterOpenModal}
-                        onRequestClose={closeModal}
-                        setIsOpen={setIsOpen}
-                        callback={()=>setReload(true)}/>
-                )}
+            {modalIsOpen && (
+                <TaskFormModal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    setIsOpen={setIsOpen}
+                    callback={() => setReload(true)}/>
+            )}
+
+            {modalIsSettingsOpen && (
+                <TasksKanbanSettingsModal
+                    isOpen={modalIsSettingsOpen}
+                    onRequestClose={closeSettingsModal}
+                    setIsOpen={setIsSettingsOpen}
+                    callback={() => setReload(true)}
+                    settings={settings}
+                    setSettings={setSettings}
+                    taskStatuses={taskStatuses}
+                    id={modalTaskId}/>
+            )}
         </>
     );
 };

@@ -28,11 +28,13 @@
             </div>
             <div class="form-group">
                 <label for="form_edit_datetime_start">Čas od</label>
-                <input value="{{ taskTimetrack.DatetimeStart.format("Y-m-d H:i") }}" type="datetime-local" name="datetime_start" class="form-control" id="form_edit_datetime_start">
+                <input value="{{ taskTimetrack.DatetimeStart.format("Y-m-d H:i") }}" type="datetime-local" name="datetime_start" class="form-control" id="form_edit_datetime_start"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_datetime_stop">Čas do</label>
-                <input value="{{ taskTimetrack.DatetimeStop.format("Y-m-d H:i") }}" type="datetime-local" name="datetime_stop" class="form-control" id="form_edit_datetime_stop">
+                <input value="{{ taskTimetrack.DatetimeStop.format("Y-m-d H:i") }}" type="datetime-local" name="datetime_stop" class="form-control" id="form_edit_datetime_stop"
+                >
             </div>
         <button type="submit" class="btn btn-default">Uložit</button>
     </form>

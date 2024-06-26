@@ -4,6 +4,8 @@ namespace API\Controller;
 
 use API\Entity\TaskStatus;
 use API\Repository\TaskStatusRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -16,6 +18,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class TaskStatusController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var TaskStatusRepository
      */
@@ -31,15 +40,18 @@ class TaskStatusController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         TaskStatusRepository $taskStatus_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->taskStatus_repository = $taskStatus_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -187,4 +199,17 @@ class TaskStatusController extends AbstractApiController
         $taskStatus->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
+
+    private function triggerSave(TaskStatus $taskStatus): TaskStatus
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "taskStatus" => $taskStatus
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("taskStatus");
+    }
 }

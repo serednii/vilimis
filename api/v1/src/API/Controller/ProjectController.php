@@ -8,6 +8,8 @@ use API\Repository\ClientRepository;
 use API\Repository\EndCustomerRepository;
 use API\Repository\ProjectStatusRepository;
 use API\Repository\WebRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -20,6 +22,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class ProjectController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ProjectRepository
      */
@@ -39,12 +48,14 @@ class ProjectController extends AbstractApiController
     public function __construct(
         ProjectRepository $project_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->project_repository = $project_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -128,6 +139,8 @@ class ProjectController extends AbstractApiController
 
             EntityManager::save($project);
 
+            $project = $this->triggerSave($project);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "project" => $project,
@@ -198,6 +211,20 @@ class ProjectController extends AbstractApiController
         $project->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
         $project->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
         $project->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
+        $project->setSpendingTime(isset($data["spending_time"]) ? (int) $data["spending_time"] : 0);
     }
 
+
+    private function triggerSave(Project $project): Project
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "project" => $project
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("project");
+    }
 }

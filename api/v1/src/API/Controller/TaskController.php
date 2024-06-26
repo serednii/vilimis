@@ -6,6 +6,8 @@ use API\Entity\Task;
 use API\Repository\TaskRepository;
 use API\Repository\ProjectRepository;
 use API\Repository\TaskStatusRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class TaskController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var TaskRepository
      */
@@ -37,12 +46,14 @@ class TaskController extends AbstractApiController
     public function __construct(
         TaskRepository $task_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->task_repository = $task_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -126,6 +137,8 @@ class TaskController extends AbstractApiController
 
             EntityManager::save($task);
 
+            $task = $this->triggerSave($task);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "task" => $task,
@@ -194,6 +207,20 @@ class TaskController extends AbstractApiController
         $task->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
         $task->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
         $task->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
+        $task->setSpendingTime(isset($data["spending_time"]) ? (int) $data["spending_time"] : 0);
     }
 
+
+    private function triggerSave(Task $task): Task
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "task" => $task
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("task");
+    }
 }

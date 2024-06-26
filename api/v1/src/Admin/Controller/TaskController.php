@@ -7,6 +7,8 @@ use API\Entity\Task;
 use API\Repository\TaskRepository;
 use API\Repository\ProjectRepository;
 use API\Repository\TaskStatusRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class TaskController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var TaskRepository
      */
@@ -37,11 +46,13 @@ class TaskController
     public function __construct(
         ProjectRepository $project_id_repository,
         TaskStatusRepository $task_status_id_repository,
+        EventManager $eventManager,
         TaskRepository $task_repository
     )
     {
         $this->project_id_repository = $project_id_repository;
         $this->task_status_id_repository = $task_status_id_repository;
+        $this->eventManager = $eventManager;
         $this->task_repository = $task_repository;
     }
 
@@ -94,6 +105,7 @@ class TaskController
             $this->mapEntityFromArray($task, $postData, $filesData);
 
             EntityManager::save($task);
+            $task = $this->triggerSave($task);
 
             Router::redirectTo("admin_task_edit", ["id"=>$task->getId()]);
         }
@@ -133,6 +145,20 @@ class TaskController
         $task->setClosed((bool) isset($data["closed"]) ? $data["closed"] : false);
         $task->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
         $task->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
+        $task->setSpendingTime(isset($data["spending_time"]) ? (int) $data["spending_time"] : 0);
     }
 
+
+    private function triggerSave(Task $task): Task
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "task" => $task
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("task");
+    }
 }

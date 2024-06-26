@@ -5,6 +5,8 @@ namespace API\Controller;
 use API\Entity\TaskTimetrack;
 use API\Repository\TaskTimetrackRepository;
 use API\Repository\TaskRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -15,8 +17,15 @@ use Gephart\Framework\Response\JsonResponseFactory;
 /**
  * @RoutePrefix /taskTimetrack
  */
-class TaskTimetrackController
+class TaskTimetrackController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var TaskTimetrackRepository
      */
@@ -32,15 +41,18 @@ class TaskTimetrackController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         TaskTimetrackRepository $taskTimetrack_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->taskTimetrack_repository = $taskTimetrack_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -51,9 +63,20 @@ class TaskTimetrackController
      */
     public function index()
     {
-        $taskTimetracks = $this->taskTimetrack_repository->findBy([], [
-            "ORDER BY" => "id DESC"
-        ]);
+        try {
+            $filter = $this->parseRequestFilter();
+
+            $params = [];
+            $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
+            $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
+
+            $taskTimetracks = $this->taskTimetrack_repository->findBy($filter, $params);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 500
+            ]));
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "data" => $taskTimetracks
@@ -113,6 +136,8 @@ class TaskTimetrackController
 
             EntityManager::save($taskTimetrack);
 
+            $taskTimetrack = $this->triggerSave($taskTimetrack);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "taskTimetrack" => $taskTimetrack,
@@ -146,10 +171,48 @@ class TaskTimetrackController
         ]));
     }
 
-    private function mapEntityFromArray(TaskTimetrack $taskTimetrack, array $data, array $files) {
-        $taskTimetrack->setTaskId(!empty($data["task_id"]) ? (int) $data["task_id"] : null);
-        $taskTimetrack->setDatetimeStart(new \DateTime($data["datetime_start"]));
-        $taskTimetrack->setDatetimeStop(new \DateTime($data["datetime_stop"]));
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "taskTimetrack_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $taskTimetracks = $this->taskTimetrack_repository->findBy($filter);
+
+        if (is_array($taskTimetracks) && count($taskTimetracks) > 0) {
+            foreach ($taskTimetracks as $taskTimetrack) {
+                EntityManager::remove($taskTimetrack);
+            }
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
     }
 
+    private function mapEntityFromArray(TaskTimetrack $taskTimetrack, array $data, array $files) {
+        $taskTimetrack->setTaskId(!empty($data["task_id"]) ? (int) $data["task_id"] : null);
+        $taskTimetrack->setDatetimeStart(!empty($data["datetime_start"]) ? new \DateTime($data["datetime_start"]) : null);
+        $taskTimetrack->setDatetimeStop(!empty($data["datetime_stop"]) ? new \DateTime($data["datetime_stop"]) : null);
+    }
+
+
+    private function triggerSave(TaskTimetrack $taskTimetrack): TaskTimetrack
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "taskTimetrack" => $taskTimetrack
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("taskTimetrack");
+    }
 }

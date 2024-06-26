@@ -89,6 +89,14 @@ class Task
      */
     private $priority = false;
     
+    /**
+     * @var bool
+     *
+     * @ORM\Type INT(9)
+     * @ORM\Column spending_time
+     */
+    private $spending_time = false;
+    
 
     public function __construct()
     {
@@ -252,6 +260,22 @@ class Task
     public function setPriority(int $priority)
     {
         $this->priority = $priority;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSpendingTime(): int
+    {
+        return $this->spending_time;
+    }
+
+    /**
+     * @param int $spending_time
+     */
+    public function setSpendingTime(int $spending_time)
+    {
+        $this->spending_time = $spending_time;
     }
 
 }

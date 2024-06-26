@@ -2,6 +2,7 @@
 
 namespace API\Entity;
 
+
 /**
  * @ORM\Table taskTimetrack
  * @Serializable
@@ -25,20 +26,20 @@ class TaskTimetrack
     private $task_id = null;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
      * @ORM\Type DATETIME
      * @ORM\Column datetime_start
      */
-    private $datetime_start = "";
+    private $datetime_start = null;
     
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      *
      * @ORM\Type DATETIME
      * @ORM\Column datetime_stop
      */
-    private $datetime_stop = "";
+    private $datetime_stop = null;
     
 
     public function __construct()
@@ -78,33 +79,33 @@ class TaskTimetrack
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDatetimeStart(): \DateTime
+    public function getDatetimeStart(): ?\DateTime
     {
         return $this->datetime_start;
     }
 
     /**
-     * @param \DateTime $datetime_start
+     * @param \DateTime|null $datetime_start
      */
-    public function setDatetimeStart(\DateTime $datetime_start)
+    public function setDatetimeStart(?\DateTime $datetime_start)
     {
         $this->datetime_start = $datetime_start;
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getDatetimeStop(): \DateTime
+    public function getDatetimeStop(): ?\DateTime
     {
         return $this->datetime_stop;
     }
 
     /**
-     * @param \DateTime $datetime_stop
+     * @param \DateTime|null $datetime_stop
      */
-    public function setDatetimeStop(\DateTime $datetime_stop)
+    public function setDatetimeStop(?\DateTime $datetime_stop)
     {
         $this->datetime_stop = $datetime_stop;
     }
