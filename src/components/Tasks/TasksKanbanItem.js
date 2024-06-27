@@ -5,6 +5,7 @@ import {useDrag, useDrop} from 'react-dnd'
 import {heightBetweenCursorAndMiddle} from "../../utils";
 import TasksKanbanSettingsModal from "./TasksKanbanSettingsModal";
 import BudgetCalculator from "../../utils/BudgetCalculator";
+import {Clock, NotePencil} from "@phosphor-icons/react";
 
 const TasksKanbanItem = ({index, id, onUpdate, task, projects, endCustomers, clients, moveCard, taskStatusId}) => {
     let dateP1 = new Date((new Date()).getTime() + 24 * 60 * 60 * 1000);
@@ -134,12 +135,12 @@ const TasksKanbanItem = ({index, id, onUpdate, task, projects, endCustomers, cli
 
     return (
         <>
-            <div ref={ref} style={{opacity: isDragging ? 0.5 : 1}} className={"card card-item-wrap border-0 shadow p-4 "+ topStyle+ downStyle}
+            <div ref={ref} style={{opacity: isDragging ? 0.5 : 1}} className={"card card-item-wrap border-0 shadow p-3 "+ topStyle+ downStyle}
                  draggable="false">
                 <div
                     className="card-header d-flex align-items-center justify-content-between border-0 p-0 mb-3">
                     <h3 className="h5 mb-0">{task.name}</h3>
-                    <div>
+                    <div className="align-self-start">
                         <div className="dropdown">
                             <button type="button"
                                     onClick={() => {
@@ -147,15 +148,7 @@ const TasksKanbanItem = ({index, id, onUpdate, task, projects, endCustomers, cli
                                         setIsOpen(true)
                                     }}
                                     className="btn btn-sm fs-6 px-1 py-0">
-                                <svg className="icon icon-xs text-gray-500"
-                                     fill="currentColor"
-                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
-                                    <path fillRule="evenodd"
-                                          d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-                                          clipRule="evenodd"></path>
-                                </svg>
+                                <NotePencil size={20} color="#999"/>
                             </button>
                         </div>
                     </div>
@@ -222,13 +215,7 @@ const TasksKanbanItem = ({index, id, onUpdate, task, projects, endCustomers, cli
                     {"deadLineDate" in task && task.deadLineDate && "date" in task.deadLineDate && (
                         <>
                             <div className="d-flex align-items-center">
-                                <svg className="icon icon-xxs text-gray-400 me-1"
-                                     fill="currentColor"
-                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fillRule="evenodd"
-                                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                                          clipRule="evenodd"></path>
-                                </svg>
+                                <Clock className={"me-1"}/>
                                 <span className="small">
                                                             {dateP1 > (new Date(task.deadLineDate.date)) ? (
                                                                 <span style={{color: "red"}}> do 24 hodin - </span>

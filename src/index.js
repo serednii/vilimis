@@ -11,9 +11,9 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import RootContext from "./contexts/RootContext";
 import { loaderReducer } from "./reducers/loaderReducer";
 import { ToastContainer, toast } from "react-toastify";
-
+import 'boxicons'
 import 'react-toastify/dist/ReactToastify.css';
-import { LineWave } from "react-loader-spinner";
+import {LineWave} from "react-loader-spinner";
 import APIService from "./services/APIService";
 import Clients from "./pages/Clients";
 import EndCustomer from "./pages/EndCustomer";
@@ -26,6 +26,18 @@ import ClientContact from "./pages/ClientContact";
 import Webs from "./pages/Webs";
 import Breadcrumb from './components/Breadcrumb/Breadcrumb';
 import Login from "./pages/Login";
+import MD5 from "crypto-js/md5";
+import {
+    CheckSquare,
+    FolderSimple, Gear,
+    Network, SignOut,
+    Smiley,
+    Speedometer,
+    SquaresFour, TreeStructure,
+    UserCircle,
+    Users,
+    MagnifyingGlass
+} from "@phosphor-icons/react";
 library.add(fas);
 
 function Root() {
@@ -161,12 +173,9 @@ function Root() {
                         <li className="nav-item ">
                             <NavLink to="/" className="nav-link">
                                 <span className="sidebar-icon">
-                                    <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                         xmlns="http://www.w3.org/2000/svg"><path
-                                        d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path
-                                        d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
+                                    <Speedometer/>
                                 </span>
-                                <span className="sidebar-text">Přehled</span>
+                                <span className="sidebar-text">Nástěnka</span>
                             </NavLink>
                         </li>
                         <li className="nav-item">
@@ -174,12 +183,7 @@ function Root() {
                                      className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
-                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd"
-                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                  clipRule="evenodd"></path>
-                                        </svg>
+                                        <Network/>
                                     </span>
                                     <span className="sidebar-text">Weby</span>
                                 </span>
@@ -190,12 +194,7 @@ function Root() {
                                      className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
-                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd"
-                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                  clipRule="evenodd"></path>
-                                        </svg>
+                                         <CheckSquare/>
                                     </span>
                                     <span className="sidebar-text">Úkoly</span>
                                 </span>
@@ -206,12 +205,7 @@ function Root() {
                                      className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
-                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd"
-                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                  clipRule="evenodd"></path>
-                                        </svg>
+                                         <FolderSimple/>
                                     </span>
                                     <span className="sidebar-text">Projekty</span>
                                 </span>
@@ -222,12 +216,7 @@ function Root() {
                                      className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
-                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd"
-                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                  clipRule="evenodd"></path>
-                                        </svg>
+                                        <UserCircle/>
                                     </span>
                                     <span className="sidebar-text">Koncoví zákazníci - kontakty</span>
                                 </span>
@@ -238,12 +227,7 @@ function Root() {
                                      className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
-                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd"
-                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                  clipRule="evenodd"></path>
-                                        </svg>
+                                        <UserCircle/>
                                     </span>
                                     <span className="sidebar-text">Koncoví zákazníci</span>
                                 </span>
@@ -254,12 +238,7 @@ function Root() {
                                      className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
-                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd"
-                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                  clipRule="evenodd"></path>
-                                        </svg>
+                                        <Users/>
                                     </span>
                                     <span className="sidebar-text">Klienti - kontakty</span>
                                 </span>
@@ -270,14 +249,21 @@ function Root() {
                                      className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
-                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd"
-                                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                                                  clipRule="evenodd"></path>
-                                        </svg>
+                                        <Users/>
                                     </span>
                                     <span className="sidebar-text">Klienti</span>
+                                </span>
+                            </NavLink>
+                        </li>
+                        <li role="separator" className="dropdown-divider mt-4 mb-3 border-gray-700"></li>
+                        <li className="nav-item ">
+                            <NavLink to="/workflow"
+                                     className="nav-link d-flex justify-content-between">
+                                <span>
+                                    <span className="sidebar-icon">
+                                        <TreeStructure/>
+                                    </span>
+                                    <span className="sidebar-text">Workflow</span>
                                 </span>
                             </NavLink>
                         </li>
@@ -286,9 +272,7 @@ function Root() {
                                      className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
-                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg"><path
-                                            d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                                        <SquaresFour/>
                                     </span>
                                     <span className="sidebar-text">Entity</span>
                                 </span>
@@ -299,29 +283,11 @@ function Root() {
                                      className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
-                                        <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg"><path
-                                            d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                                        <Gear/>
                                     </span>
-                                    <span className="sidebar-text">Workflow</span>
+                                    <span className="sidebar-text">Nastavení</span>
                                 </span>
                             </NavLink>
-                        </li>
-                        <li role="separator" className="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-                        <li className="nav-item">
-                            <a href="https://themesberg.com/docs/volt-bootstrap-5-dashboard/getting-started/quick-start/"
-                               target="_blank"
-                               className="nav-link d-flex align-items-center">
-                                <span className="sidebar-icon">
-                                    <svg className="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                                         xmlns="http://www.w3.org/2000/svg"><path
-                                        fillRule="evenodd"
-                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                        clipRule="evenodd"></path></svg>
-                                </span>
-                                <span className="sidebar-text">Dokumentace
-                                </span>
-                            </a>
                         </li>
                     </ul>
                 </div>
@@ -331,18 +297,13 @@ function Root() {
 
                 <nav className="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
                     <div className="container-fluid px-0">
-                        <div className="d-flex justify-content-between align-items-center w-100" id="navbarSupportedContent">
+                        <div className="d-flex justify-content-between align-items-center w-100"
+                             id="navbarSupportedContent">
                             <div className="d-flex align-items-center">
                                 <form className="navbar-search form-inline" id="navbar-search-main">
-                                    <div className="input-group input-group-merge search-bar">
+                                <div className="input-group input-group-merge search-bar">
                                         <span className="input-group-text" id="topbar-addon">
-                                            <svg className="icon icon-xs" x-description="Heroicon name: solid/search"
-                                                 xmlns="http://www.w3.org/2000/svg"
-                                                 viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path fillRule="evenodd"
-                                                      d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                                                    clipRule="evenodd"></path>
-                                            </svg>
+                                            <MagnifyingGlass size={16} />
                                         </span>
                                         <input type="text" className="form-control" id="topbarInputIconLeft"
                                             placeholder="Vyhledávat"
@@ -356,19 +317,19 @@ function Root() {
 
                             <ul className="navbar-nav align-items-center">
                                 <li className="nav-item dropdown ms-lg-3">
-                                    <button onClick={()=>setShowUserDropdown(!showUserDropdown)} className="nav-link dropdown-toggle pt-1 px-0" href="#" role="button"
+                                    <a onClick={()=>setShowUserDropdown(!showUserDropdown)} className="nav-link dropdown-toggle pt-1 px-0" href="#" role="button"
                                         data-bs-toggle="dropdown"
                                         aria-expanded="false">
                                         <div className="media d-flex align-items-center">
                                             <img className="avatar rounded-circle" alt="Image placeholder"
-                                                src="/gephart/images/face.jpg" />
+                                                src={user.avatar?user.avatar:"http://www.gravatar.com/avatar/"+MD5(user.username)+"?s=64&d=mm"} />
                                             <div
                                                 className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
                                                 <span
-                                                    className="mb-0 font-small fw-bold text-gray-900">Michal Katuščák</span>
+                                                    className="mb-0 font-small fw-bold text-gray-900">{user.name} {user.surname}</span>
                                             </div>
                                         </div>
-                                    </button>
+                                    </a>
                                     <div className="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1"
                                         style={{opacity:showUserDropdown?1:0,pointerEvents:showUserDropdown?"all":"none"}}
                                     >
@@ -414,12 +375,7 @@ function Root() {
                                         </a>
                                         <div role="separator" className="dropdown-divider my-1"></div>*/}
                                         <button onClick={logout} className="dropdown-item d-flex align-items-center" href="#">
-                                            <svg className="dropdown-icon text-danger me-2" fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                            </svg>
+                                            <SignOut size={16} color={"red"} className="me-2"/>
                                             Odhlásit
                                         </button>
                                     </div>

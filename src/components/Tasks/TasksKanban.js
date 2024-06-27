@@ -10,6 +10,7 @@ import update from 'immutability-helper'
 import TaskFormModal from "./TaskFormModal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import TasksKanbanSettingsModal from "./TasksKanbanSettingsModal";
+import {Gear, Plus} from "@phosphor-icons/react";
 
 const TasksKanban = ({}) => {
     const {API} = useRootContext()
@@ -171,7 +172,7 @@ const TasksKanban = ({}) => {
                     <div className="col-6">
                         <button onClick={() => setIsOpen(true)}
                                 className="btn btn-secondary d-inline-flex align-items-center me-2">
-                            <FontAwesomeIcon icon={["fas", "plus"]} className="me-2"/>
+                            <Plus size={16} className="me-2"/>
                             Nový úkol
                         </button>
                     </div>
@@ -179,7 +180,7 @@ const TasksKanban = ({}) => {
                         <div className="btn-group">
                             <button onClick={() => setIsSettingsOpen(true)}
                                     className="btn btn-gray-800">
-                                <FontAwesomeIcon icon={["fas", "gear"]}/>
+                                <Gear size={16}/>
                             </button>
                         </div>
                     </div>

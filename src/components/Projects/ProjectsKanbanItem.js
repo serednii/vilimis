@@ -4,6 +4,7 @@ import ProjectFormModal from "../Projects/ProjectFormModal";
 import {useDrag, useDrop} from 'react-dnd'
 import {heightBetweenCursorAndMiddle} from "../../utils";
 import BudgetCalculator from "../../utils/BudgetCalculator";
+import {NotePencil} from "@phosphor-icons/react";
 
 const ProjectsKanbanItem = ({index, id, onUpdate, project, endCustomers, clients, moveCard, projectStatusId}) => {
     let dateP1 = new Date((new Date()).getTime() + 24 * 60 * 60 * 1000);
@@ -132,12 +133,12 @@ const ProjectsKanbanItem = ({index, id, onUpdate, project, endCustomers, clients
 
     return (
         <>
-            <div ref={ref} style={{opacity: isDragging ? 0.5 : 1}} className={"card card-item-wrap border-0 shadow p-4 "+ topStyle+ downStyle}
+            <div ref={ref} style={{opacity: isDragging ? 0.5 : 1}} className={"card card-item-wrap border-0 shadow p-3 "+ topStyle+ downStyle}
                  draggable="false">
                 <div
                     className="card-header d-flex align-items-center justify-content-between border-0 p-0 mb-3">
                     <h3 className="h5 mb-0">{project.name}</h3>
-                    <div>
+                    <div className="align-self-start">
                         <div className="dropdown">
                             <button type="button"
                                     onClick={() => {
@@ -145,15 +146,7 @@ const ProjectsKanbanItem = ({index, id, onUpdate, project, endCustomers, clients
                                         setIsOpen(true)
                                     }}
                                     className="btn btn-sm fs-6 px-1 py-0">
-                                <svg className="icon icon-xs text-gray-500"
-                                     fill="currentColor"
-                                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
-                                    <path fillRule="evenodd"
-                                          d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-                                          clipRule="evenodd"></path>
-                                </svg>
+                                <NotePencil size={20} color="#999"/>
                             </button>
                         </div>
                     </div>

@@ -21420,13 +21420,12 @@ textarea.form-control-lg {
 }
 
 .sidebar .nav-item .nav-link {
-    color: #fff;
+    color: #999;
     cursor: pointer
 }
 
 .sidebar .nav-item .nav-link:hover {
     color: #f2f4f6;
-    background-color: #374151
 }
 
 .sidebar .nav-link+.multi-level {
@@ -21436,13 +21435,19 @@ textarea.form-control-lg {
 .sidebar .nav-link {
     font-size: 1rem;
     vertical-align: middle;
-    padding: .55rem .75rem;
-    border-radius: .5rem
+    padding: 1rem 1rem;
+    border-radius: .5rem;
 }
 
 .sidebar .nav-link .sidebar-icon {
     margin-right: .5rem;
-    color: #9ca3af
+}
+
+.sidebar .nav-link .sidebar-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    float: left;
+    margin-right: .4rem;
 }
 
 .sidebar .nav-link .link-arrow {
@@ -21455,7 +21460,8 @@ textarea.form-control-lg {
 }
 
 .sidebar .nav-link.active {
-    color: #f2f4f6
+    color: #F2F4F6;
+    background-color: #374151;
 }
 
 .sidebar .multi-level .nav-link {

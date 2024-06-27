@@ -2,6 +2,7 @@ import {faClock, faStop} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
+import {ClockCountdown, Stop, StopCircle, Timer} from "@phosphor-icons/react";
 
 const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleStop, taskId }) => {
     const { API } = useRootContext();
@@ -49,7 +50,7 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
         <div className="h-100 d-flex justify-content-sm-center align-items-center">
             {timetrackerState.start === null ? (
                 <button className="text-default fw-bold   border-0" onClick={handleClick}>
-                    <FontAwesomeIcon icon={faClock}/>
+                    <Timer size={20}/>
                 </button>
             ) : (
                 <span>
@@ -73,7 +74,7 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
                         </>
                     )}
                     <button className="ms-2 text-default fw-bold   border-0" onClick={handleStop}>
-                        <FontAwesomeIcon icon={faStop}/> Zastavit
+                        <Stop size={20} />
                     </button>
                 </span>
             )}
