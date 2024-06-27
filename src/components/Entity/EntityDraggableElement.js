@@ -92,11 +92,11 @@ const EntityDraggableElement = ({
 
   return (
     <div ref={refPreview}  {...props}
-      className={["gephart-generator-entity-item-wrap", draggingStyle, overStyle, topStyle, downStyle].join(" ")}>
+      className={["gephart-generator-entity-item-wrap w-100", draggingStyle, overStyle, topStyle, downStyle].join(" ")}>
       <div ref={drag} style={styles.draggable} />
-      <div className={"clearfix"}>
-        <div className={"gephart-generator-entity-item"}>
-          <div className="gephart-generator-entity-item-text">
+      <div className={"clearfix w-100"}>
+        <div className={"gephart-generator-entity-item w-100"}>
+          <div className="gephart-generator-entity-item-text w-100">
             {children}
           </div>
         </div>
