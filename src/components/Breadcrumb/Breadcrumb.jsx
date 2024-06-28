@@ -14,7 +14,7 @@ const Breadcrumb = () => {
   const breadcrumbs = pathName
     .split("/")
     .filter((crumb) => crumb && !containsNumber(crumb));
-  console.log(breadcrumbs);
+
   return (
     <>
       {pathName !== "/" && (

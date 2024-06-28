@@ -9,15 +9,20 @@ class BudgetCalculator {
         this.hourRate = parseFloat(hourRate);
 
         let hourBudget = task?.hourBudget ? task.hourBudget : (project?.hourBudget ? project.hourBudget : 0)
-        console.log(project)
         this.hourBudget = parseFloat(hourBudget);
+    }
+
+    calculareForInvoincing()
+    {
+        let minutes = this.spendingSeconds / 60// - this.spendingSeconds % 60
+        let hours = minutes/60;
+        return hours*this.hourRate;
     }
 
     calculareForInvoincingNicely(currency)
     {
-        let minutes = this.spendingSeconds / 60 - this.spendingSeconds % 60
-        let hours = minutes/60;
-        return this._numberFormat(hours*this.hourRate,0, ".", " ")+" " + currency;
+        let forInvoicing = this.calculareForInvoincing();
+        return this._numberFormat(forInvoicing,0, ".", " ")+" " + currency;
     }
 
     calculareSpendingHoursNicely() {

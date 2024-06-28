@@ -68,10 +68,16 @@ const TasksKanban = ({}) => {
                 API.getData(url, (tasks) => {
                     let taskSorted = {};
 
+                    const tasksIds = [];
                     if (tasks && tasks.length > 0) {
                         taskStatuses.forEach(taskStatus => {
+                            tasksIds.push(taskStatus.id);
                             taskSorted[taskStatus.id] = tasks.filter(task => task.taskStatusId == taskStatus.id)
                         })
+                    }
+
+                    if (settings.showTaskStatuses === null) {
+                        settings.showTaskStatuses = tasksIds;
                     }
 
                     setTasks(taskSorted)

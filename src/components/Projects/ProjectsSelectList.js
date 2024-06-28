@@ -41,6 +41,7 @@ const ProjectsSelectList = ({onChange, selected}) => {
                     };
                     options.push(projectValue);
                 });
+                console.log(options)
                 setOption(options);
 
                 if (onLoad) {

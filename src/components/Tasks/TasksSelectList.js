@@ -4,6 +4,7 @@ import Select from "react-select";
 import { CONFIG } from "../../config";
 import TaskForm from "./TaskForm";
 import Modal from 'react-modal';
+import TaskFormModal from "./TaskFormModal";
 
 Modal.setAppElement("#root");
 
@@ -153,26 +154,17 @@ const TasksSelectList = ({ onChange, selected, projectId, onNew }) => {
             </div>
 
 
-            <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                contentLabel="Example Modal"
-                className="modalccc"
-                overlayClassName="modal-dialogccc"
-            >
-                <div className="modal-content">
-                    <div className="modal-body p-0">
-                        <div className="card p-3 p-lg-4">
-                            <button onClick={closeModal} type="button" className="btn-close ms-auto" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                            <h2>Task</h2>
-
-                            <TaskForm handleSave={onNewTask} />
-                        </div>
-                    </div>
-                </div>
-            </Modal>
+            {
+                modalIsOpen && (
+                    <TaskFormModal
+                        isOpen={modalIsOpen}
+                        onAfterOpen={afterOpenModal}
+                        onRequestClose={closeModal}
+                        setIsOpen={setIsOpen}
+                        callback={onNewTask}
+                        />
+                )
+            }
         </>
     );
 };

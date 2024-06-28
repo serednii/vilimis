@@ -1,15 +1,15 @@
 import React from "react";
-import TaskForm from "./TaskForm";
 import Modal from 'react-modal';
+import TimeTrackerItem from "./TimeTrackerItem";
 
 Modal.setAppElement("#root");
 
-const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id }) => {
-    function onNewTask(task) {
+const TimeTrackerFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id, taskTimetrack }) => {
+    function onSaveTimetrack() {
         setIsOpen(false);
 
         if (callback) {
-            callback(task);
+            callback(true);
         }
     }
 
@@ -29,9 +29,9 @@ const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callbac
                             <button onClick={onRequestClose} type="button" className="btn-close float-end"
                                     data-bs-dismiss="modal"
                                     aria-label="Close"></button>
-                            <h2>Úkol #{id}</h2>
+                            <h2>Časový záznam #{taskTimetrack?.id}</h2>
 
-                            <TaskForm handleSave={onNewTask} id={id}/>
+                            <TimeTrackerItem taskTimetrack={taskTimetrack} onChange={onSaveTimetrack}/>
                         </div>
                     </div>
                 </div>
@@ -40,4 +40,4 @@ const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callbac
     );
 };
 
-export default TaskFormModal;
+export default TimeTrackerFormModal;

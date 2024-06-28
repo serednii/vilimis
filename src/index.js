@@ -1,16 +1,16 @@
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 import React, {useEffect, useReducer, useState} from "react";
 import './styles/index.sass';
 import Workflow from "./pages/Workflow";
-import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
+import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
 import NoPage from "./pages/NoPage";
 import Home from "./pages/Home";
 import EntityPage from "./pages/EntityPage";
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { fas } from '@fortawesome/free-solid-svg-icons';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {fas} from '@fortawesome/free-solid-svg-icons';
 import RootContext from "./contexts/RootContext";
-import { loaderReducer } from "./reducers/loaderReducer";
-import { ToastContainer, toast } from "react-toastify";
+import {loaderReducer} from "./reducers/loaderReducer";
+import {ToastContainer, toast} from "react-toastify";
 import 'boxicons'
 import 'react-toastify/dist/ReactToastify.css';
 import {LineWave} from "react-loader-spinner";
@@ -36,23 +36,29 @@ import {
     SquaresFour, TreeStructure,
     UserCircle,
     Users,
-    MagnifyingGlass
+    MagnifyingGlass, Timer, Table
 } from "@phosphor-icons/react";
+import TimeTracks from "./pages/TimeTracks";
+import Reports from "./pages/Reports";
+
 library.add(fas);
 
 function Root() {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [jwt, setJwt] = useState(null);
-    const [loaderState, loaderDispatch] = useReducer(loaderReducer, { show: 0 });
-    const [timetrackerState, timetrackerDispatch] = useReducer(timetrackerReducer, { start: null, taskId: null });
+    const [loaderState, loaderDispatch] = useReducer(loaderReducer, {show: 0});
+    const [timetrackerState, timetrackerDispatch] = useReducer(timetrackerReducer, {start: null, taskId: null});
 
     const locale = {
         "cs": {
-            "_months": ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro']
+            "_months": ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro'],
+            "_months_fullname": ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec']
         },
         "en": {
-            "_months": ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            "_months": ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            "_months_fullname": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         }
     };
     const locale_selected = "cs";
@@ -75,7 +81,9 @@ function Root() {
                         ...timetracker
                     });
                 }
-            } catch (e) {console.log(e)}
+            } catch (e) {
+                console.log(e)
+            }
         }
     }, []);
 
@@ -87,29 +95,31 @@ function Root() {
     useEffect(() => {
         if (!jwt) {
             let jwtLocal = localStorage.getItem("jwt");
-            setJwt(jwtLocal)
+            setJwt(jwtLocal);
         }
     }, []);
 
     useEffect(() => {
+        setLoading(true);
         if (jwt) {
-            console.log(jwt);
-            const userId = JSON.parse(window.atob(jwt.split(".")[1].replace("-","+").replace("_","/"))).id;
+            const userId = JSON.parse(window.atob(jwt.split(".")[1].replace("-", "+").replace("_", "/"))).id;
 
             if (userId) {
                 API.getData("/user/single/" + userId, (user) => {
                     setUser(user);
+                    setLoading(false);
                 });
                 return;
             }
         }
+
+        setLoading(false);
         setUser(null);
     }, [jwt]);
 
     useEffect(() => {
         localStorage.setItem("timetracker", JSON.stringify(timetrackerState));
     }, [timetrackerState]);
-
 
     const providerState = {
         loaderState,
@@ -125,215 +135,267 @@ function Root() {
     }
 
     return (<RootContext.Provider value={providerState}>
-
-        {user ? (
-
-        <BrowserRouter>
-            <nav id="sidebarMenu" className="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
-                <div className="sidebar-inner px-4 pt-3">
-                    <div
-                        className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
-                        <div className="d-flex align-items-center">
-                            <div className="avatar-lg me-4">
-                                <img src="/gephart/images/face.jpg"
-                                    className="card-img-top rounded-circle border-white"
-                                    alt="Gephart" />
+        {loading ? (
+            <>
+                <div style={{
+                    position: "fixed",
+                    top: "calc(50% - 50px)",
+                    left: "calc(50% - 50px)",
+                    zIndex: 999,
+                }}>
+                    <LineWave
+                        visible={true}
+                        height="100"
+                        width="100"
+                        color="#4fa94d"
+                        ariaLabel="line-wave-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        firstLineColor=""
+                        middleLineColor=""
+                        lastLineColor=""
+                    />
+                </div>
+            </>
+        ) : (
+            user ? (
+                <BrowserRouter>
+                    <nav id="sidebarMenu" className="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
+                        <div className="sidebar-inner px-4 pt-3">
+                            <div
+                                className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+                                <div className="d-flex align-items-center">
+                                    <div className="avatar-lg me-4">
+                                        <img src="/gephart/images/face.jpg"
+                                             className="card-img-top rounded-circle border-white"
+                                             alt="Gephart"/>
+                                    </div>
+                                    <div className="d-block">
+                                        <h2 className="h5 mb-3">Hi, Jane</h2>
+                                        <a href="../../pages/examples/sign-in.html"
+                                           className="btn btn-secondary btn-sm d-inline-flex align-items-center">
+                                            <svg className="icon icon-xxs me-1" fill="none" stroke="currentColor"
+                                                 viewBox="0 0 24 24"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                            </svg>
+                                            Sign Out
+                                        </a>
+                                    </div>
+                                </div>
+                                <div className="collapse-close d-md-none">
+                                    <a href="#sidebarMenu" data-bs-toggle="collapse"
+                                       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="true"
+                                       aria-label="Toggle navigation">
+                                        <svg className="icon icon-xs" fill="currentColor" viewBox="0 0 20 20"
+                                             xmlns="http://www.w3.org/2000/svg">
+                                            <path fillRule="evenodd"
+                                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                  clipRule="evenodd"></path>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
-                            <div className="d-block">
-                                <h2 className="h5 mb-3">Hi, Jane</h2>
-                                <a href="../../pages/examples/sign-in.html"
-                                    className="btn btn-secondary btn-sm d-inline-flex align-items-center">
-                                    <svg className="icon icon-xxs me-1" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                    </svg>
-                                    Sign Out
-                                </a>
+                            <div className="gephart-menu-logo">
+                                <img src="/gephart/images/gephart-is-black-white.svg" width="503" alt="Gephart Logo"/>
                             </div>
-                        </div>
-                        <div className="collapse-close d-md-none">
-                            <a href="#sidebarMenu" data-bs-toggle="collapse"
-                                data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="true"
-                                aria-label="Toggle navigation">
-                                <svg className="icon icon-xs" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fillRule="evenodd"
-                                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                        clipRule="evenodd"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                    <div className="gephart-menu-logo">
-                        <img src="/gephart/images/gephart-is-black-white.svg" width="503" alt="Gephart Logo" />
-                    </div>
-                    <ul className="nav flex-column pt-3 pt-md-0">
-                        <li className="nav-item ">
-                            <NavLink to="/" className="nav-link">
+                            <ul className="nav flex-column pt-3 pt-md-0">
+                                <li className="nav-item ">
+                                    <NavLink to="/" className="nav-link">
                                 <span className="sidebar-icon">
                                     <Speedometer/>
                                 </span>
-                                <span className="sidebar-text">Nástěnka</span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink to="/webs"
-                                     className="nav-link d-flex justify-content-between">
+                                        <span className="sidebar-text">Nástěnka</span>
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/time-tracks"
+                                             className="nav-link d-flex justify-content-between">
+                                <span>
+                                    <span className="sidebar-icon">
+                                         <Timer/>
+                                    </span>
+                                    <span className="sidebar-text">Časové záznamy</span>
+                                </span>
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/webs"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <Network/>
                                     </span>
                                     <span className="sidebar-text">Weby</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink to="/tasks"
-                                     className="nav-link d-flex justify-content-between">
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/tasks"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                          <CheckSquare/>
                                     </span>
                                     <span className="sidebar-text">Úkoly</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink to="/projects"
-                                     className="nav-link d-flex justify-content-between">
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/projects"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                          <FolderSimple/>
                                     </span>
                                     <span className="sidebar-text">Projekty</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink to="/end-customer-contacts"
-                                     className="nav-link d-flex justify-content-between">
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/end-customer-contacts"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <UserCircle/>
                                     </span>
                                     <span className="sidebar-text">Koncoví zákazníci - kontakty</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink to="/end-customers"
-                                     className="nav-link d-flex justify-content-between">
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/end-customers"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <UserCircle/>
                                     </span>
                                     <span className="sidebar-text">Koncoví zákazníci</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink to="/client-contacts"
-                                     className="nav-link d-flex justify-content-between">
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/client-contacts"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <Users/>
                                     </span>
                                     <span className="sidebar-text">Klienti - kontakty</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink to="/clients"
-                                     className="nav-link d-flex justify-content-between">
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/clients"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <Users/>
                                     </span>
                                     <span className="sidebar-text">Klienti</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                        <li role="separator" className="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-                        <li className="nav-item ">
-                            <NavLink to="/workflow"
-                                     className="nav-link d-flex justify-content-between">
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink to="/reports"
+                                             className="nav-link d-flex justify-content-between">
+                                        <span>
+                                            <span className="sidebar-icon">
+                                                <Table />
+                                            </span>
+                                            <span className="sidebar-text">Reporty</span>
+                                        </span>
+                                    </NavLink>
+                                </li>
+
+
+                                <li role="separator" className="dropdown-divider mt-4 mb-3 border-gray-700"></li>
+
+
+                                <li className="nav-item ">
+                                    <NavLink to="/workflow"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <TreeStructure/>
                                     </span>
                                     <span className="sidebar-text">Workflow</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item ">
-                            <NavLink to="/entity"
-                                     className="nav-link d-flex justify-content-between">
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item ">
+                                    <NavLink to="/entity"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <SquaresFour/>
                                     </span>
                                     <span className="sidebar-text">Entity</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                        <li className="nav-item ">
-                            <NavLink to="/workflow"
-                                     className="nav-link d-flex justify-content-between">
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item ">
+                                    <NavLink to="/workflow"
+                                             className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
                                         <Gear/>
                                     </span>
                                     <span className="sidebar-text">Nastavení</span>
                                 </span>
-                            </NavLink>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+                                    </NavLink>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
 
-            <main className="content">
+                    <main className="content">
 
-                <nav className="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
-                    <div className="container-fluid px-0">
-                        <div className="d-flex justify-content-between align-items-center w-100"
-                             id="navbarSupportedContent">
-                            <div className="d-flex align-items-center">
-                                <form className="navbar-search form-inline" id="navbar-search-main">
-                                <div className="input-group input-group-merge search-bar">
+                        <nav className="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
+                            <div className="container-fluid px-0">
+                                <div className="d-flex justify-content-between align-items-center w-100"
+                                     id="navbarSupportedContent">
+                                    <div className="d-flex align-items-center">
+                                        <form className="navbar-search form-inline" id="navbar-search-main">
+                                            <div className="input-group input-group-merge search-bar">
                                         <span className="input-group-text" id="topbar-addon">
-                                            <MagnifyingGlass size={16} />
+                                            <MagnifyingGlass size={16}/>
                                         </span>
-                                        <input type="text" className="form-control" id="topbarInputIconLeft"
-                                            placeholder="Vyhledávat"
-                                            aria-label="Vyhledat" aria-describedby="topbar-addon" />
+                                                <input type="text" className="form-control" id="topbarInputIconLeft"
+                                                       placeholder="Vyhledávat"
+                                                       aria-label="Vyhledat" aria-describedby="topbar-addon"/>
+                                            </div>
+                                        </form>
                                     </div>
-                                </form>
-                            </div>
-                            <div className="flex-fill"></div>
+                                    <div className="flex-fill"></div>
 
-                            <TimeTracker />
+                                    <TimeTracker/>
 
-                            <ul className="navbar-nav align-items-center">
-                                <li className="nav-item dropdown ms-lg-3">
-                                    <a onClick={()=>setShowUserDropdown(!showUserDropdown)} className="nav-link dropdown-toggle pt-1 px-0" href="#" role="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <div className="media d-flex align-items-center">
-                                            <img className="avatar rounded-circle" alt="Image placeholder"
-                                                src={user.avatar?user.avatar:"http://www.gravatar.com/avatar/"+MD5(user.username)+"?s=64&d=mm"} />
-                                            <div
-                                                className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
+                                    <ul className="navbar-nav align-items-center">
+                                        <li className="nav-item dropdown ms-lg-3">
+                                            <a onClick={() => setShowUserDropdown(!showUserDropdown)}
+                                               className="nav-link dropdown-toggle pt-1 px-0" href="#" role="button"
+                                               data-bs-toggle="dropdown"
+                                               aria-expanded="false">
+                                                <div className="media d-flex align-items-center">
+                                                    <img className="avatar rounded-circle" alt="Image placeholder"
+                                                         src={user.avatar ? user.avatar : "http://www.gravatar.com/avatar/" + MD5(user.username) + "?s=64&d=mm"}/>
+                                                    <div
+                                                        className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
                                                 <span
                                                     className="mb-0 font-small fw-bold text-gray-900">{user.name} {user.surname}</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                    <div className="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1"
-                                        style={{opacity:showUserDropdown?1:0,pointerEvents:showUserDropdown?"all":"none"}}
-                                    >
-                                        {/*<a className="dropdown-item d-flex align-items-center" href="#">
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <div
+                                                className="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1"
+                                                style={{
+                                                    opacity: showUserDropdown ? 1 : 0,
+                                                    pointerEvents: showUserDropdown ? "all" : "none"
+                                                }}
+                                            >
+                                                {/*<a className="dropdown-item d-flex align-items-center" href="#">
                                             <svg className="dropdown-icon text-gray-400 me-2" fill="currentColor"
                                                 viewBox="0 0 20 20"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -374,22 +436,23 @@ function Root() {
                                             Support
                                         </a>
                                         <div role="separator" className="dropdown-divider my-1"></div>*/}
-                                        <button onClick={logout} className="dropdown-item d-flex align-items-center" href="#">
-                                            <SignOut size={16} color={"red"} className="me-2"/>
-                                            Odhlásit
-                                        </button>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </nav>
+                                                <button onClick={logout}
+                                                        className="dropdown-item d-flex align-items-center" href="#">
+                                                    <SignOut size={16} color={"red"} className="me-2"/>
+                                                    Odhlásit
+                                                </button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
 
 
-                <div className="py-4">
+                        <div className="py-4">
 
-                    <Breadcrumb />
-                    {/* <nav aria-label="breadcrumb" className="d-none d-md-inline-block">
+                            <Breadcrumb/>
+                            {/* <nav aria-label="breadcrumb" className="d-none d-md-inline-block">
                         <ol className="breadcrumb breadcrumb-dark breadcrumb-transparent">
                             <li className="breadcrumb-item"><a href="#">
                                 <svg className="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -402,77 +465,83 @@ function Root() {
                             <li className="breadcrumb-item active" aria-current="page">Editace</li>
                         </ol>
                     </nav> */}
-                    {/*<div className="d-flex justify-content-between w-100 flex-wrap">
+                            {/*<div className="d-flex justify-content-between w-100 flex-wrap">
                     <div className="mb-3 mb-lg-0"><h1 className="h4">Obchodní příležitost - změna stavu na
                         odesláno</h1>
                     </div>
                 </div>*/}
-                </div>
+                        </div>
 
-                <div style={{
-                    position: "fixed",
-                    bottom: "0px",
-                    right: "0px",
-                    zIndex: 999,
-                    opacity: loaderState.show > 0 ? 1 : 0,
-                    transition: "opacity .2s"
-                }}>
-                    <LineWave
-                        visible={loaderState.show}
-                        height="100"
-                        width="100"
-                        color="#4fa94d"
-                        ariaLabel="line-wave-loading"
-                        wrapperStyle={{}}
-                        wrapperClass=""
-                        firstLineColor=""
-                        middleLineColor=""
-                        lastLineColor=""
-                    />
-                </div>
+                        <div style={{
+                            position: "fixed",
+                            bottom: "0px",
+                            right: "0px",
+                            zIndex: 999,
+                            opacity: loaderState.show > 0 ? 1 : 0,
+                            transition: "opacity .2s"
+                        }}>
+                            <LineWave
+                                visible={loaderState.show}
+                                height="100"
+                                width="100"
+                                color="#4fa94d"
+                                ariaLabel="line-wave-loading"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                                firstLineColor=""
+                                middleLineColor=""
+                                lastLineColor=""
+                            />
+                        </div>
 
-                <ToastContainer
-                    position="bottom-left"
-                    autoClose={2000}
-                    theme={"colored"}
-                />
-                <Routes>
-                    {/*<Route path="/" element={<Layout/>}>*/}
-                    <Route index element={<Home />} />
-                    <Route path="end-customer-contacts/*" element={<EndCustomerContact />} />
-                    <Route path="end-customer-contact" element={<EndCustomerContact />} />
-                    <Route path="client-contacts/*" element={<ClientContact />} />
-                    <Route path="client-contact" element={<ClientContact />} />
-                    <Route path="webs/*" element={<Webs />} />
-                    <Route path="webs" element={<Webs />} />
-                    <Route path="end-customers/*" element={<EndCustomer />} />
-                    <Route path="end-customer" element={<EndCustomer />} />
-                    <Route path="clients/*" element={<Clients />} />
-                    <Route path="clients" element={<Clients />} />
-                    <Route path="projects/*" element={<Projects />} />
-                    <Route path="projects" element={<Projects />} />
-                    <Route path="tasks/*" element={<Tasks />} />
-                    <Route path="tasks" element={<Tasks />} />
-                    <Route path="workflow" element={<Workflow />} />
-                    <Route path="entity/*" element={<EntityPage />} />
-                    <Route path="entity" element={<EntityPage />} />
-                    <Route path="*" element={<NoPage />} />
-                    {/*</Route>*/}
-                </Routes>
-            </main>
+                        <ToastContainer
+                            position="bottom-left"
+                            autoClose={2000}
+                            theme={"colored"}
+                        />
+                        <Routes>
+                            {/*<Route path="/" element={<Layout/>}>*/}
+                            <Route index element={<Home/>}/>
+                            <Route path="end-customer-contacts/*" element={<EndCustomerContact/>}/>
+                            <Route path="end-customer-contact" element={<EndCustomerContact/>}/>
+                            <Route path="client-contacts/*" element={<ClientContact/>}/>
+                            <Route path="client-contact" element={<ClientContact/>}/>
+                            <Route path="webs/*" element={<Webs/>}/>
+                            <Route path="webs" element={<Webs/>}/>
+                            <Route path="end-customers/*" element={<EndCustomer/>}/>
+                            <Route path="end-customer" element={<EndCustomer/>}/>
+                            <Route path="clients/*" element={<Clients/>}/>
+                            <Route path="clients" element={<Clients/>}/>
+                            <Route path="projects/*" element={<Projects/>}/>
+                            <Route path="projects" element={<Projects/>}/>
+                            <Route path="tasks/*" element={<Tasks/>}/>
+                            <Route path="tasks" element={<Tasks/>}/>
+                            <Route path="workflow" element={<Workflow/>}/>
+                            <Route path="entity/*" element={<EntityPage/>}/>
+                            <Route path="entity" element={<EntityPage/>}/>
+                            <Route path="time-tracks/*" element={<TimeTracks/>}/>
+                            <Route path="time-tracks" element={<TimeTracks/>}/>
+                            <Route path="reports/*" element={<TimeTracks/>}/>
+                            <Route path="reports" element={<Reports/>}/>
+                            <Route path="*" element={<NoPage/>}/>
+                            {/*</Route>*/}
+                        </Routes>
+                    </main>
 
-        </BrowserRouter>
-        ) : (
-            <BrowserRouter>
-                <Routes>
-                <Route path="*" element={<Login />} />
-                </Routes>
-            </BrowserRouter>
+                </BrowserRouter>
+            ) : (
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="*" element={<Login/>}/>
+                    </Routes>
+                </BrowserRouter>
+            )
         )}
+
     </RootContext.Provider>)
 }
 
 
 const container = document.getElementById('root');
 const root = createRoot(container); // createRoot(container!) if you use TypeScript
-root.render(<Root />);
+root.render(<Root/>);

@@ -11,7 +11,7 @@ const TaskFormTimeTracks = ({taskId}) => {
     const [reload, setReload] = useState(true);
     const [amountTime, setAmountTime] = useState(0);
     const [taskTimetracks, setTaskTimetracks] = useState([]);
-console.log(reload);
+
     useEffect(() => {
         if (!reload) return;
 

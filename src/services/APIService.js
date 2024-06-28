@@ -16,7 +16,7 @@ class APIService {
         if (this.jwt) {
             headers.Authorization = "Bearer " + this.jwt;
         }
-        console.log(this.jwt);
+
         this.loaderDispatch({action: LOADER_ACTIONS.SHOW});
         const response = await fetch(CONFIG.api + url, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
