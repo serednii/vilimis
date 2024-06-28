@@ -82,7 +82,7 @@ const CommentsList = ({entity, entityId}) => {
                                         </NavLink>
                                     </td>
                                     <td className="fw-bold ">
-                                        {comment.description}
+                                        <div dangerouslySetInnerHTML={{__html:comment.description}}></div>
                                     </td>
                                     <td> {comment.created.date}</td>
                                     <td>

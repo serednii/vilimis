@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import {CONFIG} from "../../config";
+import JoditEditor from "jodit-react";
 
 const commentBlank = {
     description: "",
@@ -10,12 +11,17 @@ const CommentForm = ({id, handleSave, entity, entityId}) => {
     const {API} = useRootContext()
     const [comment, setComment] = useState(null);
 
+    const editor = useRef(null);
+    const [content, setContent] = useState('');
+
     useEffect(() => {
         if (id) {
             API.getData("/comment/single/" + id, (data) => {
+                setContent(data.description);
                 setComment(data);
             });
         } else {
+            setContent("");
             setComment(commentBlank)
         }
     }, [id]);
@@ -54,9 +60,18 @@ const CommentForm = ({id, handleSave, entity, entityId}) => {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label htmlFor="form_edit_description">Poznámka</label>
-                        <textarea defaultValue={comment.description} className="form-control" name="description"
-                                  rows="10"
-                                  id="form_edit_description"></textarea>
+
+
+                        <input type="hidden" name="description" value={content}/>
+
+                        <JoditEditor
+                            ref={editor}
+                            value={content}
+                            config={CONFIG.joedit}
+                            onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
+                            onChange={newContent => {
+                            }}
+                        />
                     </div>
                     <button type="submit" className="btn btn-primary">
                         {id ? "Uložit" : "Přidat"}

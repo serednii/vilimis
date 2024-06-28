@@ -3,6 +3,7 @@ import {useRootContext} from "../../contexts/RootContext";
 import ProjectsSelectList from "../Projects/ProjectsSelectList";
 import TaskStatusesSelectList from "../TaskStatuses/TaskStatusesSelectList";
 import JoditEditor from 'jodit-react';
+import {CONFIG} from "../../config";
 
 const taskBlank = {
     name: "",
@@ -30,34 +31,6 @@ const TaskFormDefault = ({id, handleSave}) => {
             setTask(taskBlank)
         }
     }, [id]);
-
-    const config = {
-            readonly: false, // all options from https://xdsoft.net/jodit/docs/,
-        disablePlugins: ["spellcheck", "copyformat", "indent", "outdent","font", "color", "speechRecognize","line-height","fontsize", "about", "ai-assistant", "preview", "print", "symbol"],
-        language: 'auto',
-        spellcheck: false,
-        removeButtons: ["about", "symbol"],
-        toolbarAdaptive: false,
-        buttons: [
-            'paragraph', '|',
-            'bold',
-            'italic',
-            'underline',
-            'strikethrough', '|',
-            'link',
-            'image',
-            'video', '|',
-            'ul',
-            'ol', '|',
-            'table',
-            'align', '|',
-            'hr',
-            'eraser',
-            'source',
-            'fullsize', '|','undo', 'redo',
-        ],
-            placeholder: 'Zde můžete psát..'
-    };
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -108,7 +81,7 @@ const TaskFormDefault = ({id, handleSave}) => {
                                 <JoditEditor
                                     ref={editor}
                                     value={content}
-                                    config={config}
+                                    config={CONFIG.joedit}
                                     onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
                                     onChange={newContent => {}}
                                 />
