@@ -254,17 +254,6 @@ function Root() {
                                     </NavLink>
                                 </li>
                                 <li className="nav-item">
-                                    <NavLink to="/end-customer-contacts"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                        <UserCircle/>
-                                    </span>
-                                    <span className="sidebar-text">Koncoví zákazníci - kontakty</span>
-                                </span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
                                     <NavLink to="/end-customers"
                                              className="nav-link d-flex justify-content-between">
                                 <span>
@@ -272,17 +261,6 @@ function Root() {
                                         <UserCircle/>
                                     </span>
                                     <span className="sidebar-text">Koncoví zákazníci</span>
-                                </span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/client-contacts"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                        <Users/>
-                                    </span>
-                                    <span className="sidebar-text">Klienti - kontakty</span>
                                 </span>
                                     </NavLink>
                                 </li>

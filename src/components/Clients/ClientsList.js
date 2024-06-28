@@ -2,27 +2,49 @@ import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import {NavLink} from "react-router-dom";
 import {CONFIG} from "../../config";
+import {NotePencil, Plus, Trash} from "@phosphor-icons/react";
+import ClientFormModal from "./ClientFormModal";
+import ClientContactForm from "../ClientContacts/ClientContactForm";
+import ClientContactFormModal from "../ClientContacts/ClientContactFormModal";
 
 const ClientsList = ({}) => {
     const {API} = useRootContext()
+    const [reload, setReload] = useState(true)
     const [clients, setClients] = useState([])
     const [clientContacts, setClientContacts] = useState([]);
 
+    const [modalIsOpen, setIsOpen] = React.useState(false);
+    const [modalIsContactOpen, setIsContactOpen] = React.useState(false);
+    const [modalClientId, setModalClientId] = React.useState(0);
+    const [modalClientContactId, setModalClientContactId] = React.useState(0);
+
     useEffect(() => {
+        if (!reload) return;
+
         API.getData("/client/list?order=name", (clients) => {
             setClients(clients);
         });
         API.getData("/clientContact/list", (clientContacts) => {
             setClientContacts(clientContacts);
         });
-    }, []);
 
-    function handleDelete(id) {
-        API.getData("/client/delete/"+id, ()=>{
-            API.getData("/client/list?order=name", (clients) => {
-                setClients(clients);
+        setReload(false);
+    }, [reload]);
+
+    function handleDeleteContact(id) {
+        API.getData("/clientContact/delete/"+id, ()=>{
+            API.getData("/clientContact/list", (clientContacts) => {
+                setClientContacts(clientContacts);
             });
         });
+    }
+
+    function closeModal() {
+        setIsOpen(false);
+    }
+
+    function closeContactModal() {
+        setIsContactOpen(false);
     }
 
     return (
@@ -32,7 +54,14 @@ const ClientsList = ({}) => {
             </div>
 
             <div className="my-3">
-                <NavLink to="/clients/new" className="btn btn-primary" type="button">Nový klient</NavLink>
+                <button  onClick={() => {
+                    setModalClientId(null);
+                    setIsOpen(true)
+                }}
+                     className="btn btn-secondary d-inline-flex align-items-center me-2">
+                    <Plus size={12} className="me-2"/>
+                    Nový klient
+                </button>
             </div>
             {clients && clients.length && clients.map((client) => (
                 <div className="card border-0 shadow mb-4" key={client.id}>
@@ -40,7 +69,14 @@ const ClientsList = ({}) => {
                         <div className="float-end text-end">
 
                             <div className="mb-3">
-                            <NavLink to={"/clients/edit/"+client.id} className="btn btn-sm btn-primary" type="button">Upravit</NavLink>
+
+                                <button onClick={() => {
+                                    setModalClientId(client.id);
+                                    setIsOpen(true)
+                                }}
+                                      className="btn btn-sm fs-6 px-1 py-0">
+                                    <NotePencil size={20} color="#999"/>
+                                </button>
 
                             </div>
                             {client.logo && client.logo.length > 0 && (
@@ -67,31 +103,48 @@ const ClientsList = ({}) => {
                             </tr>
                             </tbody>
                         </table>
+
                         <table className="table table-bordered table-centered table-nowrap mb-0">
                             <tbody>
                             {clientContacts?.filter(clientContact => clientContact.clientId == client.id)?.map(clientContact => (
-                                    <tr key={clientContact.id}>
-                                        <td>
-                                            {clientContact.photo && clientContact.photo.length > 0 && (
-                                                <img src={CONFIG.uploadDir + clientContact.photo}
-                                                     style={{maxWidth: "40px"}}/>
-                                            )}
-                                        </td>
-                                        <td>{clientContact.name} {clientContact.surname}</td>
-                                        <td>{clientContact.position}</td>
-                                        <td>{clientContact.email}</td>
-                                        <td>{clientContact.phone}</td>
-                                        <td>
+                                <tr key={clientContact.id}>
+                                    <td width={77}>
+                                        {clientContact.photo && clientContact.photo.length > 0 && (
+                                            <img src={CONFIG.uploadDir + clientContact.photo}
+                                                 style={{maxWidth: "40px"}}/>
+                                        )}
+                                    </td>
+                                    <td>{clientContact.name} {clientContact.surname}</td>
+                                    <td>{clientContact.position}</td>
+                                    <td>{clientContact.email}</td>
+                                    <td>{clientContact.phone}</td>
+                                    <td width={10}>
 
-                                            <NavLink to={"/client-contacts/edit/"+clientContact.id} className="btn btn-sm btn-primary" type="button">Upravit</NavLink>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                                        <button onClick={() => {
+                                            setModalClientContactId(clientContact.id);
+                                            setIsContactOpen(true)
+                                        }}
+                                                className="btn btn-sm fs-6 px-1 py-0">
+                                            <NotePencil size={20} color="#999"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </table>
+
+                        <div className="mt-3">
+                            <button onClick={() => {
+                                setModalClientContactId(null);
+                                setModalClientId(client.id);
+                                setIsContactOpen(true)
+                            }} className="btn btn-sm d-inline-flex align-items-center me-2">
+                                <Plus size={10} className="me-1"/>Nový kontakt
+                            </button>
+                        </div>
                     </div>
                 </div>
-                ))}
+            ))}
 
             {/*
             <div className="card border-0 shadow mb-4">
@@ -140,6 +193,26 @@ const ClientsList = ({}) => {
                 </div>
             </div>
                     */}
+
+
+            {modalIsOpen && (
+                <ClientFormModal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    setIsOpen={setIsOpen}
+                    callback={()=>setReload(true)}
+                    id={modalClientId}/>
+            )}
+
+            {modalIsContactOpen && (
+                <ClientContactFormModal
+                    isOpen={modalIsContactOpen}
+                    onRequestClose={closeContactModal}
+                    setIsOpen={setIsContactOpen}
+                    callback={()=>setReload(true)}
+                    clientId={modalClientId}
+                    id={modalClientContactId}/>
+            )}
         </>
     );
 };

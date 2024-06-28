@@ -28,6 +28,14 @@ const EndCustomerContactForm = ({id, handleSave, endCustomerId}) => {
         }
     }, [id]);
 
+    function handleDelete(id) {
+        API.getData("/endCustomerContact/delete/"+id, ()=>{
+            if (handleSave) {
+                handleSave();
+            }
+        });
+    }
+
     function handleSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -109,6 +117,12 @@ const EndCustomerContactForm = ({id, handleSave, endCustomerId}) => {
                     <button type="submit" className="btn btn-primary">
                         {id ? "Uložit" : "Přidat"}
                     </button>
+
+                    {!!id && (
+                        <button
+                            onClick={() => window.confirm("Opravdu smazat?") && handleDelete(id)}
+                            className="btn btn-danger float-end" type="button">Smazat</button>
+                    )}
                 </form>
             )}
         </>

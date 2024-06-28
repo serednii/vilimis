@@ -27,6 +27,14 @@ const EndCustomerForm = ({id, handleSave}) => {
         }
     }, [id]);
 
+    function handleDelete(id) {
+        API.getData("/endCustomer/delete/"+id, ()=>{
+            if (handleSave) {
+                handleSave();
+            }
+        });
+    }
+
     function handleSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -53,7 +61,7 @@ const EndCustomerForm = ({id, handleSave}) => {
                     <div className="mb-3">
                         <label htmlFor="form_edit_client_id">Klient</label>
                         <ClientsSelectList selected={endCustomer.clientId} onChange={setSelectedClientId}/>
-                        <input type="hidden" name="client_id" value={selectedClientId}/>
+                        <input type="hidden" name="client_id" value={selectedClientId?selectedClientId:0}/>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="form_edit_name">Název</label>
@@ -95,6 +103,12 @@ const EndCustomerForm = ({id, handleSave}) => {
                     <button type="submit" className="btn btn-primary">
                         {id ? "Uložit" : "Přidat"}
                     </button>
+
+                    {!!id && (
+                        <button
+                            onClick={() => window.confirm("Opravdu smazat?") && handleDelete(id)}
+                            className="btn btn-danger float-end" type="button">Smazat</button>
+                    )}
                 </form>
             )}
         </>

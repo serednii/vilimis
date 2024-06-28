@@ -28,6 +28,14 @@ const ClientContactForm = ({id, handleSave, clientId}) => {
         }
     }, [id]);
 
+    function handleDelete(id) {
+        API.getData("/clientContact/delete/"+id, ()=>{
+            if (handleSave) {
+                handleSave();
+            }
+        });
+    }
+
     function handleSubmit(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -109,6 +117,12 @@ const ClientContactForm = ({id, handleSave, clientId}) => {
                     <button type="submit" className="btn btn-primary">
                         {id ? "Uložit" : "Přidat"}
                     </button>
+
+                    {!!id && (
+                        <button
+                            onClick={() => window.confirm("Opravdu smazat?") && handleDelete(id)}
+                            className="btn btn-danger float-end" type="button">Smazat</button>
+                    )}
                 </form>
             )}
         </>

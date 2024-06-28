@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import ProjectsSelectList from "../Projects/ProjectsSelectList";
 import TaskStatusesSelectList from "../TaskStatuses/TaskStatusesSelectList";
+import JoditEditor from 'jodit-react';
 
 const taskBlank = {
     name: "",
@@ -15,15 +16,48 @@ const TaskFormDefault = ({id, handleSave}) => {
     const [selectedProjectId, setSelectedProjectId] = useState(null);
     const [selectedTaskStatusId, setSelectedTaskStatusId] = useState(null);
 
+    const editor = useRef(null);
+    const [content, setContent] = useState('');
+
     useEffect(() => {
         if (id) {
-            API.getData("/task/single/" + id, (data) => {
-                setTask(data);
+            API.getData("/task/single/" + id, (task) => {
+                setContent(task.description);
+                setTask(task);
             });
         } else {
+            setContent("");
             setTask(taskBlank)
         }
     }, [id]);
+
+    const config = {
+            readonly: false, // all options from https://xdsoft.net/jodit/docs/,
+        disablePlugins: ["spellcheck", "copyformat", "indent", "outdent","font", "color", "speechRecognize","line-height","fontsize", "about", "ai-assistant", "preview", "print", "symbol"],
+        language: 'auto',
+        spellcheck: false,
+        removeButtons: ["about", "symbol"],
+        toolbarAdaptive: false,
+        buttons: [
+            'paragraph', '|',
+            'bold',
+            'italic',
+            'underline',
+            'strikethrough', '|',
+            'link',
+            'image',
+            'video', '|',
+            'ul',
+            'ol', '|',
+            'table',
+            'align', '|',
+            'hr',
+            'eraser',
+            'source',
+            'fullsize', '|','undo', 'redo',
+        ],
+            placeholder: 'Zde můžete psát..'
+    };
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -68,9 +102,16 @@ const TaskFormDefault = ({id, handleSave}) => {
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="form_edit_description">Zadání</label>
-                                <textarea defaultValue={task.description} className="form-control" name="description"
-                                          rows="10"
-                                          id="form_edit_description"></textarea>
+
+                                <input type="hidden" name="description" value={content}/>
+
+                                <JoditEditor
+                                    ref={editor}
+                                    value={content}
+                                    config={config}
+                                    onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
+                                    onChange={newContent => {}}
+                                />
                             </div>
                         </div>
                         <div className="col-12 col-md-4">
