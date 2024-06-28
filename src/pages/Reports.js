@@ -1,10 +1,9 @@
 import {useRootContext} from "../contexts/RootContext";
-import TasksListDashboard from "../components/Dashboard/TasksListDashboard";
-import TaskTimetracksListDashboard from "../components/Dashboard/TaskTimetracksListDashboard";
-import ProjectDatesListDashboard from "../components/Dashboard/ProjectDatesListDashboard";
 import React, {useEffect, useRef, useState} from "react";
 import BudgetCalculator from "../utils/BudgetCalculator";
 import html2pdf from 'html2pdf.js';
+import {FilePdf, Gear} from "@phosphor-icons/react";
+import ReportsSettingsModal from "../components/Reports/ReportsSettingsModal";
 
 const Reports = ({}) => {
     const {API, locale} = useRootContext()
@@ -14,8 +13,27 @@ const Reports = ({}) => {
     const [tasks, setTasks] = useState([]);
     const [projects, setProjects] = useState([]);
     const [clients, setClients] = useState([]);
+
+    const [modalIsSettingsOpen, setIsSettingsOpen] = React.useState(false);
+
     const pdfRef = useRef(null);
 
+    function closeSettingsModal() {
+        setIsSettingsOpen(false);
+    }
+
+    const defaultSettingsLocal = localStorage.getItem("report_settings");
+    const defaultSettings = defaultSettingsLocal ? JSON.parse(defaultSettingsLocal) : {
+        date: new Date()
+    };
+    if (!(defaultSettings.date  instanceof Date)) {
+        defaultSettings.date = new Date(defaultSettings.date);
+    }
+    const [settings, setSettings] = useState(defaultSettings);
+
+    useEffect(() => {
+        localStorage.setItem("report_settings", JSON.stringify(settings));
+    }, [settings]);
 
     useEffect(() => {
         if (!reload) return;
@@ -41,25 +59,25 @@ const Reports = ({}) => {
         setReload(false);
     }, [reload]);
 
-    const exportToPdf = () =>
-    {
+    const exportToPdf = () => {
         const options = {
             filename: 'report.pdf',
             margin: 0.5,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+            image: {type: 'jpeg', quality: 0.98},
+            html2canvas: {scale: 2},
+            jsPDF: {unit: 'in', format: 'letter', orientation: 'portrait'},
         };
         const content = pdfRef.current;
 
         html2pdf().set(options).from(content).save();
     }
 
-    const date = new Date();
+    const date = settings.date;
 
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const monthWithZero = month < 10 ? "0" + month : month;
+    const year_month = year+"-"+monthWithZero;
     const firstDate = new Date(year, month, 1).getDate();
     const firstDateWithZero = firstDate < 10 ? "0" + firstDate : firstDate;
     const lastDate = new Date(year, month + 1, 0).getDate();
@@ -91,7 +109,7 @@ const Reports = ({}) => {
 
             tasks?.filter(task => task.projectId == project.id).forEach(task => {
                 let taskData = {task: task.name, taskTimetracks: [], hours: 0, forInvoicing: 0, rows: 0};
-                taskTimetracks?.filter(taskTimetrack => taskTimetrack.taskId == task.id).forEach(taskTimetrack => {
+                taskTimetracks?.filter(taskTimetrack => taskTimetrack.taskId == task.id && taskTimetrack.datetimeStop.date.substring(0,7) == year_month).forEach(taskTimetrack => {
                     let taskTimetrackData = {
                         start: new Date(taskTimetrack.datetimeStart.date).toLocaleDateString() + " " + new Date(taskTimetrack.datetimeStart.date).toLocaleTimeString(),
                         stop: new Date(taskTimetrack.datetimeStop.date).toLocaleTimeString(),
@@ -142,100 +160,118 @@ const Reports = ({}) => {
                 <div className="mb-3 mb-lg-0"><h1 className="h4">Reporty</h1></div>
             </div>
 
-            <button className="btn btn-primary" onClick={exportToPdf}>Export do PDF</button>
+            <div className="my-3">
+                <button className="btn btn-primary float-start" onClick={exportToPdf}><FilePdf size={16}/></button>
+                <button className="btn btn-primary float-end" onClick={() => setIsSettingsOpen(true)}><Gear size={16}/>
+                </button>
 
-            <div ref={pdfRef}>
-                <h2 className="h5 mb-3 text-center">{locale._months_fullname[date.getMonth()]} {date.getFullYear()}</h2>
-                <p className="text-center">{firstDate}. {month}. {year} - {lastDate}. {month}. {year}</p>
+                <div ref={pdfRef}>
+                    <h2 className="h5 mb-3 text-center">{locale._months_fullname[date.getMonth()]} {date.getFullYear()}</h2>
+                    <p className="text-center">{firstDate}. {month}. {year} - {lastDate}. {month}. {year}</p>
 
-                {report?.clients?.length > 0 ? (
-                    <React.Fragment>
-                        {report.clients.map((clientData, clientData_index) => (
-                            <React.Fragment key={clientData_index}>
+                    {report?.clients?.length > 0 ? (
+                        <React.Fragment>
+                            {report.clients.map((clientData, clientData_index) => (
+                                <React.Fragment key={clientData_index}>
 
-                                <div className="card mb-3">
-                                    <div className="card-header">
-                                        <h3 className="mb-0 h4">{clientData.client}</h3>
-                                    </div>
-                                    <div className="card-body">
-                                        {clientData.projects.map((projectData, projectData_index) => (
-                                            <React.Fragment key={projectData_index}>
+                                    <div className="card mb-3">
+                                        <div className="card-header">
+                                            <h3 className="mb-0 h4">{clientData.client}</h3>
+                                        </div>
+                                        <div className="card-body">
+                                            {clientData.projects.map((projectData, projectData_index) => (
+                                                <React.Fragment key={projectData_index}>
 
-                                                <div className="card mb-3">
-                                                    <div className="card-header">
-                                                        <h3 className="mb-0 h5">{projectData.project}</h3>
-                                                    </div>
-                                                    <div className="card-body">
-                                                        <table className="table rounded">
-                                                            {/*<thead>
+                                                    <div className="card mb-3">
+                                                        <div className="card-header">
+                                                            <h3 className="mb-0 h5">{projectData.project}</h3>
+                                                        </div>
+                                                        <div className="card-body">
+                                                            <table className="table rounded">
+                                                                {/*<thead>
                                                         <tr>
                                                             <th>Úkol</th>
                                                             <th className="text-end">Čas</th>
                                                             <th className="text-end">Cena</th>
                                                         </tr>
                                                         </thead>*/}
-                                                            <tbody>
-                                                            {projectData.tasks.map((taskData, taskData_index) => (
-                                                                <React.Fragment key={taskData_index}>
+                                                                <tbody>
+                                                                {projectData.tasks.map((taskData, taskData_index) => (
+                                                                    <React.Fragment key={taskData_index}>
 
-                                                                    <tr>
-                                                                        <td>
-                                                                            {taskData.task}
+                                                                        <tr>
+                                                                            <td>
+                                                                                {taskData.task}
 
 
-                                                                            {taskData.taskTimetracks.map((taskTimetrack, taskTimetrack_index) => (
-                                                                                <React.Fragment
-                                                                                    key={taskTimetrack_index}>
-                                                                                    <br/>
-                                                                                    <small
-                                                                                        className="ms-2 text-gray-400">
-                                                                                        {taskTimetrack.start} - {taskTimetrack.stop}
-                                                                                    </small>
-                                                                                </React.Fragment>
-                                                                            ))}
-                                                                        </td>
-                                                                        <td style={{width:"5rem"}} className="text-end"> {(new BudgetCalculator)._formatTimeNicely(taskData.hours * 60 * 60)}</td>
-                                                                        <td style={{width:"5rem"}} className="text-end">{(new BudgetCalculator)._numberFormat(taskData.forInvoicing, 0, ".", " ")} Kč</td>
-                                                                    </tr>
-                                                                </React.Fragment>
-                                                            ))}
+                                                                                {taskData.taskTimetracks.map((taskTimetrack, taskTimetrack_index) => (
+                                                                                    <React.Fragment
+                                                                                        key={taskTimetrack_index}>
+                                                                                        <br/>
+                                                                                        <small
+                                                                                            className="ms-2 text-gray-400">
+                                                                                            {taskTimetrack.start} - {taskTimetrack.stop}
+                                                                                        </small>
+                                                                                    </React.Fragment>
+                                                                                ))}
+                                                                            </td>
+                                                                            <td style={{width: "5rem"}}
+                                                                                className="text-end"> {(new BudgetCalculator)._formatTimeNicely(taskData.hours * 60 * 60)}</td>
+                                                                            <td style={{width: "5rem"}}
+                                                                                className="text-end">{(new BudgetCalculator)._numberFormat(taskData.forInvoicing, 0, ".", " ")} Kč
+                                                                            </td>
+                                                                        </tr>
+                                                                    </React.Fragment>
+                                                                ))}
 
-                                                            <tr className="thead-light total-row">
-                                                                <th className="rounded-start border-0">Celkem za
-                                                                    projekt
-                                                                </th>
-                                                                <th className="text-end border-0"> {(new BudgetCalculator)._formatTimeNicely(projectData.hours * 60 * 60)}</th>
-                                                                <th className="text-end border-0 rounded-end">{(new BudgetCalculator)._numberFormat(projectData.forInvoicing, 0, ".", " ")} Kč</th>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
+                                                                <tr className="thead-light total-row">
+                                                                    <th className="rounded-start border-0">Celkem za
+                                                                        projekt
+                                                                    </th>
+                                                                    <th className="text-end border-0"> {(new BudgetCalculator)._formatTimeNicely(projectData.hours * 60 * 60)}</th>
+                                                                    <th className="text-end border-0 rounded-end">{(new BudgetCalculator)._numberFormat(projectData.forInvoicing, 0, ".", " ")} Kč</th>
+                                                                </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </React.Fragment>
-                                        ))}
+                                                </React.Fragment>
+                                            ))}
 
 
-                                        <div className="mt-3">
-                                            <h4 className="text-end h5">
-                                                Celkem za klienta:&nbsp;
-                                                {(new BudgetCalculator)._formatTimeNicely(clientData.hours * 60 * 60)} / {(new BudgetCalculator)._numberFormat(clientData.forInvoicing, 0, ".", " ")} Kč
-                                            </h4>
+                                            <div className="mt-3">
+                                                <h4 className="text-end h5">
+                                                    Celkem za klienta:&nbsp;
+                                                    {(new BudgetCalculator)._formatTimeNicely(clientData.hours * 60 * 60)} / {(new BudgetCalculator)._numberFormat(clientData.forInvoicing, 0, ".", " ")} Kč
+                                                </h4>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </React.Fragment>
-                        ))}
+                                </React.Fragment>
+                            ))}
 
-                        <div className="card mb-4">
-                            <div className="card-body">
-                                <h3 className="text-end mb-0 h4">Celkem za všechny klienty:&nbsp;
-                                    {(new BudgetCalculator)._formatTimeNicely(report.hours * 60 * 60)} / {(new BudgetCalculator)._numberFormat(report.forInvoicing, 0, ".", " ")} Kč
-                                </h3>
+                            <div className="card mb-4">
+                                <div className="card-body">
+                                    <h3 className="text-end mb-0 h4">Celkem za všechny klienty:&nbsp;
+                                        {(new BudgetCalculator)._formatTimeNicely(report.hours * 60 * 60)} / {(new BudgetCalculator)._numberFormat(report.forInvoicing, 0, ".", " ")} Kč
+                                    </h3>
+                                </div>
                             </div>
-                        </div>
-                    </React.Fragment>
-                ) : (
-                    "Žádná data"
+                        </React.Fragment>
+                    ) : (
+                        "Žádná data"
+                    )}
+                </div>
+
+                {modalIsSettingsOpen && (
+                    <ReportsSettingsModal
+                        isOpen={modalIsSettingsOpen}
+                        onRequestClose={closeSettingsModal}
+                        setIsOpen={setIsSettingsOpen}
+                        callback={() => setReload(true)}
+                        settings={settings}
+                        setSettings={setSettings}
+                    />
                 )}
             </div>
         </>
