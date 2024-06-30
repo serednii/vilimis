@@ -1,66 +1,35 @@
-const nameWeekDay = [
-  "Neděle",
-  "Pondělí",
-  "Úterý",
-  "Středa",
-  "Čtvrtek",
-  "Pátek",
-  "Sobota",
-];
+import { nameWeekDay, nameMonth } from "./czechDateLabels";
 
-export const nameMonth = [
-  "Leden",
-  "Únor",
-  "Březen",
-  "Duben",
-  "Květen",
-  "Červen",
-  "Červenec",
-  "Srpen",
-  "Září",
-  "Říjen",
-  "Listopad",
-  "Prosinec",
-];
-
-
-
-
-
-//збираємо за кожен день всі проміжки часу коли працювали
+//sbíráme za každý den všechny časové intervaly, kdy jsme pracovali
 export const groupByTimeOfDay = (workDataTime) => {
   const arrayDayOfTime = {};
   workDataTime.forEach((el) => {
     const deltaTime =
       new Date(el.datetimeStop.date) - new Date(el.datetimeStart.date);
     const date = el.datetimeStart.date.split(" ")[0];
-
-    // console.log(typeof deltaTime);
-
     if (arrayDayOfTime[date] === undefined) {
       arrayDayOfTime[date] = deltaTime;
     } else {
       arrayDayOfTime[date] = arrayDayOfTime[date] + deltaTime;
     }
   });
-  // const arrayData = separateObject(arrayDayOfTime) //separate object
-  // const arrayYearAndMonth = getYearAndMonth(arrayData)
-  // return { arrayData, arrayYearAndMonth };
   return arrayDayOfTime
 };
 
-//розбираємо всі поля обєкта по окремих обєктах
+//analyzujeme všechna pole objektu po jednotlivých objektech
 const separateObject = (obj) => {
   const arrayDay = [];
   for (const date in obj) {
     let hour = Math.floor(obj[date] / 1000 / 60 / 60);
     const minute = Math.floor(obj[date] / 1000 / 60);
     hour = hour + (minute - hour * 60) / 100;
-
+    const weekDay = nameWeekDay[new Date(date).getDay()]
+    const monthDay = new Date(date).getDate()
     arrayDay.push({
       date: date,
-      weekDay: nameWeekDay[new Date(date).getDay()],
-      monthDay: new Date(date).getDate(),
+      weekMonthDey: monthDay + " " + weekDay.slice(0, 2),
+      weekDay,
+      monthDay,
       month: nameMonth[new Date(date).getMonth()],
       year: new Date(date).getFullYear(),
       timeMinute: minute,
@@ -90,11 +59,22 @@ export const getYearAndMonth = (date) => {
     );
   });
   objArrayMonth["allYear"] = allYear;
-  console.log(objArrayMonth);
   return objArrayMonth;
 };
 
+export const functionFilterData = (data, lastYear, lastMonth) => {
+  const year = data.date.slice(0, 4);
+  const month = nameMonth[+data.date.slice(5, 7) - 1];
+  return year === lastYear && month === lastMonth;
+};
 
+export const splitNumber = (num) => {
+  const [integerPart, decimalPart] = num.toFixed(2).split(".");
+  return {
+    integerPart: parseInt(integerPart, 10),
+    decimalPart: parseInt(decimalPart, 10),
+  };
+}
 
 export const getNewFormatData = (workDataTime) => {
   const objTimeOfDay = groupByTimeOfDay(workDataTime)
@@ -103,14 +83,9 @@ export const getNewFormatData = (workDataTime) => {
   return { arrayObjectWorkDay, objYearAndMonth }
 }
 
-// При потребі сортуємо масив
-const sortDay = (a, b) => {
-  const aDateTime = new Date(Object.keys(a)).getTime();
-  const bDateTime = new Date(Object.keys(b)).getTime();
+export const sortDay = (a, b) => {
+  const aDateTime = new Date(a.date).getTime();
+  const bDateTime = new Date(b.date).getTime();
   return aDateTime - bDateTime;
 };
-//опреділяє дельту між годинами
-// const { h, m, s } = parseTime(b - a);
 
-// console.log(parseTime(b - a));
-// console.log(a.getDate());
