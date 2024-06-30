@@ -1,8 +1,8 @@
-import {faClock, faStop} from "@fortawesome/free-solid-svg-icons";
+import { faClock, faStop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {useEffect, useState} from "react";
-import {useRootContext} from "../../contexts/RootContext";
-
+import { useEffect, useState } from "react";
+import { useRootContext } from "../../contexts/RootContext";
+import { parseTime } from "../../utils";
 const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleStop, taskId }) => {
     const { API } = useRootContext();
     const [timeSpentOnPage, setTimeSpentOnPage] = useState(0);
@@ -31,13 +31,15 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
         setIsOpen(!isOpen)
     }
 
-    const seconds = Math.round(timeSpentOnPage / 1000);
-    var d = Math.floor(seconds / (3600*24));
-    var h = Math.floor(seconds % (3600*24) / 3600);
-    var m = Math.floor(seconds % 3600 / 60);
-    var s = Math.floor(seconds % 60);
+    // const seconds = Math.round(timeSpentOnPage / 1000);
+    // var d = Math.floor(seconds / (3600 * 24));
+    // var h = Math.floor(seconds % (3600 * 24) / 3600);
+    // var m = Math.floor(seconds % 3600 / 60);
+    // var s = Math.floor(seconds % 60);
 
-    if (s<10) {
+    let { h, m, s } = parseTime(timeSpentOnPage)
+
+    if (s < 10) {
         s = "0" + s;
     }
 
@@ -49,7 +51,7 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
         <div className="h-100 d-flex justify-content-sm-center align-items-center">
             {timetrackerState.start === null ? (
                 <button className="text-default fw-bold   border-0" onClick={handleClick}>
-                    <FontAwesomeIcon icon={faClock}/>
+                    <FontAwesomeIcon icon={faClock} />
                 </button>
             ) : (
                 <span>
@@ -64,7 +66,7 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
                                     ) : task.name}
                                 </span>
                             )}: &nbsp;
-                            {h>0&&(
+                            {h > 0 && (
                                 <>
                                     {h}:
                                 </>
@@ -73,7 +75,7 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
                         </>
                     )}
                     <button className="ms-2 text-default fw-bold   border-0" onClick={handleStop}>
-                        <FontAwesomeIcon icon={faStop}/> Zastavit
+                        <FontAwesomeIcon icon={faStop} /> Zastavit
                     </button>
                 </span>
             )}

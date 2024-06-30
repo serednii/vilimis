@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {useRootContext} from "../../contexts/RootContext";
-import {CONFIG} from "../../config";
-import {NavLink} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useRootContext } from "../../contexts/RootContext";
+import { CONFIG } from "../../config";
+import { NavLink } from "react-router-dom";
 import ProjectDateFormModal from "../ProjectDates/ProjectDateFormModal";
 import ProjectDatesListItem from "../ProjectDates/ProjectDatesListItem";
 
-const ProjectDatesListDashboard = ({}) => {
-    const {API} = useRootContext()
+const ProjectDatesListDashboard = ({ }) => {
+    const { API } = useRootContext()
     const [clients, setClients] = useState([]);
     const [reload, setReload] = useState(true);
     const [projectDates, setProjectDates] = useState([]);
@@ -50,11 +50,11 @@ const ProjectDatesListDashboard = ({}) => {
                 <div className="ms-auto">
                     <NavLink to="/projectDates" className="fw-normal d-inline-flex align-items-center" href="#">
                         <svg className="icon icon-xxs me-2" fill="currentColor" viewBox="0 0 20 20"
-                             xmlns="http://www.w3.org/2000/svg">
+                            xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
                             <path fillRule="evenodd"
-                                  d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                                  clipRule="evenodd"></path>
+                                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                                clipRule="evenodd"></path>
                         </svg>
                         Zobrazit všechny</NavLink></div>
             </div>
@@ -67,7 +67,7 @@ const ProjectDatesListDashboard = ({}) => {
                                 projects={projects}
                                 endCustomers={endCustomers}
                                 clients={clients}
-                                onUpdate={()=>setReload(true)}/>
+                                onUpdate={() => setReload(true)} />
                         </React.Fragment>
                     ))}
                 </div>
