@@ -1,0 +1,89 @@
+<?php
+
+namespace API\Entity;
+
+
+/**
+ * @ORM\Table testing
+ * @Serializable
+ */
+class Testing
+{
+
+    /**
+     * @var int
+     *
+     * @ORM\Id
+     */
+    private $id = 0;
+
+    /**
+     * @var string
+     *
+     * @ORM\Type VARCHAR(255)
+     * @ORM\Column name
+     */
+    private $name = "";
+    
+    /**
+     * @var string
+     *
+     * @ORM\Type TEXT
+     * @ORM\Column dalsi
+     */
+    private $dalsi = "";
+    
+
+    public function __construct()
+    {
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId(int $id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDalsi(): string
+    {
+        return $this->dalsi;
+    }
+
+    /**
+     * @param string $dalsi
+     */
+    public function setDalsi(string $dalsi)
+    {
+        $this->dalsi = $dalsi;
+    }
+    
+}

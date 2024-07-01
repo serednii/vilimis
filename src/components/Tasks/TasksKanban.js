@@ -1,10 +1,10 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {useRootContext} from "../../contexts/RootContext";
-import {NavLink} from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useRootContext } from "../../contexts/RootContext";
+import { NavLink } from "react-router-dom";
 import TasksKanbanItem from "./TasksKanbanItem";
 import TasksListItem from "./TasksListItem";
-import {HTML5Backend} from "react-dnd-html5-backend";
-import {DndProvider} from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
 import TasksKanbanColumn from "./TasksKanbanColumn";
 import update from 'immutability-helper'
 import TaskFormModal from "./TaskFormModal";
@@ -12,8 +12,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import TasksKanbanSettingsModal from "./TasksKanbanSettingsModal";
 import {Gear, Plus} from "@phosphor-icons/react";
 
-const TasksKanban = ({}) => {
-    const {API} = useRootContext()
+const TasksKanban = ({ }) => {
+    const { API } = useRootContext()
     const [tasks, setTasks] = useState([]);
     const [taskStatuses, setTaskStatuses] = useState([]);
     const [clients, setClients] = useState([]);
@@ -106,12 +106,12 @@ const TasksKanban = ({}) => {
 
         if (taskStatusId == hoverTaskStatusId) {
             setTasks((prevCards) => {
-                    prevCards[taskStatusId] = update(prevCards[taskStatusId], {
-                        $splice: [
-                            [dragIndex, 1],
-                            [hoverIndex, 0, prevCards[taskStatusId][dragIndex]],
-                        ]
-                    })
+                prevCards[taskStatusId] = update(prevCards[taskStatusId], {
+                    $splice: [
+                        [dragIndex, 1],
+                        [hoverIndex, 0, prevCards[taskStatusId][dragIndex]],
+                    ]
+                })
 
                     let formData = new FormData;
                     prevCards[taskStatusId].forEach((card, index) => {
@@ -121,8 +121,8 @@ const TasksKanban = ({}) => {
                     });
                     API.postData("/taskPriority/save", formData);
 
-                    return prevCards;
-                }
+                return prevCards;
+            }
             )
         } else if (taskStatusId > 0) {
             setTasks((prevCards) => {

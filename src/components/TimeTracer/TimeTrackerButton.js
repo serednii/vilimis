@@ -1,4 +1,4 @@
-import {faClock, faStop} from "@fortawesome/free-solid-svg-icons";
+import { faClock, faStop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
@@ -32,13 +32,15 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
         setIsOpen(!isOpen)
     }
 
-    const seconds = Math.round(timeSpentOnPage / 1000);
-    var d = Math.floor(seconds / (3600*24));
-    var h = Math.floor(seconds % (3600*24) / 3600);
-    var m = Math.floor(seconds % 3600 / 60);
-    var s = Math.floor(seconds % 60);
+    // const seconds = Math.round(timeSpentOnPage / 1000);
+    // var d = Math.floor(seconds / (3600 * 24));
+    // var h = Math.floor(seconds % (3600 * 24) / 3600);
+    // var m = Math.floor(seconds % 3600 / 60);
+    // var s = Math.floor(seconds % 60);
 
-    if (s<10) {
+    let { h, m, s } = parseTime(timeSpentOnPage)
+
+    if (s < 10) {
         s = "0" + s;
     }
 
@@ -65,7 +67,7 @@ const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleS
                                     ) : task.name}
                                 </span>
                             )}: &nbsp;
-                            {h>0&&(
+                            {h > 0 && (
                                 <>
                                     {h}:
                                 </>

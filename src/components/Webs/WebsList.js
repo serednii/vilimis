@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from "react";
-import {useRootContext} from "../../contexts/RootContext";
-import {NavLink} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useRootContext } from "../../contexts/RootContext";
+import { NavLink } from "react-router-dom";
 
-const WebsList = ({}) => {
-    const {API} = useRootContext()
+const WebsList = ({ }) => {
+    const { API } = useRootContext()
     const [webs, setWebs] = useState([]);
 
     useEffect(() => {
@@ -13,7 +13,7 @@ const WebsList = ({}) => {
     }, []);
 
     function handleDelete(id) {
-        API.getData("/web/delete/"+id, ()=>{
+        API.getData("/web/delete/" + id, () => {
             API.getData("/web/list", (webs) => {
                 setWebs(webs);
             });
@@ -35,31 +35,31 @@ const WebsList = ({}) => {
                     <div className="table-responsive">
                         <table className="table table-centered table-nowrap mb-0 rounded">
                             <thead className="thead-light">
-                            <tr>
-                                <th className="border-0 rounded-start">#</th>
-                                <th className="border-0">Název</th>
-                                <th className="border-0">URL</th>
-                                <th className="border-0">Projekt</th>
-                                <th className="border-0 rounded-end">Akce</th>
-                            </tr>
+                                <tr>
+                                    <th className="border-0 rounded-start">#</th>
+                                    <th className="border-0">Název</th>
+                                    <th className="border-0">URL</th>
+                                    <th className="border-0">Projekt</th>
+                                    <th className="border-0 rounded-end">Akce</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {webs && webs.length && webs.map((web, web_key) => (
-                                <tr key={web_key}>
-                                    <td><NavLink to={"/webs/edit/"+web.id} className="text-primary fw-bold">{web.id}</NavLink></td>
-                                    <td className="fw-bold ">
-                                        {web.name}
-                                    </td>
-                                    <td> {web.url}</td>
-                                    <td> {web.projectId}</td>
-                                    <td>
-                                        <NavLink to={"/webs/edit/"+web.id} className="btn btn-sm btn-primary" type="button">Upravit</NavLink>
-                                        <button
-                                            onClick={()=> window.confirm("Opravdu smazat?") && handleDelete(web.id)}
-                                            className="btn btn-sm btn-danger" type="button">Smazat</button>
-                                    </td>
-                                </tr>
-                            ))}
+                                {webs && webs.length && webs.map((web, web_key) => (
+                                    <tr key={web_key}>
+                                        <td><NavLink to={"/webs/edit/" + web.id} className="text-primary fw-bold">{web.id}</NavLink></td>
+                                        <td className="fw-bold ">
+                                            {web.name}
+                                        </td>
+                                        <td> {web.url}</td>
+                                        <td> {web.projectId}</td>
+                                        <td>
+                                            <NavLink to={"/webs/edit/" + web.id} className="btn btn-sm btn-primary" type="button">Upravit</NavLink>
+                                            <button
+                                                onClick={() => window.confirm("Opravdu smazat?") && handleDelete(web.id)}
+                                                className="btn btn-sm btn-danger" type="button">Smazat</button>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>

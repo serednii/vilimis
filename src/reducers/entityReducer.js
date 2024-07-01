@@ -1,14 +1,16 @@
 export const ENTITY_ACTIONS = {
     LOAD: "LOAD",
+    CHANGE_PROPERTY: "CHANGE_PROPERTY",
+    DELETE_PROPERTY: "DELETE_PROPERTY",
     MOVE: "MOVE",
     MOVE_PROPERTY: "MOVE_PROPERTY",
     ADD_PROPERTY: "ADD_PROPERTY",
 };
 
-export const entityReducer = (state, {action, ...args}) => {
+export const entityReducer = (state, { action, ...args }) => {
     switch (action) {
         case ENTITY_ACTIONS.LOAD: {
-            const {entities, properties, status, propertiesSelected} = args;
+            const { entities, properties, status, propertiesSelected } = args;
 
             return {
                 ...state,
@@ -18,8 +20,9 @@ export const entityReducer = (state, {action, ...args}) => {
                 status
             };
         }
+
         case ENTITY_ACTIONS.ADD_PROPERTY: {
-            const {entityId} = args;
+            const { entityId } = args;
 
             const propertiesSelected = Array.from(state.propertiesSelected);
             propertiesSelected.push({
@@ -36,8 +39,28 @@ export const entityReducer = (state, {action, ...args}) => {
                 propertiesSelected
             };
         }
+
+        case ENTITY_ACTIONS.CHANGE_PROPERTY: {
+            const { obj } = args;
+            const propertiesSelected = Array.from(state.propertiesSelected).map(_obj => _obj.id === obj.id ? obj : _obj)
+            console.log(state.propertiesSelected)
+            return {
+                ...state,
+                propertiesSelected
+            };
+        }
+
+        case ENTITY_ACTIONS.DELETE_PROPERTY: {
+            const { entityId } = args;
+            const propertiesSelected = Array.from(state.propertiesSelected).filter(_obj => _obj.id !== entityId);
+            return {
+                ...state,
+                propertiesSelected
+            };
+        }
+
         case ENTITY_ACTIONS.MOVE: {
-            const {fromIndex, toIndex} = args;
+            const { fromIndex, toIndex } = args;
 
             if (fromIndex === toIndex) {
                 return state;
@@ -53,9 +76,10 @@ export const entityReducer = (state, {action, ...args}) => {
             };
 
         }
+
         case ENTITY_ACTIONS.MOVE_PROPERTY: {
-            const {fromIndex, toIndex} = args;
-            console.log(fromIndex+"----"+toIndex);
+            const { fromIndex, toIndex } = args;
+            console.log(fromIndex + "----" + toIndex);
 
             if (fromIndex === toIndex) {
                 return state;
