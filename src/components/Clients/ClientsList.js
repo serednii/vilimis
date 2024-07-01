@@ -4,7 +4,6 @@ import {NavLink} from "react-router-dom";
 import {CONFIG} from "../../config";
 import {NotePencil, Plus, Trash} from "@phosphor-icons/react";
 import ClientFormModal from "./ClientFormModal";
-import ClientContactForm from "../ClientContacts/ClientContactForm";
 import ClientContactFormModal from "../ClientContacts/ClientContactFormModal";
 
 const ClientsList = ({}) => {

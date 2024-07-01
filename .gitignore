@@ -17,6 +17,7 @@
 
 /package-lock.json
 /src/config.js
+/api/v1/config/orm.json
 
 # misc
 .DS_Store

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import {ClockCountdown, Stop, StopCircle, Timer} from "@phosphor-icons/react";
+import {parseTime} from "../../utils";
 
 const TimeTrackerButton = ({ isOpen, setIsOpen, timetrackerState, tasks, handleStop, taskId }) => {
     const { API } = useRootContext();
