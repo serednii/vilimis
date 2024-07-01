@@ -3,6 +3,7 @@
 namespace API\Controller\Controller\Entity;
 
 use Admin\Facade\AdminResponse;
+use Admin\Generator\Repository\GroupRepository;
 use Admin\Generator\Repository\ItemRepository;
 use Admin\Generator\Repository\ModuleRepository;
 use Admin\Generator\Service\StatusProvider;
@@ -39,11 +40,13 @@ class ListEntityController
      * @var ItemRepository
      */
     private $itemRepository;
+    private GroupRepository $groupRepository;
 
     public function __construct(
         JsonResponseFactory $jsonResponseFactory,
         ModuleRepository $moduleRepository,
         ItemRepository $itemRepository,
+        GroupRepository $groupRepository,
         StatusProvider $status_provider,
         JsonSerializator $jsonSerializator
     ) {
@@ -52,6 +55,7 @@ class ListEntityController
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
         $this->itemRepository = $itemRepository;
+        $this->groupRepository = $groupRepository;
     }
 
     /**

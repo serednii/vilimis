@@ -59,6 +59,54 @@ class Item
     private $table_show = "";
 
     /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column readonly_in_ui
+     */
+    private $readonlyInUi = 0;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column hide_from_ui
+     */
+    private $hideFromUi = 0;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column unique
+     */
+    private $unique = 0;
+
+    /**
+     * @var int
+     *
+     * @ORM\Type int
+     * @ORM\Column group_id
+     */
+    private $groupId = 0;
+
+    /**
+     * @var int
+     *
+     * @ORM\Type int
+     * @ORM\Column sort
+     */
+    private $sort = 0;
+
+    /**
+     * @var string
+     *
+     * @ORM\Type TEXT
+     * @ORM\Column options
+     */
+    private $options = "";
+
+    /**
      * @var int
      *
      * @ORM\Type int
@@ -199,4 +247,65 @@ class Item
     {
         $this->table_show = $table_show;
     }
+
+    public function getReadonlyInUi(): bool|int
+    {
+        return $this->readonlyInUi;
+    }
+
+    public function setReadonlyInUi(bool|int $readonlyInUi): void
+    {
+        $this->readonlyInUi = $readonlyInUi;
+    }
+
+    public function getHideFromUi(): bool|int
+    {
+        return $this->hideFromUi;
+    }
+
+    public function setHideFromUi(bool|int $hideFromUi): void
+    {
+        $this->hideFromUi = $hideFromUi;
+    }
+
+    public function getUnique(): bool|int
+    {
+        return $this->unique;
+    }
+
+    public function setUnique(bool|int $unique): void
+    {
+        $this->unique = $unique;
+    }
+
+    public function getGroupId(): int
+    {
+        return $this->groupId;
+    }
+
+    public function setGroupId(int $groupId): void
+    {
+        $this->groupId = $groupId;
+    }
+
+    public function getSort(): int
+    {
+        return $this->sort;
+    }
+
+    public function setSort(int $sort): void
+    {
+        $this->sort = $sort;
+    }
+
+    public function getOptions(): string
+    {
+        return $this->options;
+    }
+
+    public function setOptions(string $options): void
+    {
+        $this->options = $options;
+    }
+
 }

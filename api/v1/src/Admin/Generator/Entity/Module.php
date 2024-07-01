@@ -51,6 +51,38 @@ class Module
     private $in_menu = "";
 
     /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column disable_new
+     */
+    private $disableNew = 0;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column disable_edit
+     */
+    private $disableEdit = 0;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column disable_delete
+     */
+    private $disableDelete = 0;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column exclude_from_search
+     */
+    private $excludeFromSearch = 0;
+
+    /**
      * @var string
      *
      * @ORM\Type VARCHAR(255)
@@ -181,5 +213,45 @@ class Module
     public function setSort(int $sort)
     {
         $this->sort = $sort;
+    }
+
+    public function getDisableNew(): bool|int
+    {
+        return $this->disableNew;
+    }
+
+    public function setDisableNew(bool|int $disableNew): void
+    {
+        $this->disableNew = $disableNew;
+    }
+
+    public function getExcludeFromSearch(): bool|int
+    {
+        return $this->excludeFromSearch;
+    }
+
+    public function setExcludeFromSearch(bool|int $excludeFromSearch): void
+    {
+        $this->excludeFromSearch = $excludeFromSearch;
+    }
+
+    public function getDisableEdit(): bool|int
+    {
+        return $this->disableEdit;
+    }
+
+    public function setDisableEdit(bool|int $disableEdit): void
+    {
+        $this->disableEdit = $disableEdit;
+    }
+
+    public function getDisableDelete(): bool|int
+    {
+        return $this->disableDelete;
+    }
+
+    public function setDisableDelete(bool|int $disableDelete): void
+    {
+        $this->disableDelete = $disableDelete;
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Admin\Generator\Repository;
 
-use Admin\Generator\Entity\Item;
+use Admin\Generator\Entity\Group;
 use Gephart\ORM\EntityManager;
 
-class ItemRepository
+class GroupRepository
 {
 
     /**
@@ -20,7 +20,7 @@ class ItemRepository
 
     public function __construct(EntityManager $entity_manager)
     {
-        $this->entity_class = Item::class;
+        $this->entity_class = Group::class;
         $this->entity_manager = $entity_manager;
 
         try {
