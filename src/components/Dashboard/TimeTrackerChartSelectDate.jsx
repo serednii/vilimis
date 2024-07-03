@@ -6,6 +6,8 @@ const TimeTrackerChartSelectDate = ({
   selectedMonth,
   setSelectedMonth,
   dataYearMonth,
+  isAllDays,
+  setIsAllDays,
 }) => {
   const handleSelectedYear = (value) => {
     setSelectYear(value);
@@ -22,10 +24,10 @@ const TimeTrackerChartSelectDate = ({
   //   console.log(selectedMonth);
 
   return (
-    <div className="mb-5 d-flex gap-2 ps-2">
+    <div className="mb-5 d-flex flex-wrap gap-2 ps-2">
       <div className="time-tracker-chart__select ">
         <select
-          class="form-select"
+          className="form-select"
           value={selectYear}
           onChange={(event) => handleSelectedYear(event.target.value)}
           aria-label="Пример выбора по умолчанию"
@@ -40,7 +42,7 @@ const TimeTrackerChartSelectDate = ({
       <div className="time-tracker-chart__select ">
         <select
           value={selectedMonth}
-          class="form-select"
+          className="form-select"
           onChange={(event) => handleSelectedMonth(event.target.value)}
           aria-label="Пример выбора по умолчанию"
         >
@@ -51,6 +53,19 @@ const TimeTrackerChartSelectDate = ({
               </option>
             ))}
         </select>
+      </div>
+      <div className="pt-2">
+        <input
+          className="form-check-input me-2"
+          type="checkbox"
+          checked={isAllDays}
+          onClick={(event) => setIsAllDays((prev) => !prev)}
+          value=""
+          id="flexCheckDefault"
+        />
+        <label className="form-check-label" htmlFor="flexCheckDefault">
+          Všechny dny v měsíci
+        </label>
       </div>
     </div>
   );

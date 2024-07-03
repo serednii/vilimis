@@ -20,24 +20,65 @@ export const groupByTimeOfDay = (workDataTime) => {
 const separateObject = (obj) => {
   const arrayDay = [];
   for (const date in obj) {
-    let hour = Math.floor(obj[date] / 1000 / 60 / 60);
-    const minute = Math.floor(obj[date] / 1000 / 60);
-    hour = hour + (minute - hour * 60) / 100;
-    const weekDay = nameWeekDay[new Date(date).getDay()]
-    const monthDay = new Date(date).getDate()
     arrayDay.push({
       date: date,
-      weekMonthDey: monthDay + " " + weekDay.slice(0, 2),
-      weekDay,
-      monthDay,
-      month: nameMonth[new Date(date).getMonth()],
-      year: new Date(date).getFullYear(),
-      timeMinute: minute,
-      timeHour: hour,
+      workTime: obj[date]
     });
   }
   return arrayDay;
 };
+
+function getDaysInMonth(month, year) {
+  // Місяці в JavaScript: 0 - Січень, 1 - Лютий, ..., 11 - Грудень
+  return new Date(year, month + 1, 0).getDate();
+}
+
+//analyzujeme všechna pole objektu po jednotlivých objektech
+export const addNewProperties = (array) => {
+
+  const newArr = array.map((day) => {
+    let hour = Math.floor(day?.workTime / 1000 / 60 / 60);
+    const minute = Math.floor(day?.workTime / 1000 / 60);
+    hour = hour + (minute - hour * 60) / 100;
+    const weekDay = nameWeekDay[new Date(day.date).getDay()]
+    const monthDay = new Date(day.date).getDate()
+
+    return {
+      date: day.date,
+      weekMonthDey: monthDay + "" + weekDay.slice(0, 2),
+      weekDay,
+      monthDay,
+      month: nameMonth[new Date(day?.date).getMonth()],
+      year: new Date(day?.date).getFullYear(),
+      timeMinute: minute,
+      timeHour: hour,
+    }
+
+  })
+
+  return newArr
+
+};
+
+export const fillInTheMissingDays = (arrayDays) => {
+  const year = Number(arrayDays[0].date.slice(0, 4))
+  const month = Number(arrayDays[0].date.slice(5, 7))
+  const numberOfDaysInMonth = getDaysInMonth(month, year);
+  const newArrDays = []
+
+  for (let i = 1; i <= numberOfDaysInMonth; i++) {
+    const res = arrayDays.find(day => Number(day.date.slice(8, 10)) === i)
+    const newDay = {}
+    if (!res) {
+      newDay.date = arrayDays[0].date.slice(0, 8) + (i < 10 ? `0${i}` : i.toString());
+      newDay.workTime = 0
+      newArrDays.push(newDay)
+    } else {
+      newArrDays.push(res)
+    }
+  }
+  return newArrDays
+}
 
 export const getYearAndMonth = (date) => {
   const setDate = new Set();
@@ -77,10 +118,21 @@ export const splitNumber = (num) => {
 }
 
 export const getNewFormatData = (workDataTime) => {
-  const objTimeOfDay = groupByTimeOfDay(workDataTime)
-  const arrayObjectWorkDay = separateObject(objTimeOfDay)
+  // console.log(workDataTime)
+  //Збираємо всі дані в один обєкт для кожного поля двти додаємо робочі години за день
+  const objTimeOfDay = groupByTimeOfDay(workDataTime)//
+  // console.log(objTimeOfDay)
+  //Розкидаємо кожен день в окремий обєкт
+  const separateObjectIntoArray = separateObject(objTimeOfDay)
+  // console.log(separateObjectIntoArray)
+
+  //Додаємо нові властивості до обєкта дня
+  const arrayObjectWorkDay = addNewProperties(separateObjectIntoArray)
+  // console.log(arrayObjectWorkDay)
+
+  //Створюємо окремий обєкт з робочими роками і місяцями
   const objYearAndMonth = getYearAndMonth(arrayObjectWorkDay)
-  return { arrayObjectWorkDay, objYearAndMonth }
+  return { arrayObjectWorkDay, objYearAndMonth, separateObjectIntoArray }
 }
 
 export const sortDay = (a, b) => {
