@@ -1,4 +1,6 @@
 import React, { memo } from "react";
+import { useRootContext } from "../../contexts/RootContext";
+import Select from "react-select";
 
 const TimeTrackerChartSelectDate = ({
   selectYear,
@@ -9,6 +11,96 @@ const TimeTrackerChartSelectDate = ({
   isAllDays,
   setIsAllDays,
 }) => {
+  const { locale } = useRootContext();
+
+  const handleSelectedYear = (selectedOption) => {
+    setSelectYear(selectedOption.value);
+    const [lastMonth] = dataYearMonth[selectedOption.value].slice(-1);
+    setSelectedMonth(lastMonth);
+  };
+
+  const handleSelectedMonth = (selectedOption) => {
+    setSelectedMonth(selectedOption.value);
+  };
+
+  const yearOptions = dataYearMonth.allYear.map((year) => ({
+    value: year,
+    label: year,
+  }));
+
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isDisabled ? "#d3d3d3" : "#007bff",
+      color: state.isDisabled ? "#000" : "#fff",
+    }),
+  };
+
+  const monthOptions = locale._months_fullname.map((month) => {
+    const isDisabled = !dataYearMonth[selectYear].includes(month);
+    return {
+      value: month,
+      label: month,
+      isDisabled,
+    };
+  });
+
+  return (
+    <div className="mb-5 d-flex flex-wrap gap-2 ps-2">
+      <div className="time-tracker-chart__select">
+        <Select
+          value={yearOptions.find((option) => option.value === selectYear)}
+          onChange={handleSelectedYear}
+          options={yearOptions}
+          className="form-select"
+          aria-label="Пример выбора по умолчанию"
+        />
+      </div>
+      <div className="time-tracker-chart__select">
+        <Select
+          value={monthOptions.find((option) => option.value === selectedMonth)}
+          onChange={handleSelectedMonth}
+          options={monthOptions}
+          className="form-select"
+          styles={customStyles}
+          isOptionDisabled={(option) => option.isDisabled}
+          aria-label="Пример выбора по умолчанию"
+        />
+      </div>
+      <div className="d-flex align-items-center ">
+        <input
+          className="form-check-input me-2"
+          type="checkbox"
+          checked={isAllDays}
+          onChange={() => setIsAllDays((prev) => !prev)}
+          value=""
+          id="flexCheckDefault"
+        />
+        <label className="form-check-label mb-0" htmlFor="flexCheckDefault">
+          Všechny dny v měsíci
+        </label>
+      </div>
+    </div>
+  );
+};
+
+export default memo(TimeTrackerChartSelectDate);
+
+// import React, { memo } from "react";
+// import { useRootContext } from "../../contexts/RootContext";
+
+const TimeTrackerChartSelectDate1 = ({
+  selectYear,
+  setSelectYear,
+  selectedMonth,
+  setSelectedMonth,
+  dataYearMonth,
+  isAllDays,
+  setIsAllDays,
+}) => {
+  const { locale } = useRootContext();
+  console.log(locale);
+
   const handleSelectedYear = (value) => {
     setSelectYear(value);
     const [lastMonth] = dataYearMonth[value].slice(-1);
@@ -47,11 +139,19 @@ const TimeTrackerChartSelectDate = ({
           aria-label="Пример выбора по умолчанию"
         >
           {selectYear &&
-            dataYearMonth[selectYear].map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
+            locale._months_fullname.map((month) => {
+              const isDisabled = dataYearMonth[selectYear].includes(month);
+              return (
+                <option
+                  className={isDisabled ? "text-bg-success" : "text-bg-primary"}
+                  disabled={!isDisabled}
+                  key={month}
+                  value={month}
+                >
+                  {month}
+                </option>
+              );
+            })}
         </select>
       </div>
       <div className="pt-2">
@@ -59,7 +159,7 @@ const TimeTrackerChartSelectDate = ({
           className="form-check-input me-2"
           type="checkbox"
           checked={isAllDays}
-          onClick={(event) => setIsAllDays((prev) => !prev)}
+          onClick={() => setIsAllDays((prev) => !prev)}
           value=""
           id="flexCheckDefault"
         />
@@ -70,4 +170,4 @@ const TimeTrackerChartSelectDate = ({
     </div>
   );
 };
-export default memo(TimeTrackerChartSelectDate);
+// export default memo(TimeTrackerChartSelectDate);

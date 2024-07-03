@@ -41,7 +41,7 @@ const TimeTrackerChart = () => {
   const [newFormatData, setNewFormatData] = useState(null);
   const [selectYear, setSelectYear] = useState(null); //last year
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const [finalData, setFinalData] = useState(null);
+  const [finalData, setFinalData] = useState([]);
   const [isAllDays, setIsAllDays] = useState(false);
   console.log(isAllDays);
   useEffect(() => {
@@ -62,6 +62,11 @@ const TimeTrackerChart = () => {
         functionFilterData(data, selectYear, selectedMonth)
       );
 
+      console.log(filterData);
+      if (filterData.length === 0) {
+        setFinalData([]);
+        return;
+      }
       if (isAllDays) {
         filterData = fillInTheMissingDays(filterData);
         console.log("filterData", filterData);
@@ -76,7 +81,7 @@ const TimeTrackerChart = () => {
 
   return (
     <div>
-      {finalData && selectYear && selectedMonth && (
+      {selectYear && selectedMonth && (
         <TimeTrackerChartSelectDate
           selectYear={selectYear}
           setSelectYear={setSelectYear}
