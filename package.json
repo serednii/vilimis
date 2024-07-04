@@ -30,14 +30,14 @@
     "react-dom": "^18.3.1",
     "react-loader-spinner": "^6.1.6",
     "react-modal": "^3.16.1",
-    "react-scripts": "^5.0.1",
     "react-select": "^5.8.0",
     "react-tabs": "^6.0.2",
     "react-toastify": "^10.0.5",
     "stream": "0.0.3",
     "stream-browserify": "^3.0.0",
     "util": "^0.12.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "postcss-custom-properties": "^13.3.11"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -79,7 +79,8 @@
     ]
   },
   "devDependencies": {
-    "react-router-dom": "^6.24.0",
+    "react-router-dom": "^6.24.1",
+    "react-scripts": "^5.0.1",
     "sass": "^1.77.5"
   },
   "browser": {

@@ -7,6 +7,8 @@ import {
   functionFilterData,
   splitNumber,
   sortDay,
+  addNewProperties,
+  fillInTheMissingDays,
 } from "./timeTrackerUtils";
 import TimeTrackerChartSelectDate from "./TimeTrackerChartSelectDate";
 
@@ -39,8 +41,9 @@ const TimeTrackerChart = () => {
   const [newFormatData, setNewFormatData] = useState(null);
   const [selectYear, setSelectYear] = useState(null); //last year
   const [selectedMonth, setSelectedMonth] = useState(null);
-  const [filterData, setFilterData] = useState(null);
-
+  const [finalData, setFinalData] = useState([]);
+  const [isAllDays, setIsAllDays] = useState(false);
+  console.log(isAllDays);
   useEffect(() => {
     API.getData("/taskTimetrack/list", (taskTimetracks) => {
       // const newFormatData = getNewFormatData(taskTimetracks);
@@ -55,29 +58,43 @@ const TimeTrackerChart = () => {
 
   useEffect(() => {
     if (selectYear && selectedMonth) {
-      const filterData = newFormatData.arrayObjectWorkDay.filter((data) =>
+      let filterData = newFormatData.separateObjectIntoArray.filter((data) =>
         functionFilterData(data, selectYear, selectedMonth)
       );
-      console.log("filterData", filterData);
-      filterData.sort(sortDay);
-      setFilterData(filterData);
+
+      console.log(filterData);
+      if (filterData.length === 0) {
+        setFinalData([]);
+        return;
+      }
+      if (isAllDays) {
+        filterData = fillInTheMissingDays(filterData);
+        console.log("filterData", filterData);
+      }
+
+      const finalDataProperties = addNewProperties(filterData);
+      setFinalData(finalDataProperties);
     }
-  }, [selectYear, selectedMonth]);
+  }, [selectYear, selectedMonth, isAllDays]);
+
+  console.log("newFormatData", newFormatData);
 
   return (
     <div>
-      {newFormatData && selectYear && selectedMonth && (
+      {selectYear && selectedMonth && (
         <TimeTrackerChartSelectDate
           selectYear={selectYear}
           setSelectYear={setSelectYear}
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
+          isAllDays={isAllDays}
+          setIsAllDays={setIsAllDays}
           dataYearMonth={newFormatData.objYearAndMonth}
         />
       )}
-      {filterData && (
+      {finalData && (
         <BarChart
-          dataset={filterData}
+          dataset={finalData}
           xAxis={[
             {
               scaleType: "band",
