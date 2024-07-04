@@ -5,6 +5,7 @@ import ClientsSelectList from "../Clients/ClientsSelectList";
 import EndCustomersSelectList from "../EndCustomers/EndCustomersSelectList";
 import WebsSelectList from "./WebsSelectList";
 import {CONFIG} from "../../config";
+import CypherTextarea from "../../formTypes/CypherTextarea";
 
 const webBlank = {
     name: "",
@@ -76,9 +77,13 @@ const WebFormDefault = ({id, handleSave}) => {
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="form_edit_accesses">Přístupy</label>
-                                <textarea defaultValue={web.accesses} className="form-control" name="accesses"
+                                <CypherTextarea defaultIsCrypted={web.accessesCrypted}
+                                                defaultValue={web.accesses}
+                                                className="form-control"
+                                                name="accesses"
+                                                nameIsCrypted="accesses_crypted"
                                           rows="10"
-                                          id="form_edit_accesses"></textarea>
+                                          id="form_edit_accesses"/>
                             </div>
                         </div>
                         <div className="col-12 col-md-4">

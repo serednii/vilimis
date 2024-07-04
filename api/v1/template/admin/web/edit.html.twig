@@ -7,11 +7,13 @@
     <form action="{{ _router.generateUrl("admin_web_edit", {"id":web.id}) }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="form_edit_name">Název</label>
-                <input value="{{ web.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+                <input value="{{ web.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_url">URL</label>
-                <input value="{{ web.Url }}" type="text" name="url" class="form-control" id="form_edit_url">
+                <input value="{{ web.Url }}" type="text" name="url" class="form-control" id="form_edit_url"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_parent_web_id">Nadřazený web</label>
@@ -36,7 +38,15 @@
             </div>
             <div class="form-group">
                 <label for="form_edit_accesses">Přístupy</label>
-                <input value="{{ web.Accesses }}" type="text" name="accesses" class="form-control" id="form_edit_accesses">
+                <input value="{{ web.Accesses }}" type="text" name="accesses" class="form-control" id="form_edit_accesses"
+                >
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input {% if web.AccessesCrypted %}checked{% endif %} type="checkbox" name="accesses_crypted" value="1" 
+                >
+                    Přistupy zašifrovány
+                </label>
             </div>
             <div class="form-group">
                 <label for="form_edit_client_id">Klient</label>
@@ -82,7 +92,8 @@
             </div>
             <div class="form-group">
                 <label for="form_new_logo">Logo</label>
-                <input type="file" name="logo" class="form-control" id="form_new_logo">
+                <input type="file" name="logo" class="form-control" id="form_new_logo"
+                >
                 {% if web.Logo %}
                     <img style="width:auto;height:auto;max-width:200px;max-height:200px" src="upload/{{ web.Logo }}">
                     <br/><label><input type="checkbox" name="logo_delete"> Smazat</label>

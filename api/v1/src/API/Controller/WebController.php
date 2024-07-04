@@ -6,6 +6,8 @@ use API\Entity\Web;
 use API\Repository\WebRepository;
 use API\Repository\ClientRepository;
 use API\Repository\EndCustomerRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class WebController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var WebRepository
      */
@@ -33,15 +42,18 @@ class WebController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         WebRepository $web_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->web_repository = $web_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -125,6 +137,8 @@ class WebController extends AbstractApiController
 
             EntityManager::save($web);
 
+            $web = $this->triggerSave($web);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "web" => $web,
@@ -158,11 +172,37 @@ class WebController extends AbstractApiController
         ]));
     }
 
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "web_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $webs = $this->web_repository->findBy($filter);
+
+        if (is_array($webs) && count($webs) > 0) {
+            foreach ($webs as $web) {
+                EntityManager::remove($web);
+            }
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
     private function mapEntityFromArray(Web $web, array $data, array $files) {
         $web->setName($data["name"]);
         $web->setUrl($data["url"]);
         $web->setParentWebId(!empty($data["parent_web_id"]) ? (int) $data["parent_web_id"] : null);
         $web->setAccesses($data["accesses"]);
+        $web->setAccessesCrypted((bool) isset($data["accesses_crypted"]) ? $data["accesses_crypted"] : false);
         $web->setClientId(!empty($data["client_id"]) ? (int) $data["client_id"] : null);
         $web->setEndCustomerId(!empty($data["end_customer_id"]) ? (int) $data["end_customer_id"] : null);
         if (!empty($files["logo"]) && $files["logo"] instanceof UploadedFileInterface) {
@@ -200,4 +240,17 @@ class WebController extends AbstractApiController
         return "";
     }
 
+
+    private function triggerSave(Web $web): Web
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "web" => $web
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("web");
+    }
 }

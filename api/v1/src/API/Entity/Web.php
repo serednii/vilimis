@@ -2,6 +2,7 @@
 
 namespace API\Entity;
 
+
 /**
  * @ORM\Table web
  * @Serializable
@@ -47,6 +48,14 @@ class Web
      * @ORM\Column accesses
      */
     private $accesses = "";
+    
+    /**
+     * @var bool
+     *
+     * @ORM\Type TINYINT(1)
+     * @ORM\Column accesses_crypted
+     */
+    private $accesses_crypted = false;
     
     /**
      * @var ?int
@@ -155,6 +164,22 @@ class Web
     public function setAccesses(string $accesses)
     {
         $this->accesses = $accesses;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAccessesCrypted(): bool
+    {
+        return $this->accesses_crypted;
+    }
+
+    /**
+     * @param bool $accesses_crypted
+     */
+    public function setAccessesCrypted(bool $accesses_crypted)
+    {
+        $this->accesses_crypted = $accesses_crypted;
     }
 
     /**

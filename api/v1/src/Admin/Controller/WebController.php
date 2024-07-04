@@ -7,6 +7,8 @@ use API\Entity\Web;
 use API\Repository\WebRepository;
 use API\Repository\ClientRepository;
 use API\Repository\EndCustomerRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class WebController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var WebRepository
      */
@@ -43,12 +52,14 @@ class WebController
         WebRepository $parent_web_id_repository,
         ClientRepository $client_id_repository,
         EndCustomerRepository $end_customer_id_repository,
+        EventManager $eventManager,
         WebRepository $web_repository
     )
     {
         $this->parent_web_id_repository = $parent_web_id_repository;
         $this->client_id_repository = $client_id_repository;
         $this->end_customer_id_repository = $end_customer_id_repository;
+        $this->eventManager = $eventManager;
         $this->web_repository = $web_repository;
     }
 
@@ -103,6 +114,7 @@ class WebController
             $this->mapEntityFromArray($web, $postData, $filesData);
 
             EntityManager::save($web);
+            $web = $this->triggerSave($web);
 
             Router::redirectTo("admin_web_edit", ["id"=>$web->getId()]);
         }
@@ -139,6 +151,7 @@ class WebController
         $web->setUrl($data["url"]);
         $web->setParentWebId(!empty($data["parent_web_id"]) ? (int) $data["parent_web_id"] : null);
         $web->setAccesses($data["accesses"]);
+        $web->setAccessesCrypted((bool) isset($data["accesses_crypted"]) ? $data["accesses_crypted"] : false);
         $web->setClientId(!empty($data["client_id"]) ? (int) $data["client_id"] : null);
         $web->setEndCustomerId(!empty($data["end_customer_id"]) ? (int) $data["end_customer_id"] : null);
         if (!empty($files["logo"]) && $files["logo"] instanceof UploadedFileInterface) {
@@ -176,4 +189,17 @@ class WebController
         return "";
     }
 
+
+    private function triggerSave(Web $web): Web
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "web" => $web
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("web");
+    }
 }
