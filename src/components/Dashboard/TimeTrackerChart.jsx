@@ -15,7 +15,7 @@ import TimeTrackerChartSelectDate from "./TimeTrackerChartSelectDate";
 const chartSetting = {
   yAxis: [
     {
-      label: "working hours (hod)",
+      label: "odpracovaných hodin",
       // max: 10, // Nastavíme maximální hodnotu Y stupnice
     },
   ],
@@ -46,8 +46,8 @@ const TimeTrackerChart = () => {
   console.log(isAllDays);
   useEffect(() => {
     API.getData("/taskTimetrack/list", (taskTimetracks) => {
-      // const newFormatData = getNewFormatData(taskTimetracks);
-      const newFormatData = getNewFormatData(workDataTime);
+      const newFormatData = getNewFormatData(taskTimetracks);
+      //const newFormatData = getNewFormatData(workDataTime);
       const [lastYear] = newFormatData.objYearAndMonth.allYear.slice(-1);
       const [lastMonth] = newFormatData.objYearAndMonth[lastYear].slice(-1);
       setSelectYear(lastYear);

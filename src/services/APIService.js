@@ -28,7 +28,7 @@ class APIService {
             referrerPolicy: 'no-referrer'
         });
         this.loaderDispatch({action: LOADER_ACTIONS.HIDE});
-        return response.json().then((data) => {
+        return response.clone().json().then((data) => {
             if ("message" in data) {
                 if ("code" in data && data.code.toString().substring(0,1) === "2") {
                     if (!silence) {
@@ -51,6 +51,44 @@ class APIService {
 
                 callback(data);
             }
+        }).catch((data)=> {
+            response.text().then((data) => {
+                alert(data);
+                callback(data);
+            });
+        });
+    }
+    async blobData(url, filename) {
+        const headers = {
+            "Content-type": "application/json;charset=utf-8",
+            "Accept": "application/json",
+        };
+        if (this.jwt) {
+            headers.Authorization = "Bearer " + this.jwt;
+        }
+
+        this.loaderDispatch({action: LOADER_ACTIONS.SHOW});
+        const response = await fetch(CONFIG.api + url, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // include, *same-origin, omit
+            headers: headers,
+            redirect: 'follow', // manual, *follow, error
+            referrerPolicy: 'no-referrer'
+        });
+        this.loaderDispatch({action: LOADER_ACTIONS.HIDE});
+        return response.clone().blob().then((blob) => {
+            var URL = window.URL || window.webkitURL;
+            var downloadUrl = URL.createObjectURL(blob);
+
+
+            let tempLink = document.createElement('a');
+            tempLink.href = downloadUrl;
+            tempLink.setAttribute("target","_blank");
+            tempLink.setAttribute('download', filename);
+            tempLink.click();
+        }).catch((data)=> {
         });
     }
 

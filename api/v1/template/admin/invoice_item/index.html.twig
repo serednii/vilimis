@@ -1,0 +1,82 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Položka faktury</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_invoice_item") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_invoice_id">Faktura</label>
+                <select name="invoice_id" class="form-control" id="form_edit_invoice_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for invoice_id in invoice_ids %}
+                        <option value="{{ invoice_id.id }}">
+                        {% if invoice_id.title %}
+                            {{ invoice_id.title }}
+                        {% elseif invoice_id.name %}
+                            {{ invoice_id.name }}
+                        {% else %}
+                            #{{ invoice_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_code">Kód</label>
+                <input value="{{ invoice_item.Code }}" type="text" name="code" class="form-control" id="form_edit_code"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_item">Položka</label>
+                <input value="{{ invoice_item.Item }}" type="text" name="item" class="form-control" id="form_edit_item"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_vat">DPH</label>
+                <input value="{{ invoice_item.Vat }}" type="number" name="vat" class="form-control" id="form_edit_vat"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_quantity">Počet</label>
+                <input value="{{ invoice_item.Quantity }}" type="number" name="quantity" class="form-control" id="form_edit_quantity"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_unit">Jednotka</label>
+                <input value="{{ invoice_item.Unit }}" type="text" name="unit" class="form-control" id="form_edit_unit"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_price_without_vat">Cena bez DPH</label>
+                <input value="{{ invoice_item.PriceWithoutVat }}" type="number" name="price_without_vat" class="form-control" id="form_edit_price_without_vat"
+                >
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for invoice_item in invoice_items %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_invoice_item_edit", {"id":invoice_item.id}) }}">{{ invoice_item.Code }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_invoice_item_edit", {"id":invoice_item.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_invoice_item_delete", {"id":invoice_item.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

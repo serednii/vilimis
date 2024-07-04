@@ -84,7 +84,7 @@ const ClientsList = ({}) => {
                             )}
                         </div>
 
-                        <h2 className="h5 mb-3">{client.name}</h2>
+                        <h2 className="h5 mb-3">{client.name} (#{client.id})</h2>
 
                         <table className="table table-bordered w-auto mb-3">
                             <tbody>

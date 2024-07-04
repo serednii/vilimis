@@ -15,7 +15,7 @@ final class FloatType implements TypeInterface
     /**
      * @var float
      *
-     * @ORM\Type DOUBLE(7,5)
+     * @ORM\Type DOUBLE(20,5)
      * @ORM\Column {{ item.slug }}
      */
     private \${{ item.slug }} = false;

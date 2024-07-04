@@ -1,0 +1,110 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Faktura - úprava</h1>
+
+    <form action="{{ _router.generateUrl("admin_invoice_edit", {"id":invoice.id}) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_number">Číslo</label>
+                <input step="1" value="{{ invoice.Number }}" type="number" name="number" class="form-control" id="form_edit_number"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_user_id">Uživatel </label>
+                <select name="user_id" class="form-control" id="form_edit_user_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for user_id in user_ids %}
+                        <option value="{{ user_id.id }}"
+                                {% if user_id.id == invoice.UserId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if user_id.title %}
+                            {{ user_id.title }}
+                        {% elseif user_id.name %}
+                            {{ user_id.name }}
+                        {% else %}
+                            #{{ user_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_client_id">Klient</label>
+                <select name="client_id" class="form-control" id="form_edit_client_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for client_id in client_ids %}
+                        <option value="{{ client_id.id }}"
+                                {% if client_id.id == invoice.ClientId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if client_id.title %}
+                            {{ client_id.title }}
+                        {% elseif client_id.name %}
+                            {{ client_id.name }}
+                        {% else %}
+                            #{{ client_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_created_date">Datum vytavení</label>
+                <input value="{{ invoice.CreatedDate.format("Y-m-d") }}" type="date" name="created_date" class="form-control" id="form_edit_created_date"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_due_date">Splatnost</label>
+                <input value="{{ invoice.DueDate.format("Y-m-d") }}" type="date" name="due_date" class="form-control" id="form_edit_due_date"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_duty_date">DÚZP</label>
+                <input value="{{ invoice.DutyDate.format("Y-m-d") }}" type="date" name="duty_date" class="form-control" id="form_edit_duty_date"
+                >
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input {% if invoice.Payed %}checked{% endif %} type="checkbox" name="payed" value="1" 
+                >
+                    Zaplaceno
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_form_of_payment">Forma úhrady</label>
+                <input value="{{ invoice.FormOfPayment }}" type="text" name="form_of_payment" class="form-control" id="form_edit_form_of_payment"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_invoice_type">Typ faktury</label>
+                <input value="{{ invoice.InvoiceType }}" type="text" name="invoice_type" class="form-control" id="form_edit_invoice_type"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_variable_symbol">Variabilní symbol</label>
+                <input value="{{ invoice.VariableSymbol }}" type="text" name="variable_symbol" class="form-control" id="form_edit_variable_symbol"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_specific_symbol">Specifický symbol</label>
+                <input value="{{ invoice.SpecificSymbol }}" type="text" name="specific_symbol" class="form-control" id="form_edit_specific_symbol"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_constant_symbol">Konstatní symbol</label>
+                <input value="{{ invoice.ConstantSymbol }}" type="text" name="constant_symbol" class="form-control" id="form_edit_constant_symbol"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_amount">Čátka s DPH</label>
+                <input value="{{ invoice.Amount }}" type="number" name="amount" class="form-control" id="form_edit_amount"
+                >
+            </div>
+        <button type="submit" class="btn btn-default">Uložit</button>
+    </form>
+
+{% endblock %}

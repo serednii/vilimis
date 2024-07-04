@@ -36,10 +36,11 @@ import {
     SquaresFour, TreeStructure,
     UserCircle,
     Users,
-    MagnifyingGlass, Timer, Table
+    MagnifyingGlass, Timer, Table, Invoice
 } from "@phosphor-icons/react";
 import TimeTracks from "./pages/TimeTracks";
 import Reports from "./pages/Reports";
+import Invoices from "./pages/Invoices";
 
 library.add(fas);
 
@@ -276,11 +277,22 @@ function Root() {
                                     </NavLink>
                                 </li>
                                 <li className="nav-item">
+                                    <NavLink to="/invoices"
+                                             className="nav-link d-flex justify-content-between">
+                                        <span>
+                                            <span className="sidebar-icon">
+                                                <Invoice/>
+                                            </span>
+                                            <span className="sidebar-text">Faktury</span>
+                                        </span>
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
                                     <NavLink to="/reports"
                                              className="nav-link d-flex justify-content-between">
                                         <span>
                                             <span className="sidebar-icon">
-                                                <Table />
+                                                <Table/>
                                             </span>
                                             <span className="sidebar-text">Reporty</span>
                                         </span>
@@ -336,7 +348,7 @@ function Root() {
                                      id="navbarSupportedContent">
                                     <div className="d-flex align-items-center">
                                         <form className="navbar-search form-inline" id="navbar-search-main">
-                                            <div className="input-group input-group-merge search-bar">
+                                        <div className="input-group input-group-merge search-bar">
                                         <span className="input-group-text" id="topbar-addon">
                                             <MagnifyingGlass size={16}/>
                                         </span>
@@ -497,6 +509,8 @@ function Root() {
                             <Route path="workflow" element={<Workflow/>}/>
                             <Route path="entity/*" element={<EntityPage/>}/>
                             <Route path="entity" element={<EntityPage/>}/>
+                            <Route path="invoices/*" element={<Invoices/>}/>
+                            <Route path="invoices" element={<Invoices/>}/>
                             <Route path="time-tracks/*" element={<TimeTracks/>}/>
                             <Route path="time-tracks" element={<TimeTracks/>}/>
                             <Route path="reports/*" element={<TimeTracks/>}/>
