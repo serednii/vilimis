@@ -84,7 +84,7 @@ const TasksListItem = ({onUpdate, task, projects, endCustomers, clients}) => {
                                                             ) : dateP7 > (new Date(task.deadLineDate.date)) ? (
                                                                 <span style={{color: "red"}}> do týdne - </span>
                                                             ) : dateP31 > (new Date(task.deadLineDate.date)) ? (
-                                                                <span style={{color: "red"}}> do měsíce hodin - </span>
+                                                                <span style={{color: "red"}}> do měsíce - </span>
                                                             ) : ""}
                                     {(new Date(task.deadLineDate.date)).toLocaleString()}
                                             </span>

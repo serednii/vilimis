@@ -84,7 +84,7 @@ const InvoicesListItem = ({onUpdate, invoice, projects, endCustomers, clients}) 
                                                             ) : dateP7 > (new Date(invoice.deadLineDate.date)) ? (
                                                                 <span style={{color: "red"}}> do týdne - </span>
                                                             ) : dateP31 > (new Date(invoice.deadLineDate.date)) ? (
-                                                                <span style={{color: "red"}}> do měsíce hodin - </span>
+                                                                <span style={{color: "red"}}> do měsíce - </span>
                                                             ) : ""}
                                     {(new Date(invoice.deadLineDate.date)).toLocaleString()}
                                             </span>

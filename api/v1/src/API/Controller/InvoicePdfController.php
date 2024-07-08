@@ -7,6 +7,7 @@ use API\Entity\Invoice;
 use API\Entity\InvoiceItem;
 use API\Repository\InvoiceItemRepository;
 use API\Repository\InvoiceRepository;
+use API\Repository\SettingRepository;
 use API\Repository\UserRepository;
 use API\Repository\ClientRepository;
 use Defr\QRPlatba\QRPlatba;
@@ -47,6 +48,7 @@ class InvoicePdfController extends AbstractApiController
 
     private InvoiceItemRepository $invoice_item_repository;
     private ClientRepository $clientRepository;
+    private SettingRepository $settingRepository;
 
 
     public function __construct(
@@ -55,6 +57,7 @@ class InvoicePdfController extends AbstractApiController
         JsonResponseFactory $jsonResponseFactory,
         ClientRepository $clientRepository,
         JsonSerializator $jsonSerializator,
+        SettingRepository $settingRepository,
         EventManager $eventManager
     )
     {
@@ -64,6 +67,7 @@ class InvoicePdfController extends AbstractApiController
         $this->eventManager = $eventManager;
         $this->invoice_item_repository = $invoice_item_repository;
         $this->clientRepository = $clientRepository;
+        $this->settingRepository = $settingRepository;
     }
 
     /**
@@ -75,6 +79,10 @@ class InvoicePdfController extends AbstractApiController
     public function single($id)
     {
         $invoice = $this->invoice_repository->find($id);
+        $settings = $this->settingRepository->findBy();
+        foreach ($settings as $setting) {
+            $settings[$setting->getKey()] = $setting->getValue();
+        }
 
         if (!$invoice) {
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
@@ -91,10 +99,15 @@ class InvoicePdfController extends AbstractApiController
         $client = $this->clientRepository->find($invoice->getClientId());
 
         $user = new \stdClass();
-        $user->name = "Michal K";
-        $user->invoiceNote = "pdf";
-        $user->bank_name = "AirBank";
-        $user->bank_number = "123";
+        $user->name = $settings["name"];
+        $user->invoiceNote = $settings["invoice_note"];
+        $user->address = $settings["address"];
+        $user->email = $settings["email"];
+        $user->ic = $settings["ic"];
+        $user->dic = $settings["dic"];
+        $user->phone = $settings["phone"];
+        $user->bank_name = $settings["bank"];
+        $user->bank_number = $settings["account_number"];
         /*
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '.(isset($address_dodavatel[0])?$address_dodavatel[0]:'').'<br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '.(isset($address_dodavatel[1])?$address_dodavatel[1]:'').'<br>
@@ -146,20 +159,32 @@ div.marginLeft {
     <td style="width:50%; border-right:1px solid black; vertical-align:top; padding:5px; padding-bottom:0;">
         <h2 style="font-family:sans-serif;font-size:16px;">Dodavatel:</h2>
         <br>
-        <div class="marginLeft">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>'.$user->name.'</strong><br>
+        <div class="marginLeft" style="padding-left:30px">
+            <strong>'.$user->name.'</strong><br>
+            '.nl2br($user->address).'
         </div>
         <br>
+        <table style="font-family:sans-serif;font-size:12px;">
+            <tr>
+                <td>Telefon: '.$user->phone.'</td>
+                <td style="padding-left:10px;">IČ: '.$user->ic.'</td>
+            </tr>
+            <tr>
+                <td>Email: '.$user->email.'</td>
+                <td style="padding-left:10px;">DIČ: '.$user->dic.'</td>
+            </tr>
+        </table>
+        <br>
         <div style="font-size:12px;">
-            '.$user->invoiceNote.'
+            '.nl2br($user->invoiceNote).'
         </div><br>
     </td>
     <td style="width:50%; x_border:1px solid black; vertical-align:top; padding:5px;">
         <h2 style="font-family:sans-serif;font-size:16px;">Odběratel:</h2>
         <br>
-        <div class="marginLeft">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>'.$client->getName().'</strong><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '.nl2br($client->getAddress()).'
+        <div class="marginLeft" style="padding-left:30px">
+           <strong>'.$client->getName().'</strong><br>
+           '.nl2br($client->getAddress()).'
         </div>
         <br>
         <table style="font-family:sans-serif;font-size:12px;">
@@ -356,8 +381,8 @@ div.marginLeft {
 
 
         $qrPlatba = new QRPlatba();
-        $qrPlatba->setAccount('1035759011/3030') // nastavení č. účtu
-        ->setIBAN('CZ2730300000001035759011') // nastavení č. účtu
+        $qrPlatba->setAccount($settings["account_number"]) // nastavení č. účtu
+        ->setIBAN($settings["iban"]) // nastavení č. účtu
         ->setVariableSymbol($invoice->getVariableSymbol())
             ->setMessage('QR platba')
             ->setAmount($celkem_s)

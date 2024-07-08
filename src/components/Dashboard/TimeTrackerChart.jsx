@@ -15,7 +15,7 @@ import TimeTrackerChartSelectDate from "./TimeTrackerChartSelectDate";
 const chartSetting = {
   yAxis: [
     {
-      label: "odpracovaných hodin",
+      label: "hodiny",
       // max: 10, // Nastavíme maximální hodnotu Y stupnice
     },
   ],
@@ -42,10 +42,10 @@ const TimeTrackerChart = () => {
   const [selectYear, setSelectYear] = useState(null); //last year
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [finalData, setFinalData] = useState([]);
-  const [isAllDays, setIsAllDays] = useState(false);
-  console.log(isAllDays);
+  const [isAllDays, setIsAllDays] = useState(true);
+
   useEffect(() => {
-    API.getData("/taskTimetrack/list", (taskTimetracks) => {
+    API.getData("/taskTimetrack/list?order=datetime_start", (taskTimetracks) => {
       const newFormatData = getNewFormatData(taskTimetracks);
       //const newFormatData = getNewFormatData(workDataTime);
       const [lastYear] = newFormatData.objYearAndMonth.allYear.slice(-1);
@@ -62,14 +62,12 @@ const TimeTrackerChart = () => {
         functionFilterData(data, selectYear, selectedMonth)
       );
 
-      console.log(filterData);
       if (filterData.length === 0) {
         setFinalData([]);
         return;
       }
       if (isAllDays) {
         filterData = fillInTheMissingDays(filterData);
-        console.log("filterData", filterData);
       }
 
       const finalDataProperties = addNewProperties(filterData);
@@ -77,9 +75,9 @@ const TimeTrackerChart = () => {
     }
   }, [selectYear, selectedMonth, isAllDays]);
 
-  console.log("newFormatData", newFormatData);
-
   return (
+      <div className="card border-0 shadow mb-4">
+        <div className="card-body">
     <div>
       {selectYear && selectedMonth && (
         <TimeTrackerChartSelectDate
@@ -98,7 +96,7 @@ const TimeTrackerChart = () => {
           xAxis={[
             {
               scaleType: "band",
-              dataKey: "weekMonthDey",
+              dataKey: "monthDay",
             },
           ]}
           series={[
@@ -112,6 +110,8 @@ const TimeTrackerChart = () => {
         />
       )}
     </div>
+    </div>
+      </div>
   );
 };
 

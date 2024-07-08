@@ -84,7 +84,7 @@ const WebsListItem = ({onUpdate, web, projects, endCustomers, clients}) => {
                                                             ) : dateP7 > (new Date(web.deadLineDate.date)) ? (
                                                                 <span style={{color: "red"}}> do týdne - </span>
                                                             ) : dateP31 > (new Date(web.deadLineDate.date)) ? (
-                                                                <span style={{color: "red"}}> do měsíce hodin - </span>
+                                                                <span style={{color: "red"}}> do měsíce - </span>
                                                             ) : ""}
                                     {(new Date(web.deadLineDate.date)).toLocaleString()}
                                             </span>

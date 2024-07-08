@@ -222,7 +222,7 @@ const ProjectsKanbanItem = ({index, id, onUpdate, project, endCustomers, clients
                                                             ) : dateP7 > (new Date(project.deadLineDate.date)) ? (
                                                                 <span style={{color: "red"}}> do týdne - </span>
                                                             ) : dateP31 > (new Date(project.deadLineDate.date)) ? (
-                                                                <span style={{color: "red"}}> do měsíce hodin - </span>
+                                                                <span style={{color: "red"}}> do měsíce - </span>
                                                             ) : ""}
                                     {(new Date(project.deadLineDate.date)).toLocaleString()}
                                             </span>

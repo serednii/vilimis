@@ -52,8 +52,6 @@ const TimeTrackerChartSelectDate = ({
           value={yearOptions.find((option) => option.value === selectYear)}
           onChange={handleSelectedYear}
           options={yearOptions}
-          className="form-select"
-          aria-label="Пример выбора по умолчанию"
         />
       </div>
       <div className="time-tracker-chart__select">
@@ -61,10 +59,8 @@ const TimeTrackerChartSelectDate = ({
           value={monthOptions.find((option) => option.value === selectedMonth)}
           onChange={handleSelectedMonth}
           options={monthOptions}
-          className="form-select"
           styles={customStyles}
           isOptionDisabled={(option) => option.isDisabled}
-          aria-label="Пример выбора по умолчанию"
         />
       </div>
       <div className="d-flex align-items-center ">
@@ -119,10 +115,8 @@ const TimeTrackerChartSelectDate1 = ({
     <div className="mb-5 d-flex flex-wrap gap-2 ps-2">
       <div className="time-tracker-chart__select ">
         <select
-          className="form-select"
           value={selectYear}
           onChange={(event) => handleSelectedYear(event.target.value)}
-          aria-label="Пример выбора по умолчанию"
         >
           {dataYearMonth.allYear.map((year) => (
             <option key={year} value={year}>
@@ -134,9 +128,7 @@ const TimeTrackerChartSelectDate1 = ({
       <div className="time-tracker-chart__select ">
         <select
           value={selectedMonth}
-          className="form-select"
           onChange={(event) => handleSelectedMonth(event.target.value)}
-          aria-label="Пример выбора по умолчанию"
         >
           {selectYear &&
             locale._months_fullname.map((month) => {

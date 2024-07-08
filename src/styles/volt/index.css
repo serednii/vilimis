@@ -23181,7 +23181,8 @@ label {
 }
 
 .card {
-    position: relative
+    position: relative;
+    overflow: hidden;
 }
 
 .card .card-header {

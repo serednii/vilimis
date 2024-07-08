@@ -45,7 +45,6 @@ export const addNewProperties = (array) => {
 
     return {
       date: day.date,
-      weekMonthDey: monthDay + "" + weekDay.slice(0, 2),
       weekDay,
       monthDay,
       month: nameMonth[new Date(day?.date).getMonth()],
@@ -118,19 +117,9 @@ export const splitNumber = (num) => {
 }
 
 export const getNewFormatData = (workDataTime) => {
-  // console.log(workDataTime)
-  //Збираємо всі дані в один обєкт для кожного поля двти додаємо робочі години за день
   const objTimeOfDay = groupByTimeOfDay(workDataTime)//
-  // console.log(objTimeOfDay)
-  //Розкидаємо кожен день в окремий обєкт
   const separateObjectIntoArray = separateObject(objTimeOfDay)
-  // console.log(separateObjectIntoArray)
-
-  //Додаємо нові властивості до обєкта дня
   const arrayObjectWorkDay = addNewProperties(separateObjectIntoArray)
-  // console.log(arrayObjectWorkDay)
-
-  //Створюємо окремий обєкт з робочими роками і місяцями
   const objYearAndMonth = getYearAndMonth(arrayObjectWorkDay)
   return { arrayObjectWorkDay, objYearAndMonth, separateObjectIntoArray }
 }

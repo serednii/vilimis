@@ -316,7 +316,7 @@
     --bs-gray: #4B5563;
     --bs-gray-dark: #1F2937;
     --bs-primary: #1F2937;
-    --bs-secondary: #f0bc74;
+    --bs-secondary: #00933b;
     --bs-tertiary: #31316A;
     --bs-success: #10B981;
     --bs-info: #2361ce;
@@ -3760,9 +3760,9 @@ textarea.form-control-lg {
 }
 
 .btn-secondary {
-    color: #1f2937;
-    background-color: #f0bc74;
-    border-color: #f0bc74;
+    color: #fff;
+    background-color: #00933b;
+    border-color: #00933b;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.15),0 1px 1px rgba(17,24,39,.075)
 }
 
@@ -3791,8 +3791,8 @@ textarea.form-control-lg {
 
 .btn-secondary.disabled,.btn-secondary:disabled {
     color: #1f2937;
-    background-color: #f0bc74;
-    border-color: #f0bc74
+    background-color: #00933b;
+    border-color: #00933b
 }
 
 .btn-tertiary {
@@ -4546,14 +4546,14 @@ textarea.form-control-lg {
 }
 
 .btn-outline-secondary {
-    color: #f0bc74;
-    border-color: #f0bc74
+    color: #00933b;
+    border-color: #00933b
 }
 
 .btn-outline-secondary:hover {
     color: #1f2937;
-    background-color: #f0bc74;
-    border-color: #f0bc74
+    background-color: #00933b;
+    border-color: #00933b
 }
 
 .btn-check:focus+.btn-outline-secondary,.btn-outline-secondary:focus {
@@ -4562,8 +4562,8 @@ textarea.form-control-lg {
 
 .btn-check:active+.btn-outline-secondary,.btn-check:checked+.btn-outline-secondary,.btn-outline-secondary.active,.btn-outline-secondary.dropdown-toggle.show,.btn-outline-secondary:active {
     color: #1f2937;
-    background-color: #f0bc74;
-    border-color: #f0bc74
+    background-color: #00933b;
+    border-color: #00933b
 }
 
 .btn-check:active+.btn-outline-secondary:focus,.btn-check:checked+.btn-outline-secondary:focus,.btn-outline-secondary.active:focus,.btn-outline-secondary.dropdown-toggle.show:focus,.btn-outline-secondary:active:focus {
@@ -4571,7 +4571,7 @@ textarea.form-control-lg {
 }
 
 .btn-outline-secondary.disabled,.btn-outline-secondary:disabled {
-    color: #f0bc74;
+    color: #00933b;
     background-color: transparent
 }
 
@@ -6154,7 +6154,8 @@ textarea.form-control-lg {
     background-color: #fff;
     background-clip: border-box;
     border: .0625rem solid rgba(17,24,39,.125);
-    border-radius: .5rem
+    border-radius: .5rem;
+    overflow: hidden;
 }
 
 .card>hr {
@@ -6210,10 +6211,15 @@ textarea.form-control-lg {
 }
 
 .card-header {
-    padding: 1.25rem 1.5rem;
+    background-color: #f2f4f6;
+    color: #1f2937;
+    padding: 0.75rem 1.5rem;
     margin-bottom: 0;
     background-color: rgba(17,24,39,.03);
-    border-bottom: .0625rem solid rgba(17,24,39,.125)
+}
+
+.kanban-list .card-header {
+    background: 0 0;
 }
 
 .card-header:first-child {
@@ -8441,7 +8447,7 @@ textarea.form-control-lg {
 }
 
 .link-secondary {
-    color: #f0bc74
+    color: #00933b
 }
 
 .link-secondary:focus,.link-secondary:hover {
@@ -8826,7 +8832,7 @@ textarea.form-control-lg {
 }
 
 .shadow {
-    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)!important
+    box-shadow: 0 1px 6px 0 rgba(0,0,0,.1),0 1px 6px 0 rgba(0,0,0,.06)!important
 }
 
 .shadow-sm {
@@ -8966,7 +8972,7 @@ textarea.form-control-lg {
 }
 
 .border-secondary {
-    border-color: #f0bc74!important
+    border-color: #00933b!important
 }
 
 .border-tertiary {
@@ -11057,7 +11063,7 @@ textarea.form-control-lg {
 }
 
 .text-secondary {
-    color: #f0bc74!important
+    color: #00933b!important
 }
 
 .text-tertiary {
@@ -11165,7 +11171,7 @@ textarea.form-control-lg {
 }
 
 .bg-secondary {
-    background-color: #f0bc74!important
+    background-color: #00933b!important
 }
 
 .bg-tertiary {
@@ -23190,10 +23196,6 @@ label {
     position: relative
 }
 
-.card .card-header {
-    background: 0 0
-}
-
 .card.hover-state:hover {
     background-color: #f2f4f6
 }
@@ -23826,7 +23828,7 @@ label {
 }
 
 .icon-shape-secondary {
-    color: #f0bc74;
+    color: #00933b;
     background-color: rgba(240,188,116,.3)
 }
 
@@ -24417,7 +24419,7 @@ label {
 }
 
 .modal-secondary .modal-title {
-    color: color-yiq(#f0bc74)
+    color: color-yiq(#00933b)
 }
 
 .modal-secondary .modal-footer,.modal-secondary .modal-header {
@@ -24425,12 +24427,12 @@ label {
 }
 
 .modal-secondary .modal-content {
-    background-color: #f0bc74;
-    color: color-yiq(#f0bc74)
+    background-color: #00933b;
+    color: color-yiq(#00933b)
 }
 
 .modal-secondary .modal-content .heading {
-    color: color-yiq(#f0bc74)
+    color: color-yiq(#00933b)
 }
 
 .modal-secondary .close>span:not(.sr-only) {
@@ -25157,16 +25159,16 @@ label {
 }
 
 .popover-secondary {
-    background-color: #f0bc74
+    background-color: #00933b
 }
 
 .popover-secondary .popover-header {
-    background-color: #f0bc74;
-    color: color-yiq(#f0bc74)
+    background-color: #00933b;
+    color: color-yiq(#00933b)
 }
 
 .popover-secondary .popover-body {
-    color: color-yiq(#f0bc74)
+    color: color-yiq(#00933b)
 }
 
 .popover-secondary .popover-header {
@@ -25174,19 +25176,19 @@ label {
 }
 
 .popover-secondary.bs-popover-auto[data-popper-placement^=top] .arrow::after,.popover-secondary.bs-popover-top .arrow::after {
-    border-top-color: #f0bc74
+    border-top-color: #00933b
 }
 
 .popover-secondary.bs-popover-auto[data-popper-placement^=right] .arrow::after,.popover-secondary.bs-popover-end .arrow::after {
-    border-right-color: #f0bc74
+    border-right-color: #00933b
 }
 
 .popover-secondary.bs-popover-auto[data-popper-placement^=bottom] .arrow::after,.popover-secondary.bs-popover-bottom .arrow::after {
-    border-bottom-color: #f0bc74
+    border-bottom-color: #00933b
 }
 
 .popover-secondary.bs-popover-auto[data-popper-placement^=left] .arrow::after,.popover-secondary.bs-popover-start .arrow::after {
-    border-left-color: #f0bc74
+    border-left-color: #00933b
 }
 
 .popover-tertiary {
@@ -25954,7 +25956,7 @@ label {
 }
 
 .progress-info .bg-secondary::after {
-    border-top-color: #f0bc74
+    border-top-color: #00933b
 }
 
 .progress-info .bg-tertiary::after {
@@ -26575,11 +26577,11 @@ code[class*=language-],pre[class*=language-] {
 }
 
 .text-secondary,.text-secondary:hover {
-    color: #f0bc74!important
+    color: #00933b!important
 }
 
 .text-secondary .display-1,.text-secondary .display-2,.text-secondary .display-3,.text-secondary .display-4,.text-secondary .h1,.text-secondary .h2,.text-secondary .h3,.text-secondary .h4,.text-secondary .h5,.text-secondary .h6,.text-secondary a:not(.btn),.text-secondary h1,.text-secondary h2,.text-secondary h3,.text-secondary h4,.text-secondary h5,.text-secondary h6 {
-    color: #f0bc74
+    color: #00933b
 }
 
 .text-secondary .text-muted {

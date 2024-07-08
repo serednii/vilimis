@@ -41,6 +41,7 @@ import {
 import TimeTracks from "./pages/TimeTracks";
 import Reports from "./pages/Reports";
 import Invoices from "./pages/Invoices";
+import Settings from "./pages/Settings";
 
 library.add(fas);
 
@@ -199,7 +200,7 @@ function Root() {
                                 </div>
                             </div>
                             <div className="gephart-menu-logo">
-                                <img src="/gephart/images/gephart-is-black-white.svg" width="503" alt="Gephart Logo"/>
+                                <img src="/gephart/images/logo-white.svg" width="503" alt="Gephart Logo"/>
                             </div>
                             <ul className="nav flex-column pt-3 pt-md-0">
                                 <li className="nav-item ">
@@ -326,7 +327,7 @@ function Root() {
                                     </NavLink>
                                 </li>
                                 <li className="nav-item ">
-                                    <NavLink to="/workflow"
+                                    <NavLink to="/settings"
                                              className="nav-link d-flex justify-content-between">
                                 <span>
                                     <span className="sidebar-icon">
@@ -515,6 +516,7 @@ function Root() {
                             <Route path="time-tracks" element={<TimeTracks/>}/>
                             <Route path="reports/*" element={<TimeTracks/>}/>
                             <Route path="reports" element={<Reports/>}/>
+                            <Route path="settings" element={<Settings/>}/>
                             <Route path="*" element={<NoPage/>}/>
                             {/*</Route>*/}
                         </Routes>
