@@ -139,7 +139,7 @@ const TasksWeekKanbanItem = ({index, id, onUpdate, task, projects, endCustomers,
                  draggable="false">
                 <div
                     className="card-header d-flex align-items-center justify-content-between border-0 p-0 mb-3">
-                    <h3 className="h5 mb-0">{task.name}</h3>
+                    <h3 className="h6 mb-0">{task.name}</h3>
                     <div className="align-self-start">
                         <div className="dropdown">
                             <button type="button"
@@ -156,7 +156,7 @@ const TasksWeekKanbanItem = ({index, id, onUpdate, task, projects, endCustomers,
                 <div className="card-body p-0">
 
                     <div className="row">
-                        <div className="col-6">
+                        <div className="col-12">
                             {isImg = false}
                             {"projectId" in task && task.projectId && projects.filter(project => project.id === task.projectId).map((project, project_index) => (
                                 <React.Fragment key={project_index}>
@@ -179,18 +179,18 @@ const TasksWeekKanbanItem = ({index, id, onUpdate, task, projects, endCustomers,
                                 </React.Fragment>
                             ))}
                         </div>
-                        <div className="col-6">
-                            <p>
+                        <div className="col-12">
+                            <p className="small">
                                 {"projectId" in task && task.projectId && projects.filter(project => project.id === task.projectId).map((project, project_index) => (
                                     <React.Fragment key={project_index}>
                                         {(tmpProject = project) && ""}
                                         {project.name}
-                                        {"clientId" in project && project.clientId && clients.filter(client => client.id === project.clientId).map((client, client_index) => (
+                                        {/*"clientId" in project && project.clientId && clients.filter(client => client.id === project.clientId).map((client, client_index) => (
                                             <React.Fragment key={client_index}>
                                                 {(tmpClient = client) && ""}
                                                 &nbsp;/ {client.name}
                                             </React.Fragment>
-                                        ))}
+                                        ))*/}
                                     </React.Fragment>
                                 ))}
                             </p></div>
@@ -198,7 +198,7 @@ const TasksWeekKanbanItem = ({index, id, onUpdate, task, projects, endCustomers,
 
                     {task.spendingTime > 0 ? (
                         <>
-                        <div>
+                        <div className="small">
                             Strávený čas: {(new BudgetCalculator(task.spendingTime, task, tmpProject, tmpClient)).calculareSpendingHoursNicely()}
                             {task?.hourBudget > 0 && (
                                 <>
