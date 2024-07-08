@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import TaskNew from "../components/Tasks/TaskNew";
 import TaskEdit from "../components/Tasks/TaskEdit";
 import TasksKanban from "../components/Tasks/TasksKanban";
+import TasksWeekKanban from "../components/Tasks/TasksWeekKanban";
 
 const Tasks = ({ }) => {
     useEffect(() => {
@@ -13,6 +14,7 @@ const Tasks = ({ }) => {
         <Routes>
             <Route path="edit/:id" element={<TaskEdit />} />
             <Route path="new" element={<TaskNew />} />
+            <Route path="week" element={<TasksWeekKanban />} />
             <Route path="*" element={<TasksKanban />} />
         </Routes>
     );

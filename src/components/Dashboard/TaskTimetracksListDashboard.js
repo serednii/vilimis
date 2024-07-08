@@ -19,7 +19,7 @@ const TaskTimetracksListDashboard = ({ }) => {
     useEffect(() => {
         if (!reload) return;
 
-        API.getData("/taskTimetrack/list", (taskTimetracks) => {
+        API.getData("/taskTimetrack/list?order=datetime_start DESC", (taskTimetracks) => {
             setTaskTimetracks(taskTimetracks);
         });
         API.getData("/task/list", (tasks) => {

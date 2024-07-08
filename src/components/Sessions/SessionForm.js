@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import {CONFIG} from "../../config";
 import ProjectsSelectList from "../Projects/ProjectsSelectList";
@@ -7,6 +7,7 @@ import ClientsSelectList from "../Clients/ClientsSelectList";
 import EndCustomersSelectList from "../EndCustomers/EndCustomersSelectList";
 import EndCustomerContactsSelectList from "../EndCustomerContacts/EndCustomerContactsSelectList";
 import ClientContactsSelectList from "../ClientContacts/ClientContactsSelectList";
+import JoditEditor from "jodit-react";
 
 const sessionBlank = {
     name: "",
@@ -29,6 +30,9 @@ const SessionForm = ({id, handleSave, projectId}) => {
     const [selectedEndCustomerId, setSelectedEndCustomerId] = useState(null);
     const [selectedEndCustomerContactIds, setSelectedEndCustomerContactIds] = useState([]);
     const [selectedClientContactIds, setSelectedClientContactIds] = useState([]);
+
+    const editor = useRef(null);
+    const [content, setContent] = useState('');
 
     useEffect(() => {
         API.getData("/sessionEndCustomerContact/list?filter[session_id]=" + id, (data) => {
@@ -57,6 +61,7 @@ const SessionForm = ({id, handleSave, projectId}) => {
 
         if (id) {
             API.getData("/session/single/" + id, (data) => {
+                setContent(data.description);
                 setSession(data);
             });
         } else {
@@ -171,14 +176,21 @@ const SessionForm = ({id, handleSave, projectId}) => {
                                         className="form-control"
                                         id="form_edit_datetime_of_session" required={true}></input>
                                 </div>
-                                <div className="mb-3">
-                                    <label htmlFor="form_edit_description">Přepis</label>
-                                    <textarea defaultValue={session.description} className="form-control" name="description"
-                                              rows="10"
-                                              id="form_edit_description"></textarea>
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="form_edit_sessionType_id">Typ setkání</label>
+                            <div className="mb-3">
+                                <label htmlFor="form_edit_description">Přepis</label>
+                                <input type="hidden" name="description" value={content}/>
+
+                                <JoditEditor
+                                    ref={editor}
+                                    value={content}
+                                    config={CONFIG.joedit}
+                                    onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
+                                    onChange={newContent => {
+                                    }}
+                                />
+                            </div>
+                            <div className="mb-3">
+                            <label htmlFor="form_edit_sessionType_id">Typ setkání</label>
                                     <SessionTypesSelectList selected={session.sessionTypeId}
                                                             onChange={setSelectedSessionTypeId}/>
                                     <input type="hidden" name="session_type_id" value={selectedSessionTypeId}/>

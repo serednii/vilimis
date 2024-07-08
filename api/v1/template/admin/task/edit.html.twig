@@ -91,6 +91,16 @@
                 <input step="1" value="{{ task.SpendingTime }}" type="number" name="spending_time" class="form-control" id="form_edit_spending_time"
                 >
             </div>
+            <div class="form-group">
+                <label for="form_edit_planned_date">Naplánováno na</label>
+                <input value="{{ task.PlannedDate.format("Y-m-d") }}" type="date" name="planned_date" class="form-control" id="form_edit_planned_date"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_planned_priority">Priorita v naplánování</label>
+                <input step="1" value="{{ task.PlannedPriority }}" type="number" name="planned_priority" class="form-control" id="form_edit_planned_priority"
+                >
+            </div>
         <button type="submit" class="btn btn-default">Uložit</button>
     </form>
 

@@ -43,11 +43,11 @@ class {{ module.entityName }}{% if module.entityName == "User" %} implements Use
 
     public function __construct()
     {
-{% for item in items %}
+{#% for item in items %}
 {% if item.type == "date" %}
         $this->{{ item.slug }} = new \DateTime();
 {% endif %}
-{% endfor %}
+{% endfor %#}
     }
 
     /**

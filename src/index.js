@@ -55,6 +55,8 @@ function Root() {
 
     const locale = {
         "cs": {
+            "_days": ['Ne', 'Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'],
+            "_days_fullname": ['Neděle', 'Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle'],
             "_months": ['Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čvn', 'Čvc', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro'],
             "_months_fullname": ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec']
         },

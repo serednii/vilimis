@@ -10,7 +10,7 @@ import update from 'immutability-helper'
 import TaskFormModal from "./TaskFormModal";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import TasksKanbanSettingsModal from "./TasksKanbanSettingsModal";
-import {Gear, Plus} from "@phosphor-icons/react";
+import {Calendar, Gear, Plus} from "@phosphor-icons/react";
 
 const TasksKanban = ({ }) => {
     const { API } = useRootContext()
@@ -184,6 +184,10 @@ const TasksKanban = ({ }) => {
                     </div>
                     <div className="col-6 text-end">
                         <div className="btn-group">
+                            <NavLink to="/tasks/week"
+                                    className="btn btn-gray-800">
+                                <Calendar size={16}/>
+                            </NavLink>
                             <button onClick={() => setIsSettingsOpen(true)}
                                     className="btn btn-gray-800">
                                 <Gear size={16}/>

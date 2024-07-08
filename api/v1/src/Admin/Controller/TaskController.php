@@ -146,6 +146,8 @@ class TaskController
         $task->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
         $task->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
         $task->setSpendingTime(isset($data["spending_time"]) ? (int) $data["spending_time"] : 0);
+        $task->setPlannedDate(!empty($data["planned_date"]) ? new \DateTime($data["planned_date"]) : null);
+        $task->setPlannedPriority(isset($data["planned_priority"]) ? (int) $data["planned_priority"] : 0);
     }
 
 

@@ -62,8 +62,10 @@ const ClientsList = ({}) => {
                     Nový klient
                 </button>
             </div>
+            <div className="row">
             {clients && clients.length && clients.map((client) => (
-                <div className="card border-0 shadow mb-4" key={client.id}>
+                <div className="col-12 col-md-6 col-lg-4 mb-4" key={client.id}>
+                <div className="card border-0 shadow h-100">
                     <div className="card-body">
                         <div className="float-end text-end">
 
@@ -84,7 +86,7 @@ const ClientsList = ({}) => {
                             )}
                         </div>
 
-                        <h2 className="h5 mb-3">{client.name} (#{client.id})</h2>
+                        <h2 className="h5 mb-3">{client.name}</h2>
 
                         <table className="table table-bordered w-auto mb-3">
                             <tbody>
@@ -103,6 +105,7 @@ const ClientsList = ({}) => {
                             </tbody>
                         </table>
 
+                        <div className="table-responsive">
                         <table className="table table-bordered table-centered table-nowrap mb-0">
                             <tbody>
                             {clientContacts?.filter(clientContact => clientContact.clientId == client.id)?.map(clientContact => (
@@ -113,10 +116,8 @@ const ClientsList = ({}) => {
                                                  style={{maxWidth: "40px"}}/>
                                         )}
                                     </td>
-                                    <td>{clientContact.name} {clientContact.surname}</td>
-                                    <td>{clientContact.position}</td>
-                                    <td>{clientContact.email}</td>
-                                    <td>{clientContact.phone}</td>
+                                    <td>{clientContact.name} {clientContact.surname}<br/>{clientContact.position}</td>
+                                    <td>{clientContact.email}<br/>{clientContact.phone}</td>
                                     <td width={10}>
 
                                         <button onClick={() => {
@@ -131,7 +132,7 @@ const ClientsList = ({}) => {
                             ))}
                             </tbody>
                         </table>
-
+                        </div>
                         <div className="mt-3">
                             <button onClick={() => {
                                 setModalClientContactId(null);
@@ -143,7 +144,9 @@ const ClientsList = ({}) => {
                         </div>
                     </div>
                 </div>
+                </div>
             ))}
+            </div>
 
             {/*
             <div className="card border-0 shadow mb-4">

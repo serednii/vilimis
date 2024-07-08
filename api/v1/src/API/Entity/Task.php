@@ -97,6 +97,22 @@ class Task
      */
     private $spending_time = false;
     
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Type DATE
+     * @ORM\Column planned_date
+     */
+    private $planned_date = null;
+    
+    /**
+     * @var bool
+     *
+     * @ORM\Type INT(9)
+     * @ORM\Column planned_priority
+     */
+    private $planned_priority = false;
+    
 
     public function __construct()
     {
@@ -276,6 +292,38 @@ class Task
     public function setSpendingTime(int $spending_time)
     {
         $this->spending_time = $spending_time;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getPlannedDate(): ?\DateTime
+    {
+        return $this->planned_date;
+    }
+
+    /**
+     * @param \DateTime|null $planned_date
+     */
+    public function setPlannedDate(?\DateTime $planned_date)
+    {
+        $this->planned_date = $planned_date;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPlannedPriority(): int
+    {
+        return $this->planned_priority;
+    }
+
+    /**
+     * @param int $planned_priority
+     */
+    public function setPlannedPriority(int $planned_priority)
+    {
+        $this->planned_priority = $planned_priority;
     }
 
 }
