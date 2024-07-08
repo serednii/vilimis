@@ -4,7 +4,7 @@ import {NavLink} from "react-router-dom";
 import SessionFormModal from "./SessionFormModal";
 import SessionsListItem from "./SessionsListItem";
 
-const SessionsList = ({projectId}) => {
+const SessionsList = ({projectId, clientId}) => {
     const {API} = useRootContext()
     const [sessions, setSessions] = useState([]);
 
@@ -21,7 +21,7 @@ const SessionsList = ({projectId}) => {
 
     useEffect(() => {
         loadSessions();
-    }, [projectId]);
+    }, [projectId, clientId]);
 
     function handleUpdate()
     {
@@ -33,6 +33,9 @@ const SessionsList = ({projectId}) => {
         url += "?order=datetime_of_session DESC"
         if (projectId) {
             url += "&filter[project_id]="+encodeURIComponent(projectId);
+        }
+        if (clientId) {
+            url += "&filter[client_id]="+encodeURIComponent(clientId);
         }
 
         API.getData(url, (sessions) => {
@@ -66,6 +69,7 @@ const SessionsList = ({projectId}) => {
                     setIsOpen={setIsOpen}
                     callback={handleUpdate}
                     projectId={projectId}
+                    clientId={clientId}
                     id={modalSessionId}/>
             )}
         </>

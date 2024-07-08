@@ -7,7 +7,7 @@ import Modal from 'react-modal';
 
 Modal.setAppElement("#root");
 
-const SessionFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id, projectId }) => {
+const SessionFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id, projectId, clientId }) => {
     function onNewSession(session) {
         setIsOpen(false);
 
@@ -34,7 +34,7 @@ const SessionFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, call
                                     aria-label="Close"></button>
                             <h2>Setkání #{id}</h2>
 
-                            <SessionForm handleSave={onNewSession} id={id} projectId={projectId}/>
+                            <SessionForm handleSave={onNewSession} id={id} projectId={projectId} clientId={clientId}/>
                         </div>
                     </div>
                 </div>

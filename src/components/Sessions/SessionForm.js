@@ -19,7 +19,7 @@ const sessionBlank = {
     datetimeOfSession: ''
 }
 
-const SessionForm = ({id, handleSave, projectId}) => {
+const SessionForm = ({id, handleSave, projectId, clientId}) => {
     const {API} = useRootContext()
     const [session, setSession] = useState(null);
     const [sessionEndCustomerContacts, setSessionEndCustomerContacts] = useState([]);
@@ -206,7 +206,9 @@ const SessionForm = ({id, handleSave, projectId}) => {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="form_edit_client_id">Klient</label>
-                                    <ClientsSelectList selected={session.clientId} onChange={setSelectedClientId}/>
+                                    <ClientsSelectList
+                                        selected={session.clientId ? session.clientId : (clientId ? clientId : "")}
+                                        onChange={setSelectedClientId}/>
                                     <input type="hidden" name="client_id" value={selectedClientId}/>
                                 </div>
                                 <div className="mb-3">
