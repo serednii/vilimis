@@ -59,11 +59,13 @@ const TaskFormTimeTracks = ({taskId}) => {
                     Celkově strávený čas: <strong>{d > 0 && d + ":"}{h}:{m}</strong>
                 </div>
             )}
-            {taskTimetracks && taskTimetracks.length > 0 && taskTimetracks.map((taskTimetrack, taskTimetrack_index) => (
+            {taskTimetracks?.length > 0 ? taskTimetracks.map((taskTimetrack, taskTimetrack_index) => (
                 <div key={taskTimetrack_index+"-"+taskTimetrack.id} className=" card p-3 mt-4">
                     <TimeTrackerItem taskTimetrack={taskTimetrack} onChange={()=>setReload(true)}/>
                 </div>
-            ))}
+            )):(
+                <p>Žádný záznam.</p>
+            )}
         </div>
     );
 

@@ -70,7 +70,7 @@ const TaskFormDefault = ({id, handleSave}) => {
                         <div className="col-12 col-md-8">
                             <div className="mb-3">
                                 <label htmlFor="form_edit_name">Název</label>
-                                <input defaultValue={task.name} type="text" name="name" className="form-control"
+                                <input defaultValue={task.name} type="text" name="name" className="form-control form-control-lg"
                                        id="form_edit_name"/>
                             </div>
                             <div className="mb-3">

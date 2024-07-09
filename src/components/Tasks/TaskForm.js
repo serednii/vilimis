@@ -18,7 +18,6 @@ const TaskForm = ({ id, handleSave }) => {
                         <Tab>Přílohy</Tab>
                     </TabList>
 
-
                     <TabPanel>
                         <TaskFormDefault id={id} handleSave={handleSave} />
                     </TabPanel>

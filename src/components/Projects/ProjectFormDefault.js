@@ -93,6 +93,20 @@ const ProjectFormDefault = ({id, handleSave}) => {
                         <input defaultValue={project.hourBudget} type="number" name="hour_budget"
                                className="form-control" id="form_edit_hour_budget"/>
                     </div>
+                    <div className="mb-3">
+                        <label htmlFor="form_edit_planned_from">Naplánováno od</label>
+                        <input defaultValue={project.plannedFrom?.date?.substring(0, 10)} type="date"
+                               name="planned_from"
+                               className="form-control"
+                               id="form_edit_planned_from"></input>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="form_edit_planned_to">Naplánováno do</label>
+                        <input defaultValue={project.plannedTo?.date?.substring(0, 10)} type="date"
+                               name="planned_to"
+                               className="form-control"
+                               id="form_edit_planned_to"></input>
+                    </div>
                     <button type="submit" className="btn btn-primary">
                         {id ? "Uložit" : "Přidat"}
                     </button>

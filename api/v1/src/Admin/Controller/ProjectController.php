@@ -172,6 +172,8 @@ class ProjectController
         $project->setArchived((bool) isset($data["archived"]) ? $data["archived"] : false);
         $project->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
         $project->setSpendingTime(isset($data["spending_time"]) ? (int) $data["spending_time"] : 0);
+        $project->setPlannedFrom(!empty($data["planned_from"]) ? new \DateTime($data["planned_from"]) : null);
+        $project->setPlannedTo(!empty($data["planned_to"]) ? new \DateTime($data["planned_to"]) : null);
     }
 
 

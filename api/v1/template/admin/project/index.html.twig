@@ -122,6 +122,16 @@
                 <input step="1" value="{{ project.SpendingTime }}" type="number" name="spending_time" class="form-control" id="form_edit_spending_time"
                 >
             </div>
+            <div class="form-group">
+                <label for="form_edit_planned_from">Naplánováno od</label>
+                <input value="{{ project.PlannedFrom.format("Y-m-d") }}" type="date" name="planned_from" class="form-control" id="form_edit_planned_from"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_planned_to">Naplánováno do</label>
+                <input value="{{ project.PlannedTo.format("Y-m-d") }}" type="date" name="planned_to" class="form-control" id="form_edit_planned_to"
+                >
+            </div>
             <button type="submit" class="btn btn-default">Přidat</button>
         </form>
         <br/>

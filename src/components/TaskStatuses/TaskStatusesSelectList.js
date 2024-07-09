@@ -81,6 +81,8 @@ const TaskStatusesSelectList = ({onChange, selected}) => {
     return (
         <>
             <Select
+                className="react-select-container"
+                classNamePrefix="react-select"
                 value={selectedOption}
                 onChange={handleChange}
                 options={option}

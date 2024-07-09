@@ -21460,12 +21460,20 @@ textarea.form-control-lg {
     font-size: .875rem
 }
 
-.sidebar .nav-link[data-bs-toggle=collapse][aria-expanded=true] .link-arrow {
+.sidebar .nav-link.active .link-arrow {
     transform: rotate(90deg);
     transition: all .2s ease
 }
 
-.sidebar .nav-link.active {
+.sidebar .nav-link + .multi-level {
+    display: none
+}
+
+.sidebar .nav-link.active + .multi-level {
+    display: block
+}
+
+.sidebar .nav-link.active:not(:has(+ .multi-level .nav-link.active)) {
     color: #F2F4F6;
     background-color: #374151;
 }

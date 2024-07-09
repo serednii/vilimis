@@ -61,46 +61,53 @@ const CommentsList = ({entity, entityId}) => {
                 }} className="btn btn-primary" type="button">Nová poznámka</button>
             </div>
 
-            <div className="card border-0 shadow mb-4">
-                <div className="card-body">
-                    <div className="table-responsive">
-                        <table className="table table-centered table-nowrap mb-0 rounded">
-                            <thead className="thead-light">
-                            <tr>
-                                <th className="border-0 rounded-start">#</th>
-                                <th className="border-0">Název</th>
-                                <th className="border-0">Vytvořeno</th>
-                                <th className="border-0 rounded-end">Akce</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {comments && comments.length > 0 && comments.map((comment, comment_key) => (
-                                <tr key={comment_key}>
-                                    <td>
-                                        <NavLink to={"/comments/edit/"+comment.id} className="text-primary fw-bold">
-                                            {comment.id}
-                                        </NavLink>
-                                    </td>
-                                    <td className="fw-bold ">
-                                        <div dangerouslySetInnerHTML={{__html:comment.description}}></div>
-                                    </td>
-                                    <td> {comment.created.date}</td>
-                                    <td>
-                                        <button onClick={() => {
-                                            setModalCommentId(comment.id);
-                                            setIsOpen(true)
-                                        }}  className="btn btn-sm btn-primary" type="button">Upravit</button>
-                                        <button
-                                            onClick={()=> window.confirm("Opravdu smazat?") && handleDelete(comment.id)}
-                                            className="btn btn-sm btn-danger" type="button">Smazat</button>
-                                    </td>
+            {comments?.length > 0 ? (
+                <div className="card border-0 shadow mb-4">
+                    <div className="card-body">
+                        <div className="table-responsive">
+                            <table className="table table-centered table-nowrap mb-0 rounded">
+                                <thead className="thead-light">
+                                <tr>
+                                    <th className="border-0 rounded-start">#</th>
+                                    <th className="border-0">Název</th>
+                                    <th className="border-0">Vytvořeno</th>
+                                    <th className="border-0 rounded-end">Akce</th>
                                 </tr>
-                            ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                {comments?.length > 0 && comments.map((comment, comment_key) => (
+                                    <tr key={comment_key}>
+                                        <td>
+                                            <NavLink to={"/comments/edit/" + comment.id}
+                                                     className="text-primary fw-bold">
+                                                {comment.id}
+                                            </NavLink>
+                                        </td>
+                                        <td className="fw-bold ">
+                                            <div dangerouslySetInnerHTML={{__html: comment.description}}></div>
+                                        </td>
+                                        <td> {comment.created.date}</td>
+                                        <td>
+                                            <button onClick={() => {
+                                                setModalCommentId(comment.id);
+                                                setIsOpen(true)
+                                            }} className="btn btn-sm btn-primary" type="button">Upravit
+                                            </button>
+                                            <button
+                                                onClick={() => window.confirm("Opravdu smazat?") && handleDelete(comment.id)}
+                                                className="btn btn-sm btn-danger" type="button">Smazat
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <p>Žádná poznámka</p>
+            )}
 
             {modalIsOpen && (
                 <CommentFormModal

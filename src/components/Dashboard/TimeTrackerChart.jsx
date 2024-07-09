@@ -19,7 +19,7 @@ const chartSetting = {
       // max: 10, // Nastavíme maximální hodnotu Y stupnice
     },
   ],
-  height: 300,
+  height: 340,
   // sx: {
   //   [`.${axisClasses.left} .${axisClasses.label}`]: {
   //     transform: "translate(-20px, 0)",
@@ -76,9 +76,10 @@ const TimeTrackerChart = () => {
   }, [selectYear, selectedMonth, isAllDays]);
 
   return (
-      <div className="card border-0 shadow mb-4">
+      <div className="card border-0 shadow  h-100">
         <div className="card-body">
     <div>
+      {/*
       {selectYear && selectedMonth && (
         <TimeTrackerChartSelectDate
           selectYear={selectYear}
@@ -90,9 +91,11 @@ const TimeTrackerChart = () => {
           dataYearMonth={newFormatData.objYearAndMonth}
         />
       )}
+      */}
       {finalData && (
         <BarChart
           dataset={finalData}
+          margin={{ left:15, right: 0, top: 10, bottom:20 }}
           xAxis={[
             {
               scaleType: "band",

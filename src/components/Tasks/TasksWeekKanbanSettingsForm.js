@@ -21,8 +21,8 @@ const TasksWeekKanbanSettingsForm = ({handleSave, settings, setSettings, taskSta
         <>
             <form onSubmit={handleSubmit}>
                 <div className="row">
-                    <div className="col-12 col-md-8">
-                        <h3 className="mb-3">Zobrazení sloupců</h3>
+                    <div className="col-12 col-md-6">
+                        <h3 className="h5 mb-3">Zobrazení sloupců</h3>
                         <div className="form-check form-switch mb-3">
                         <input className="form-check-input"
                                defaultChecked={settings.showSatSun}
@@ -35,8 +35,8 @@ const TasksWeekKanbanSettingsForm = ({handleSave, settings, setSettings, taskSta
                         </label>
                         </div>
                     </div>
-                    <div className="col-12 col-md-4">
-                        <h3 className="mb-3">Zobrazení úkolů</h3>
+                    <div className="col-12 col-md-6">
+                        <h3 className="h5 mb-3">Zobrazení úkolů</h3>
 
                         <div className="form-check form-switch mb-3">
                             <input className="form-check-input"

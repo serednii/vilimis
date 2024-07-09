@@ -36,7 +36,7 @@ import {
     SquaresFour, TreeStructure,
     UserCircle,
     Users,
-    MagnifyingGlass, Timer, Table, Invoice
+    MagnifyingGlass, Timer, Table, Invoice, ArrowRight, ArrowArcRight
 } from "@phosphor-icons/react";
 import TimeTracks from "./pages/TimeTracks";
 import Reports from "./pages/Reports";
@@ -52,6 +52,7 @@ function Root() {
     const [jwt, setJwt] = useState(null);
     const [loaderState, loaderDispatch] = useReducer(loaderReducer, {show: 0});
     const [timetrackerState, timetrackerDispatch] = useReducer(timetrackerReducer, {start: null, taskId: null});
+    const [openedMenuIndex, setOpenedMenuIndex] = useState(0);
 
     const locale = {
         "cs": {
@@ -245,18 +246,57 @@ function Root() {
                                     </span>
                                     <span className="sidebar-text">Úkoly</span>
                                 </span>
+                                        <span className="link-arrow"><ArrowArcRight/></span>
                                     </NavLink>
+                                    <div className="multi-level" role="list" >
+                                        <ul className="flex-column nav">
+                                            <li className="nav-item">
+
+                                                <NavLink to="/tasks/list"
+                                                         className="nav-link d-flex justify-content-between">
+                                                    <span>
+                                                        <span className="sidebar-text">Dle stavu</span>
+                                                    </span>
+                                                </NavLink>
+                                                <NavLink to="/tasks/week"
+                                                         className="nav-link d-flex justify-content-between">
+                                                    <span>
+                                                        <span className="sidebar-text">Týdenní plán</span>
+                                                    </span>
+                                                </NavLink>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </li>
                                 <li className="nav-item">
-                                    <NavLink to="/projects"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                         <FolderSimple/>
-                                    </span>
-                                    <span className="sidebar-text">Projekty</span>
-                                </span>
+                                    <NavLink to="/projects" className="nav-link d-flex justify-content-between">
+                                        <span>
+                                            <span className="sidebar-icon">
+                                                 <FolderSimple/>
+                                            </span>
+                                            <span className="sidebar-text">Projekty</span>
+                                        </span>
+                                        <span className="link-arrow"><ArrowArcRight/></span>
                                     </NavLink>
+                                    <div className="multi-level" role="list" >
+                                        <ul className="flex-column nav">
+                                            <li className="nav-item">
+
+                                                <NavLink to="/projects/list"
+                                                         className="nav-link d-flex justify-content-between">
+                                                    <span>
+                                                        <span className="sidebar-text">Dle stavu</span>
+                                                    </span>
+                                                </NavLink>
+                                                <NavLink to="/projects/year"
+                                                         className="nav-link d-flex justify-content-between">
+                                                    <span>
+                                                        <span className="sidebar-text">Roční plán</span>
+                                                    </span>
+                                                </NavLink>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </li>
                                 <li className="nav-item">
                                     <NavLink to="/end-customers"
@@ -352,7 +392,7 @@ function Root() {
                                      id="navbarSupportedContent">
                                     <div className="d-flex align-items-center">
                                         <form className="navbar-search form-inline" id="navbar-search-main">
-                                        <div className="input-group input-group-merge search-bar">
+                                            <div className="input-group input-group-merge search-bar">
                                         <span className="input-group-text" id="topbar-addon">
                                             <MagnifyingGlass size={16}/>
                                         </span>

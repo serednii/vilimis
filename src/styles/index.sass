@@ -90,3 +90,42 @@ body
 
 .table tr:has(+ tr.thead-light) td
   border-bottom: 0
+
+.react-select-container
+  color: #6b7280
+  font-size: .875rem
+  .react-select__single-value
+    color: #6b7280
+
+  .react-select__control
+    min-height: 34px
+    border: .0625rem solid #d1d5db
+    border-radius: .5rem
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .07)
+
+  .react-select__indicator
+    padding: 6px
+
+.react-tabs
+  &__tab
+    border: 0
+    bottom: 0
+    outline: none
+
+    &:focus:after
+      display: none
+
+    &--selected
+      background: rgba(17,24,39,.125)
+      border-color: rgba(17,24,39,.125)
+      color: #374151
+
+    &-list
+      margin-bottom: 0
+      border-bottom: 0
+
+    &-panel
+      border: .0625rem solid rgba(17,24,39,.125)
+      padding: 1.25rem 1.5rem
+      border-radius: 0 .5rem .5rem .5rem
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .07)

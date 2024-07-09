@@ -113,6 +113,22 @@ class Project
      */
     private $spending_time = false;
     
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Type DATE
+     * @ORM\Column planned_from
+     */
+    private $planned_from = null;
+    
+    /**
+     * @var \DateTime|null
+     *
+     * @ORM\Type DATE
+     * @ORM\Column planned_to
+     */
+    private $planned_to = null;
+    
 
     public function __construct()
     {
@@ -324,6 +340,38 @@ class Project
     public function setSpendingTime(int $spending_time)
     {
         $this->spending_time = $spending_time;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getPlannedFrom(): ?\DateTime
+    {
+        return $this->planned_from;
+    }
+
+    /**
+     * @param \DateTime|null $planned_from
+     */
+    public function setPlannedFrom(?\DateTime $planned_from)
+    {
+        $this->planned_from = $planned_from;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getPlannedTo(): ?\DateTime
+    {
+        return $this->planned_to;
+    }
+
+    /**
+     * @param \DateTime|null $planned_to
+     */
+    public function setPlannedTo(?\DateTime $planned_to)
+    {
+        $this->planned_to = $planned_to;
     }
 
 }

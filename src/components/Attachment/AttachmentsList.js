@@ -61,11 +61,12 @@ const AttachmentsList = ({ entity, entityId }) => {
                 }} className="btn btn-primary" type="button">Nová příloha</button>
             </div>
 
-            <div className="card border-0 shadow mb-4">
-                <div className="card-body">
-                    <div className="table-responsive">
-                        <table className="table table-centered table-nowrap mb-0 rounded">
-                            <thead className="thead-light">
+            {attachments?.length > 0 ? (
+                <div className="card border-0 shadow mb-4">
+                    <div className="card-body">
+                        <div className="table-responsive">
+                            <table className="table table-centered table-nowrap mb-0 rounded">
+                                <thead className="thead-light">
                                 <tr>
                                     <th className="border-0 rounded-start">#</th>
                                     <th className="border-0">Název</th>
@@ -73,9 +74,9 @@ const AttachmentsList = ({ entity, entityId }) => {
                                     <th className="border-0">Vytvořeno</th>
                                     <th className="border-0 rounded-end">Akce</th>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {attachments && attachments.length > 0 && attachments.map((attachment, attachment_key) => (
+                                </thead>
+                                <tbody>
+                                {attachments?.length > 0 && attachments.map((attachment, attachment_key) => (
                                     <tr key={attachment_key}>
                                         <td>
                                             <span role="presentation" onClick={() => {
@@ -103,11 +104,14 @@ const AttachmentsList = ({ entity, entityId }) => {
                                         </td>
                                     </tr>
                                 ))}
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <p>Žádná příloha.</p>
+            )}
 
             {modalIsOpen && (
                 <AttachmentFormModal

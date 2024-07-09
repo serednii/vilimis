@@ -178,11 +178,10 @@ const ProjectsKanbanItem = ({index, id, onUpdate, project, endCustomers, clients
                         <div className="col-6">
                             <p>
                                     <React.Fragment>
-                                        {project.name}
                                         {"clientId" in project && project.clientId && clients.filter(client => client.id === project.clientId).map((client, client_index) => (
                                             <React.Fragment key={client_index}>
                                                 {(tmpClient = client) && ""}
-                                                &nbsp;/ {client.name}
+                                                {client.name}
                                             </React.Fragment>
                                         ))}
                                     </React.Fragment>

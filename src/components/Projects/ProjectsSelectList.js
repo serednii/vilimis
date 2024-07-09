@@ -118,6 +118,8 @@ const ProjectsSelectList = ({onChange, selected}) => {
             <div className="d-flex">
                 <div className={"flex-fill"}>
                     <Select
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                         value={selectedOption}
                         onChange={handleChange}
                         options={option}

@@ -59,15 +59,12 @@ const CommentForm = ({id, handleSave, entity, entityId}) => {
             {comment && "description" in comment && (
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <label htmlFor="form_edit_description">Poznámka</label>
-
-
                         <input type="hidden" name="description" value={content}/>
 
                         <JoditEditor
                             ref={editor}
                             value={content}
-                            config={CONFIG.joedit}
+                            config={{...CONFIG.joedit}}
                             onBlur={newContent => setContent(newContent)} // preferred to use only this option to update the content for performance reasons
                             onChange={newContent => {
                             }}

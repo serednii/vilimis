@@ -1,8 +1,6 @@
 import React from "react";
 import TaskForm from "./TaskForm";
-import Modal from 'react-modal';
-
-Modal.setAppElement("#root");
+import Modal from "../Modal/Modal";
 
 const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id }) => {
     function onNewTask(task) {
@@ -19,22 +17,10 @@ const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callbac
                 isOpen={isOpen}
                 onAfterOpen={onAfterOpen}
                 onRequestClose={onRequestClose}
-                contentLabel="Example Modal"
-                className="modalccc  modal-xl"
-                overlayClassName="modal-dialogccc"
+                title={"Úkol #"+id}
+                size="xl"
             >
-                <div className="modal-content">
-                    <div className="modal-body p-0">
-                        <div className="card p-3 p-lg-4 d-block">
-                            <button onClick={onRequestClose} type="button" className="btn-close float-end"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            <h2>Úkol #{id}</h2>
-
-                            <TaskForm handleSave={onNewTask} id={id}/>
-                        </div>
-                    </div>
-                </div>
+                <TaskForm handleSave={onNewTask} id={id}/>
             </Modal>
         </>
     );
