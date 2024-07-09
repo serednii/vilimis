@@ -39,7 +39,8 @@ $kernel->registerServices([
     \Admin\EventListener\MenuListener::class,
     \Admin\EventListener\UserListener::class,
     \API\EventListener\JwtSecurityListener::class,
-    \API\EventListener\TaskTimetrackSaveListener::class
+    \API\EventListener\TaskTimetrackSaveListener::class,
+    \API\Workflow\Invoice\RecalculateAfterUpdateItemsInvoiceWorkflow::class,
 ]);
 
 

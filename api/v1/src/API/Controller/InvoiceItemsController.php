@@ -5,6 +5,8 @@ namespace API\Controller;
 use API\Entity\InvoiceItem;
 use API\Entity\InvoiceItemStatus;
 use API\Repository\InvoiceItemRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use API\Service\JsonSerializator;
@@ -15,6 +17,8 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class InvoiceItemsController extends AbstractApiController
 {
+    const EVENT_SAVE = InvoiceItemController::EVENT_SAVE;
+
     /**
      * @var InvoiceItemRepository
      */
@@ -29,16 +33,19 @@ class InvoiceItemsController extends AbstractApiController
      * @var JsonSerializator
      */
     private $jsonSerializator;
+    private EventManager $eventManager;
 
     public function __construct(
         InvoiceItemRepository $invoiceItem_repository,
         JsonResponseFactory   $jsonResponseFactory,
-        JsonSerializator      $jsonSerializator
+        JsonSerializator      $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->invoiceItem_repository = $invoiceItem_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
 
@@ -84,6 +91,10 @@ class InvoiceItemsController extends AbstractApiController
                 EntityManager::save($invoiceItem);
             }
 
+            if ($invoiceItem) {
+                $this->triggerSave($invoiceItem);
+            }
+
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "message" => "Uloženo",
                 "code" => 200
@@ -98,11 +109,18 @@ class InvoiceItemsController extends AbstractApiController
     }
 
 
-    private function mapEntityFromArray(InvoiceItemStatus $invoiceItemStatus, array $data, array $files)
+
+    private function triggerSave(InvoiceItem $invoiceItem): InvoiceItem
     {
-        $invoiceItemStatus->setName($data["name"]);
-        $invoiceItemStatus->setColor($data["color"]);
-        $invoiceItemStatus->setPriority(isset($data["priority"]) ? (int)$data["priority"] : 0);
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "invoiceItem" => $invoiceItem
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("invoiceItem");
     }
 
 }
