@@ -5,6 +5,8 @@ namespace API\Controller;
 use API\Entity\EndCustomerContact;
 use API\Repository\EndCustomerContactRepository;
 use API\Repository\EndCustomerRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -17,6 +19,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class EndCustomerContactController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var EndCustomerContactRepository
      */
@@ -32,15 +41,18 @@ class EndCustomerContactController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         EndCustomerContactRepository $endCustomerContact_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->endCustomerContact_repository = $endCustomerContact_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -123,6 +135,8 @@ class EndCustomerContactController extends AbstractApiController
             $this->mapEntityFromArray($endCustomerContact, $postData, $filesData);
 
             EntityManager::save($endCustomerContact);
+
+            $endCustomerContact = $this->triggerSave($endCustomerContact);
 
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
@@ -224,4 +238,17 @@ class EndCustomerContactController extends AbstractApiController
         return "";
     }
 
+
+    private function triggerSave(EndCustomerContact $endCustomerContact): EndCustomerContact
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "endCustomerContact" => $endCustomerContact
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("endCustomerContact");
+    }
 }

@@ -7,15 +7,18 @@
     <form action="{{ _router.generateUrl("admin_endCustomerContact_edit", {"id":endCustomerContact.id}) }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="form_edit_name">Jméno</label>
-                <input value="{{ endCustomerContact.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+                <input value="{{ endCustomerContact.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_surname">Přijmení</label>
-                <input value="{{ endCustomerContact.Surname }}" type="text" name="surname" class="form-control" id="form_edit_surname">
+                <input value="{{ endCustomerContact.Surname }}" type="text" name="surname" class="form-control" id="form_edit_surname"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_position">Pozice</label>
-                <input value="{{ endCustomerContact.Position }}" type="text" name="position" class="form-control" id="form_edit_position">
+                <input value="{{ endCustomerContact.Position }}" type="text" name="position" class="form-control" id="form_edit_position"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_end_customer_id">Koncový zákazník</label>
@@ -40,15 +43,18 @@
             </div>
             <div class="form-group">
                 <label for="form_edit_phone">Telefon</label>
-                <input value="{{ endCustomerContact.Phone }}" type="text" name="phone" class="form-control" id="form_edit_phone">
+                <input value="{{ endCustomerContact.Phone }}" type="text" name="phone" class="form-control" id="form_edit_phone"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_email">Email</label>
-                <input value="{{ endCustomerContact.Email }}" type="text" name="email" class="form-control" id="form_edit_email">
+                <input value="{{ endCustomerContact.Email }}" type="text" name="email" class="form-control" id="form_edit_email"
+                >
             </div>
             <div class="form-group">
                 <label for="form_new_photo">Foto</label>
-                <input type="file" name="photo" class="form-control" id="form_new_photo">
+                <input type="file" name="photo" class="form-control" id="form_new_photo"
+                >
                 {% if endCustomerContact.Photo %}
                     <img style="width:auto;height:auto;max-width:200px;max-height:200px" src="upload/{{ endCustomerContact.Photo }}">
                     <br/><label><input type="checkbox" name="photo_delete"> Smazat</label>

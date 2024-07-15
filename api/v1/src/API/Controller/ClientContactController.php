@@ -5,6 +5,8 @@ namespace API\Controller;
 use API\Entity\ClientContact;
 use API\Repository\ClientContactRepository;
 use API\Repository\ClientRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -17,6 +19,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class ClientContactController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ClientContactRepository
      */
@@ -32,15 +41,18 @@ class ClientContactController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         ClientContactRepository $clientContact_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->clientContact_repository = $clientContact_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -124,6 +136,8 @@ class ClientContactController extends AbstractApiController
 
             EntityManager::save($clientContact);
 
+            $clientContact = $this->triggerSave($clientContact);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "clientContact" => $clientContact,
@@ -150,6 +164,31 @@ class ClientContactController extends AbstractApiController
     {
         $clientContact = $this->clientContact_repository->find($id);
         EntityManager::remove($clientContact);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "clientContact_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $clientContacts = $this->clientContact_repository->findBy($filter);
+
+        if (is_array($clientContacts) && count($clientContacts) > 0) {
+            foreach ($clientContacts as $clientContact) {
+                EntityManager::remove($clientContact);
+            }
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "message" => "Smazáno",
@@ -199,4 +238,17 @@ class ClientContactController extends AbstractApiController
         return "";
     }
 
+
+    private function triggerSave(ClientContact $clientContact): ClientContact
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "clientContact" => $clientContact
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("clientContact");
+    }
 }

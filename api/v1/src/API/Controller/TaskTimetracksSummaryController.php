@@ -102,6 +102,17 @@ class TaskTimetracksSummaryController extends AbstractApiController
             "datetime_start LIKE %1", $monthLast . "%"
         ]);
 
+        if (empty($taskTimetracksLastMonth) && empty($taskTimetracksThisMonth)) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "totalDataThisMonth" => $totalDataThisMonth,
+                "totalDataLastMonth" => $totalDataLastMonth,
+                "projectDataThisMonth" => array_values($projectDataThisMonth),
+                "projectDataLastMonth" => array_values($projectDataLastMonth),
+                "clientDataThisMonth" => array_values($clientDataThisMonth),
+                "clientDataLastMonth" => array_values($clientDataLastMonth)
+            ]));
+        }
+
         foreach(["This","Last"] as $type) {
             foreach (${"taskTimetracks".$type."Month"} as $taskTimetracks) {
                 $seconds = $taskTimetracks->getDatetimeStop()->getTimestamp() - $taskTimetracks->getDatetimeStart()->getTimestamp();

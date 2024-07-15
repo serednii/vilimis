@@ -15,7 +15,7 @@ final class TextareaType implements TypeInterface
     /**
      * @var string
      *
-     * @ORM\Type TEXT
+     * @ORM\Type LONGTEXT
      * @ORM\Column {{ item.slug }}
      */
     private \${{ item.slug }} = "";

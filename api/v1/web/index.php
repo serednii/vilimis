@@ -25,7 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
     exit(0);
 }
-
+/*
+SELECT table_schema "DB Name",
+        ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "DB Size in MB"
+FROM information_schema.tables
+GROUP BY table_schema
+ */
 include_once __DIR__ . "/../vendor/autoload.php";
 
 error_reporting(E_ALL ^ E_DEPRECATED);

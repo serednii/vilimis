@@ -6,6 +6,8 @@ use API\Entity\SessionEndCustomerContact;
 use API\Repository\SessionEndCustomerContactRepository;
 use API\Repository\SessionRepository;
 use API\Repository\EndCustomerContactRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class SessionEndCustomerContactController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var SessionEndCustomerContactRepository
      */
@@ -33,15 +42,18 @@ class SessionEndCustomerContactController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         SessionEndCustomerContactRepository $sessionEndCustomerContact_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->sessionEndCustomerContact_repository = $sessionEndCustomerContact_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -125,6 +137,8 @@ class SessionEndCustomerContactController extends AbstractApiController
 
             EntityManager::save($sessionEndCustomerContact);
 
+            $sessionEndCustomerContact = $this->triggerSave($sessionEndCustomerContact);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "sessionEndCustomerContact" => $sessionEndCustomerContact,
@@ -188,4 +202,17 @@ class SessionEndCustomerContactController extends AbstractApiController
         $sessionEndCustomerContact->setEndCustomerContactId(!empty($data["end_customer_contact_id"]) ? (int) $data["end_customer_contact_id"] : null);
     }
 
+
+    private function triggerSave(SessionEndCustomerContact $sessionEndCustomerContact): SessionEndCustomerContact
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "sessionEndCustomerContact" => $sessionEndCustomerContact
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("sessionEndCustomerContact");
+    }
 }

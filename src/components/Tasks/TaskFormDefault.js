@@ -65,6 +65,8 @@ const TaskFormDefault = ({id, handleSave}) => {
             {task && "name" in task && (
                 <form onSubmit={handleSubmit}>
                     <input type="hidden" name="priority" value={task.priority}/>
+                    <input type="hidden" name="planned_priority" value={task.plannedPriority}/>
+                    <input type="hidden" name="planned_date" value={task.plannedDate?.date}/>
                     <input type="hidden" name="spending_time" value={task.spendingTime}/>
                     <div className="row">
                         <div className="col-12 col-md-8">

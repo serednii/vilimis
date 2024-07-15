@@ -4,7 +4,7 @@ namespace API\Entity;
 
 
 /**
- * @ORM\Table invoiceItem
+ * @ORM\Table invoiceitem
  * @Serializable
  */
 class InvoiceItem
@@ -44,7 +44,7 @@ class InvoiceItem
     /**
      * @var float
      *
-     * @ORM\Type DOUBLE(7,5)
+     * @ORM\Type DOUBLE(20,5)
      * @ORM\Column vat
      */
     private $vat = false;
@@ -52,7 +52,7 @@ class InvoiceItem
     /**
      * @var float
      *
-     * @ORM\Type DOUBLE(7,5)
+     * @ORM\Type DOUBLE(20,5)
      * @ORM\Column quantity
      */
     private $quantity = false;
@@ -68,7 +68,7 @@ class InvoiceItem
     /**
      * @var float
      *
-     * @ORM\Type DOUBLE(7,5)
+     * @ORM\Type DOUBLE(20,5)
      * @ORM\Column price_without_vat
      */
     private $price_without_vat = false;

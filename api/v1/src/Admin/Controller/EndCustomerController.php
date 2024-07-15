@@ -6,6 +6,8 @@ use Admin\Facade\AdminResponse;
 use API\Entity\EndCustomer;
 use API\Repository\EndCustomerRepository;
 use API\Repository\ClientRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -17,6 +19,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class EndCustomerController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var EndCustomerRepository
      */
@@ -30,10 +39,12 @@ class EndCustomerController
 
     public function __construct(
         ClientRepository $client_id_repository,
+        EventManager $eventManager,
         EndCustomerRepository $endCustomer_repository
     )
     {
         $this->client_id_repository = $client_id_repository;
+        $this->eventManager = $eventManager;
         $this->endCustomer_repository = $endCustomer_repository;
     }
 
@@ -84,6 +95,7 @@ class EndCustomerController
             $this->mapEntityFromArray($endCustomer, $postData, $filesData);
 
             EntityManager::save($endCustomer);
+            $endCustomer = $this->triggerSave($endCustomer);
 
             Router::redirectTo("admin_endCustomer_edit", ["id"=>$endCustomer->getId()]);
         }
@@ -152,4 +164,17 @@ class EndCustomerController
         return "";
     }
 
+
+    private function triggerSave(EndCustomer $endCustomer): EndCustomer
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "endCustomer" => $endCustomer
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("endCustomer");
+    }
 }

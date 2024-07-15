@@ -28,7 +28,7 @@ class Setting
     /**
      * @var string
      *
-     * @ORM\Type TEXT
+     * @ORM\Type LONGTEXT
      * @ORM\Column value
      */
     private $value = "";

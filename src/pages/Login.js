@@ -36,10 +36,10 @@ const Login = ({}) => {
                                 <div className="text-center text-md-center mb-4 mt-md-0">
 
 
-                                    <img src="/gephart/images/gephart-is-black-yellow.svg" width="503"
-                                         alt="Gephart Logo"/>
+                                    <img src="/gephart/images/logo-black.svg" width="203"
+                                         alt="VilémIS Logo"/>
 
-                                    <h1 className="mb-0 mt-3 h3">Přihlašení do systému</h1>
+                                    <h1 className="mb-0 mt-5 h3">Přihlašení do systému</h1>
                                 </div>
 
                                 {error && (

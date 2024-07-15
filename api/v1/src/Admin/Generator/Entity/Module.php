@@ -139,6 +139,14 @@ class Module
     }
 
     /**
+     * @return string
+     */
+    public function getSlugSingularLower(): string
+    {
+        return strtolower($this->slug_singular);
+    }
+
+    /**
      * @param string $slug_singular
      */
     public function setSlugSingular(string $slug_singular)

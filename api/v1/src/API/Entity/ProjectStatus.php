@@ -2,8 +2,9 @@
 
 namespace API\Entity;
 
+
 /**
- * @ORM\Table projectStatus
+ * @ORM\Table projectstatus
  * @Serializable
  */
 class ProjectStatus

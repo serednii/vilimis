@@ -5,6 +5,8 @@ namespace API\Controller;
 use API\Entity\EndCustomer;
 use API\Repository\EndCustomerRepository;
 use API\Repository\ClientRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -15,8 +17,15 @@ use Gephart\Framework\Response\JsonResponseFactory;
 /**
  * @RoutePrefix /endCustomer
  */
-class EndCustomerController
+class EndCustomerController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var EndCustomerRepository
      */
@@ -32,15 +41,18 @@ class EndCustomerController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         EndCustomerRepository $endCustomer_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->endCustomer_repository = $endCustomer_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -51,9 +63,20 @@ class EndCustomerController
      */
     public function index()
     {
-        $endCustomers = $this->endCustomer_repository->findBy([], [
-            "ORDER BY" => "id DESC"
-        ]);
+        try {
+            $filter = $this->parseRequestFilter();
+
+            $params = [];
+            $params["ORDER BY"] = !empty($_GET["order"])?$_GET["order"]:"id DESC";
+            $params["LIMIT"] = !empty($_GET["limit"])?$_GET["limit"]:"1000";
+
+            $endCustomers = $this->endCustomer_repository->findBy($filter, $params);
+        } catch (\Exception $exception) {
+            return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                "message" => $exception->getMessage(),
+                "code" => 500
+            ]));
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "data" => $endCustomers
@@ -113,6 +136,8 @@ class EndCustomerController
 
             EntityManager::save($endCustomer);
 
+            $endCustomer = $this->triggerSave($endCustomer);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "endCustomer" => $endCustomer,
@@ -139,6 +164,31 @@ class EndCustomerController
     {
         $endCustomer = $this->endCustomer_repository->find($id);
         EntityManager::remove($endCustomer);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "endCustomer_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $endCustomers = $this->endCustomer_repository->findBy($filter);
+
+        if (is_array($endCustomers) && count($endCustomers) > 0) {
+            foreach ($endCustomers as $endCustomer) {
+                EntityManager::remove($endCustomer);
+            }
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "message" => "Smazáno",
@@ -187,4 +237,17 @@ class EndCustomerController
         return "";
     }
 
+
+    private function triggerSave(EndCustomer $endCustomer): EndCustomer
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "endCustomer" => $endCustomer
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("endCustomer");
+    }
 }

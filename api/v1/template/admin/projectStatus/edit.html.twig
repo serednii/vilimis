@@ -7,15 +7,18 @@
     <form action="{{ _router.generateUrl("admin_projectStatus_edit", {"id":projectStatus.id}) }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="form_edit_name">Název</label>
-                <input value="{{ projectStatus.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+                <input value="{{ projectStatus.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_color">Barva</label>
-                <input value="{{ projectStatus.Color }}" type="text" name="color" class="form-control" id="form_edit_color">
+                <input value="{{ projectStatus.Color }}" type="text" name="color" class="form-control" id="form_edit_color"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_priority">Priorita</label>
-                <input value="{{ projectStatus.Priority }}" type="number" name="priority" class="form-control" id="form_edit_priority">
+                <input step="1" value="{{ projectStatus.Priority }}" type="number" name="priority" class="form-control" id="form_edit_priority"
+                >
             </div>
         <button type="submit" class="btn btn-default">Uložit</button>
     </form>

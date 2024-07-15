@@ -7,23 +7,28 @@
     <form action="{{ _router.generateUrl("admin_projectDate_edit", {"id":projectDate.id}) }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="form_edit_name">Název</label>
-                <input value="{{ projectDate.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+                <input value="{{ projectDate.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_date">Datum</label>
-                <input value="{{ projectDate.Date.format("Y-m-d") }}" type="date" name="date" class="form-control" id="form_edit_date">
+                <input value="{{ projectDate.Date.format("Y-m-d") }}" type="date" name="date" class="form-control" id="form_edit_date"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_color">Barva</label>
-                <input value="{{ projectDate.Color }}" type="text" name="color" class="form-control" id="form_edit_color">
+                <input value="{{ projectDate.Color }}" type="text" name="color" class="form-control" id="form_edit_color"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_priority">Priorita</label>
-                <input value="{{ projectDate.Priority }}" type="number" name="priority" class="form-control" id="form_edit_priority">
+                <input step="1" value="{{ projectDate.Priority }}" type="number" name="priority" class="form-control" id="form_edit_priority"
+                >
             </div>
             <div class="checkbox">
                 <label>
-                    <input {% if projectDate.Done %}checked{% endif %} type="checkbox" name="done" value="1">
+                    <input {% if projectDate.Done %}checked{% endif %} type="checkbox" name="done" value="1" 
+                >
                     Splněno
                 </label>
             </div>

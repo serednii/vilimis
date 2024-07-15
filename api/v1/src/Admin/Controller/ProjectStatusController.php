@@ -5,6 +5,8 @@ namespace Admin\Controller;
 use Admin\Facade\AdminResponse;
 use API\Entity\ProjectStatus;
 use API\Repository\ProjectStatusRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -16,6 +18,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class ProjectStatusController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ProjectStatusRepository
      */
@@ -23,9 +32,11 @@ class ProjectStatusController
 
 
     public function __construct(
+        EventManager $eventManager,
         ProjectStatusRepository $projectStatus_repository
     )
     {
+        $this->eventManager = $eventManager;
         $this->projectStatus_repository = $projectStatus_repository;
     }
 
@@ -74,6 +85,7 @@ class ProjectStatusController
             $this->mapEntityFromArray($projectStatus, $postData, $filesData);
 
             EntityManager::save($projectStatus);
+            $projectStatus = $this->triggerSave($projectStatus);
 
             Router::redirectTo("admin_projectStatus_edit", ["id"=>$projectStatus->getId()]);
         }
@@ -105,4 +117,17 @@ class ProjectStatusController
         $projectStatus->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
+
+    private function triggerSave(ProjectStatus $projectStatus): ProjectStatus
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "projectStatus" => $projectStatus
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("projectStatus");
+    }
 }

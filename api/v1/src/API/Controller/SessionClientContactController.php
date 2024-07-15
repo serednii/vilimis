@@ -6,6 +6,8 @@ use API\Entity\SessionClientContact;
 use API\Repository\SessionClientContactRepository;
 use API\Repository\SessionRepository;
 use API\Repository\ClientContactRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class SessionClientContactController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var SessionClientContactRepository
      */
@@ -33,15 +42,18 @@ class SessionClientContactController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         SessionClientContactRepository $sessionClientContact_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->sessionClientContact_repository = $sessionClientContact_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -125,6 +137,8 @@ class SessionClientContactController extends AbstractApiController
 
             EntityManager::save($sessionClientContact);
 
+            $sessionClientContact = $this->triggerSave($sessionClientContact);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "sessionClientContact" => $sessionClientContact,
@@ -188,4 +202,17 @@ class SessionClientContactController extends AbstractApiController
         $sessionClientContact->setClientContactId(!empty($data["client_contact_id"]) ? (int) $data["client_contact_id"] : null);
     }
 
+
+    private function triggerSave(SessionClientContact $sessionClientContact): SessionClientContact
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "sessionClientContact" => $sessionClientContact
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("sessionClientContact");
+    }
 }

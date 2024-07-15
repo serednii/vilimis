@@ -6,6 +6,8 @@ use Admin\Facade\AdminResponse;
 use API\Entity\ClientContact;
 use API\Repository\ClientContactRepository;
 use API\Repository\ClientRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -17,6 +19,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class ClientContactController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ClientContactRepository
      */
@@ -30,10 +39,12 @@ class ClientContactController
 
     public function __construct(
         ClientRepository $client_id_repository,
+        EventManager $eventManager,
         ClientContactRepository $clientContact_repository
     )
     {
         $this->client_id_repository = $client_id_repository;
+        $this->eventManager = $eventManager;
         $this->clientContact_repository = $clientContact_repository;
     }
 
@@ -84,6 +95,7 @@ class ClientContactController
             $this->mapEntityFromArray($clientContact, $postData, $filesData);
 
             EntityManager::save($clientContact);
+            $clientContact = $this->triggerSave($clientContact);
 
             Router::redirectTo("admin_clientContact_edit", ["id"=>$clientContact->getId()]);
         }
@@ -153,4 +165,17 @@ class ClientContactController
         return "";
     }
 
+
+    private function triggerSave(ClientContact $clientContact): ClientContact
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "clientContact" => $clientContact
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("clientContact");
+    }
 }

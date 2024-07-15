@@ -2,8 +2,9 @@
 
 namespace API\Entity;
 
+
 /**
- * @ORM\Table projectDate
+ * @ORM\Table projectdate
  * @Serializable
  */
 class ProjectDate
@@ -75,7 +76,6 @@ class ProjectDate
 
     public function __construct()
     {
-        $this->date = new \DateTime();
     }
 
     /**

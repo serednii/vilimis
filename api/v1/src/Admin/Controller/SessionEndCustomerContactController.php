@@ -7,6 +7,8 @@ use API\Entity\SessionEndCustomerContact;
 use API\Repository\SessionEndCustomerContactRepository;
 use API\Repository\SessionRepository;
 use API\Repository\EndCustomerContactRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class SessionEndCustomerContactController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var SessionEndCustomerContactRepository
      */
@@ -37,11 +46,13 @@ class SessionEndCustomerContactController
     public function __construct(
         SessionRepository $session_id_repository,
         EndCustomerContactRepository $end_customer_contact_id_repository,
+        EventManager $eventManager,
         SessionEndCustomerContactRepository $sessionEndCustomerContact_repository
     )
     {
         $this->session_id_repository = $session_id_repository;
         $this->end_customer_contact_id_repository = $end_customer_contact_id_repository;
+        $this->eventManager = $eventManager;
         $this->sessionEndCustomerContact_repository = $sessionEndCustomerContact_repository;
     }
 
@@ -94,6 +105,7 @@ class SessionEndCustomerContactController
             $this->mapEntityFromArray($sessionEndCustomerContact, $postData, $filesData);
 
             EntityManager::save($sessionEndCustomerContact);
+            $sessionEndCustomerContact = $this->triggerSave($sessionEndCustomerContact);
 
             Router::redirectTo("admin_sessionEndCustomerContact_edit", ["id"=>$sessionEndCustomerContact->getId()]);
         }
@@ -128,4 +140,17 @@ class SessionEndCustomerContactController
         $sessionEndCustomerContact->setEndCustomerContactId(!empty($data["end_customer_contact_id"]) ? (int) $data["end_customer_contact_id"] : null);
     }
 
+
+    private function triggerSave(SessionEndCustomerContact $sessionEndCustomerContact): SessionEndCustomerContact
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "sessionEndCustomerContact" => $sessionEndCustomerContact
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("sessionEndCustomerContact");
+    }
 }

@@ -4,7 +4,7 @@ namespace API\Entity;
 
 
 /**
- * @ORM\Table taskTimetrack
+ * @ORM\Table tasktimetrack
  * @Serializable
  */
 class TaskTimetrack

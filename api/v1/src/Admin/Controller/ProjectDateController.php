@@ -7,6 +7,8 @@ use API\Entity\ProjectDate;
 use API\Repository\ProjectDateRepository;
 use API\Repository\ProjectRepository;
 use API\Repository\TaskRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class ProjectDateController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ProjectDateRepository
      */
@@ -37,11 +46,13 @@ class ProjectDateController
     public function __construct(
         ProjectRepository $project_id_repository,
         TaskRepository $task_id_repository,
+        EventManager $eventManager,
         ProjectDateRepository $projectDate_repository
     )
     {
         $this->project_id_repository = $project_id_repository;
         $this->task_id_repository = $task_id_repository;
+        $this->eventManager = $eventManager;
         $this->projectDate_repository = $projectDate_repository;
     }
 
@@ -94,6 +105,7 @@ class ProjectDateController
             $this->mapEntityFromArray($projectDate, $postData, $filesData);
 
             EntityManager::save($projectDate);
+            $projectDate = $this->triggerSave($projectDate);
 
             Router::redirectTo("admin_projectDate_edit", ["id"=>$projectDate->getId()]);
         }
@@ -133,4 +145,17 @@ class ProjectDateController
         $projectDate->setTaskId(!empty($data["task_id"]) ? (int) $data["task_id"] : null);
     }
 
+
+    private function triggerSave(ProjectDate $projectDate): ProjectDate
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "projectDate" => $projectDate
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("projectDate");
+    }
 }

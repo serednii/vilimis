@@ -75,7 +75,6 @@ function Root() {
         toast,
         jwt
     );
-
     useEffect(() => {
         const timetrackerData = localStorage.getItem("timetracker");
         if (timetrackerData) {
@@ -166,6 +165,35 @@ function Root() {
         ) : (
             user ? (
                 <BrowserRouter>
+
+                    <nav className="navbar navbar-dark navbar-theme-primary px-4 col-12 d-lg-none">
+                        <a className="navbar-brand me-lg-5" href="../../index.html">
+                            <img
+                                className="navbar-brand-dark"
+                                src="/gephart/images/logo-white.svg"
+                                alt="VilémIS logo"
+                            />
+                            <img
+                                className="navbar-brand-light"
+                                src="/gephart/images/logo-black.svg"
+                                alt="VilémIS logo"
+                            />
+                        </a>
+                        <div className="d-flex align-items-center">
+                            <button
+                                className="navbar-toggler d-lg-none collapsed"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#sidebarMenu"
+                                aria-controls="sidebarMenu"
+                                aria-expanded="false"
+                                aria-label="Toggle navigation"
+                            >
+                                <span className="navbar-toggler-icon"></span>
+                            </button>
+                        </div>
+                    </nav>
+
                     <nav id="sidebarMenu" className="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
                         <div className="sidebar-inner px-4 pt-3">
                             <div
@@ -177,8 +205,8 @@ function Root() {
                                              alt="Gephart"/>
                                     </div>
                                     <div className="d-block">
-                                        <h2 className="h5 mb-3">Hi, Jane</h2>
-                                        <a href="../../pages/examples/sign-in.html"
+                                        <h2 className="h5 mb-3">{user.name} {user.surname}</h2>
+                                        <button  onClick={logout}
                                            className="btn btn-secondary btn-sm d-inline-flex align-items-center">
                                             <svg className="icon icon-xxs me-1" fill="none" stroke="currentColor"
                                                  viewBox="0 0 24 24"
@@ -186,8 +214,8 @@ function Root() {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                                       d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                                             </svg>
-                                            Sign Out
-                                        </a>
+                                            Odhlásit
+                                        </button>
                                     </div>
                                 </div>
                                 <div className="collapse-close d-md-none">
@@ -204,7 +232,7 @@ function Root() {
                                 </div>
                             </div>
                             <div className="gephart-menu-logo">
-                                <img src="/gephart/images/logo-white.svg" width="503" alt="Gephart Logo"/>
+                                <img src="/gephart/images/logo-white.svg" width="503" alt="VilémIS Logo"/>
                             </div>
                             <ul className="nav flex-column pt-3 pt-md-0">
                                 <li className="nav-item ">
@@ -248,7 +276,7 @@ function Root() {
                                 </span>
                                         <span className="link-arrow"><ArrowArcRight/></span>
                                     </NavLink>
-                                    <div className="multi-level" role="list" >
+                                    <div className="multi-level" role="list">
                                         <ul className="flex-column nav">
                                             <li className="nav-item">
 
@@ -278,7 +306,7 @@ function Root() {
                                         </span>
                                         <span className="link-arrow"><ArrowArcRight/></span>
                                     </NavLink>
-                                    <div className="multi-level" role="list" >
+                                    <div className="multi-level" role="list">
                                         <ul className="flex-column nav">
                                             <li className="nav-item">
 

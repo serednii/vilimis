@@ -7,6 +7,8 @@ use API\Entity\SessionClientContact;
 use API\Repository\SessionClientContactRepository;
 use API\Repository\SessionRepository;
 use API\Repository\ClientContactRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class SessionClientContactController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var SessionClientContactRepository
      */
@@ -37,11 +46,13 @@ class SessionClientContactController
     public function __construct(
         SessionRepository $session_id_repository,
         ClientContactRepository $client_contact_id_repository,
+        EventManager $eventManager,
         SessionClientContactRepository $sessionClientContact_repository
     )
     {
         $this->session_id_repository = $session_id_repository;
         $this->client_contact_id_repository = $client_contact_id_repository;
+        $this->eventManager = $eventManager;
         $this->sessionClientContact_repository = $sessionClientContact_repository;
     }
 
@@ -94,6 +105,7 @@ class SessionClientContactController
             $this->mapEntityFromArray($sessionClientContact, $postData, $filesData);
 
             EntityManager::save($sessionClientContact);
+            $sessionClientContact = $this->triggerSave($sessionClientContact);
 
             Router::redirectTo("admin_sessionClientContact_edit", ["id"=>$sessionClientContact->getId()]);
         }
@@ -128,4 +140,17 @@ class SessionClientContactController
         $sessionClientContact->setClientContactId(!empty($data["client_contact_id"]) ? (int) $data["client_contact_id"] : null);
     }
 
+
+    private function triggerSave(SessionClientContact $sessionClientContact): SessionClientContact
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "sessionClientContact" => $sessionClientContact
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("sessionClientContact");
+    }
 }

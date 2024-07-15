@@ -2,8 +2,9 @@
 
 namespace API\Entity;
 
+
 /**
- * @ORM\Table clientContact
+ * @ORM\Table clientcontact
  * @Serializable
  */
 class ClientContact

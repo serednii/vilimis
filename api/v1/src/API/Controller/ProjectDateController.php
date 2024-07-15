@@ -6,6 +6,8 @@ use API\Entity\ProjectDate;
 use API\Repository\ProjectDateRepository;
 use API\Repository\ProjectRepository;
 use API\Repository\TaskRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -18,6 +20,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class ProjectDateController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ProjectDateRepository
      */
@@ -33,15 +42,18 @@ class ProjectDateController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         ProjectDateRepository $projectDate_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->projectDate_repository = $projectDate_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -125,6 +137,8 @@ class ProjectDateController extends AbstractApiController
 
             EntityManager::save($projectDate);
 
+            $projectDate = $this->triggerSave($projectDate);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "projectDate" => $projectDate,
@@ -193,4 +207,17 @@ class ProjectDateController extends AbstractApiController
         $projectDate->setTaskId(!empty($data["task_id"]) ? (int) $data["task_id"] : null);
     }
 
+
+    private function triggerSave(ProjectDate $projectDate): ProjectDate
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "projectDate" => $projectDate
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("projectDate");
+    }
 }

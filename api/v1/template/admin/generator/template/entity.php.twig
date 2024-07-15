@@ -7,7 +7,7 @@ use Gephart\Security\Entity\UserInterface;
 {% endif %}
 
 /**
- * @ORM\Table {{ module.slugSingular }}
+ * @ORM\Table {{ module.slugSingularLower }}
  * @Serializable
  */
 class {{ module.entityName }}{% if module.entityName == "User" %} implements UserInterface{% endif %}

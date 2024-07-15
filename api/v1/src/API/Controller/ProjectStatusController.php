@@ -4,6 +4,8 @@ namespace API\Controller;
 
 use API\Entity\ProjectStatus;
 use API\Repository\ProjectStatusRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -16,6 +18,13 @@ use Gephart\Framework\Response\JsonResponseFactory;
  */
 class ProjectStatusController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ProjectStatusRepository
      */
@@ -31,15 +40,18 @@ class ProjectStatusController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         ProjectStatusRepository $projectStatus_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->projectStatus_repository = $projectStatus_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -123,6 +135,8 @@ class ProjectStatusController extends AbstractApiController
 
             EntityManager::save($projectStatus);
 
+            $projectStatus = $this->triggerSave($projectStatus);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "projectStatus" => $projectStatus,
@@ -187,4 +201,17 @@ class ProjectStatusController extends AbstractApiController
         $projectStatus->setPriority(isset($data["priority"]) ? (int) $data["priority"] : 0);
     }
 
+
+    private function triggerSave(ProjectStatus $projectStatus): ProjectStatus
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "projectStatus" => $projectStatus
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("projectStatus");
+    }
 }

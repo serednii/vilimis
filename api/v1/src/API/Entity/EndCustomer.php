@@ -2,8 +2,9 @@
 
 namespace API\Entity;
 
+
 /**
- * @ORM\Table endCustomer
+ * @ORM\Table endcustomer
  * @Serializable
  */
 class EndCustomer
@@ -59,7 +60,7 @@ class EndCustomer
     /**
      * @var string
      *
-     * @ORM\Type TEXT
+     * @ORM\Type LONGTEXT
      * @ORM\Column address
      */
     private $address = "";

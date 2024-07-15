@@ -1,0 +1,7 @@
+RewriteEngine on
+
+RewriteRule ^api/v1/config/?$ - [F,L]
+RewriteRule ^api/v1/src/?$ - [F,L]
+RewriteRule ^api/v1/cache/?$ - [F,L]
+RewriteRule ^api/v1/template/?$ - [F,L]
+RewriteRule ^api/v1/vendor/?$ - [F,L]
