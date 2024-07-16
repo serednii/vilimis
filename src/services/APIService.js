@@ -53,7 +53,7 @@ class APIService {
             }
         }).catch((data)=> {
             response.text().then((data) => {
-                alert(data);
+                //alert(data);
                 callback(data);
             });
         });
