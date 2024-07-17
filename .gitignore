@@ -2,6 +2,12 @@
 
 /.idea
 
+# docker
+.docker/db/data/*
+.docker/logs/*
+.docker/phpmyadmin/sessions/*
+.docker/redis/data/*
+
 # dependencies
 /node_modules
 /.pnp

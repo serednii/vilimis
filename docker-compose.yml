@@ -1,0 +1,142 @@
+services:
+
+    ####################################################################################################
+    # PHP - Apache
+    ####################################################################################################
+    php:
+        build: .docker/php
+        ports:
+            - 8080:80
+        volumes:
+            - ./api/v1:/var/www/html/api/v1
+            - ./build:/var/www/html
+        environment:
+            - APACHE_DOCUMENT_ROOT=/var/www/html/
+            - APACHE_DOCUMENT_ROOT_NPM=/var/www/html/build
+        depends_on:
+            - db
+        networks:
+            - vilemis-net
+
+    ####################################################################################################
+    # DATABASE (MariaDB)
+    ####################################################################################################
+    db:
+        image: mariadb:10.11
+        ports:
+            - 3307:3306
+        volumes:
+            - .docker/db/data:/var/lib/mysql
+            - .docker/logs:/var/log/mysql
+            - .docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+            - .docker/db/sql:/docker-entrypoint-initdb.d
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: vilemis
+            MYSQL_USER: vilemis
+            MYSQL_PASSWORD: vilemis
+        networks:
+            - vilemis-net
+
+    ####################################################################################################
+    # phpMyAdmin
+    ####################################################################################################
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8081:80
+        links:
+            - db
+        environment:
+            PMA_HOST: db
+            MYSQL_ROOT_PASSWORD: root
+            PMA_ARBITRARY: 1
+        volumes:
+            - .docker/phpmyadmin/sessions:/sessions
+        depends_on:
+            - db
+        networks:
+            - vilemis-net
+
+    ####################################################################################################
+    # Adminer
+    ####################################################################################################
+    adminer:
+        image: adminer
+        ports:
+            - 9090:8080
+        depends_on:
+            - db
+        networks:
+            - vilemis-net
+
+    ####################################################################################################
+    # Mailpit
+    ####################################################################################################
+    mail:
+        image: axllent/mailpit:latest
+        ports:
+        - 8025:8025
+        - 1025:1025
+
+    ####################################################################################################
+    # Redis
+    ####################################################################################################
+    redis:
+        image: redis:latest
+        command: redis-server --appendonly yes
+        volumes:
+        - .docker/redis/data:/data
+        ports:
+        - 6379:6379
+    #
+    #####################################################################################################
+    ## DATABASE (MySQL)
+    #####################################################################################################
+    #db:
+    #    image: mysql:8.1
+    #    ports:
+    #        - 3306:3306
+    #    volumes:
+    #        - .docker/db/data:/var/lib/mysql
+    #        - .docker/logs:/var/log/mysql
+    #        - .docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+    #        - .docker/db/sql:/docker-entrypoint-initdb.d
+    #    environment:
+    #        MYSQL_ROOT_PASSWORD: root
+    #        MYSQL_DATABASE: vilemis
+    #        MYSQL_USER: vilemis
+    #        MYSQL_PASSWORD: vilemis
+
+
+    ####################################################################################################
+    # PostgreSQL
+    ####################################################################################################
+    # db:
+    #     image: postgres:16
+    #     ports:
+    #         - 5432:5432
+    #     volumes:
+    #         - .docker/db/data:/var/lib/postgresql/data
+    #         - .docker/db/sql:/docker-entrypoint-initdb.d
+    #     environment:
+    #         - POSTGRES_USER=refactorian
+    #         - POSTGRES_PASSWORD=refactorian
+    #         - POSTGRES_DB=refactorian
+
+    ####################################################################################################
+    # pgAdmin
+    ####################################################################################################
+    # pgadmin:
+    #     image: dpage/pgadmin4
+    #     ports:
+    #         - 5050:80
+    #     environment:
+    #         - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+    #         - PGADMIN_DEFAULT_PASSWORD=password
+    #     depends_on:
+    #         - db
+
+
+networks:
+    vilemis-net:

@@ -3,3 +3,4 @@ composer.lock
 \.DS_Store
 #/template/_framework
 /cache
+mysql-data

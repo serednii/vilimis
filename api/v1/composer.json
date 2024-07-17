@@ -34,5 +34,10 @@
     "post-create-project-cmd": [
       "@gephart-scripts"
     ]
+  },
+  "extra": {
+    "symfony": {
+      "docker": true
+    }
   }
 }
