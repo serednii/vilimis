@@ -42,16 +42,23 @@ class TaskController
      */
     private $task_status_id_repository;
 
+    /**
+     * @var TaskRepository
+     */
+    private $bound_to_task_id_repository;
+
 
     public function __construct(
         ProjectRepository $project_id_repository,
         TaskStatusRepository $task_status_id_repository,
+        TaskRepository $bound_to_task_id_repository,
         EventManager $eventManager,
         TaskRepository $task_repository
     )
     {
         $this->project_id_repository = $project_id_repository;
         $this->task_status_id_repository = $task_status_id_repository;
+        $this->bound_to_task_id_repository = $bound_to_task_id_repository;
         $this->eventManager = $eventManager;
         $this->task_repository = $task_repository;
     }
@@ -78,6 +85,7 @@ class TaskController
 
         $project_ids = $this->project_id_repository->findBy([],["ORDER BY" => "id"]);
         $task_status_ids = $this->task_status_id_repository->findBy([],["ORDER BY" => "id"]);
+        $bound_to_task_ids = $this->bound_to_task_id_repository->findBy([],["ORDER BY" => "id"]);
         $tasks = $this->task_repository->findBy([], [
             "ORDER BY" => "id DESC"
         ]);
@@ -85,6 +93,7 @@ class TaskController
         return AdminResponse::createResponse("admin/task/index.html.twig", [
             "project_ids" => $project_ids,
             "task_status_ids" => $task_status_ids,
+            "bound_to_task_ids" => $bound_to_task_ids,
             "tasks" => $tasks
         ]);
     }
@@ -112,11 +121,13 @@ class TaskController
 
         $project_ids = $this->project_id_repository->findBy([],["ORDER BY" => "id"]);
         $task_status_ids = $this->task_status_id_repository->findBy([],["ORDER BY" => "id"]);
+        $bound_to_task_ids = $this->bound_to_task_id_repository->findBy([],["ORDER BY" => "id"]);
         $task = $this->task_repository->find($id);
 
         return AdminResponse::createResponse("admin/task/edit.html.twig", [
             "project_ids" => $project_ids,
             "task_status_ids" => $task_status_ids,
+            "bound_to_task_ids" => $bound_to_task_ids,
             "task" => $task
         ]);
     }
@@ -148,6 +159,7 @@ class TaskController
         $task->setSpendingTime(isset($data["spending_time"]) ? (int) $data["spending_time"] : 0);
         $task->setPlannedDate(!empty($data["planned_date"]) ? new \DateTime($data["planned_date"]) : null);
         $task->setPlannedPriority(isset($data["planned_priority"]) ? (int) $data["planned_priority"] : 0);
+        $task->setBoundToTaskId(!empty($data["bound_to_task_id"]) ? (int) $data["bound_to_task_id"] : null);
     }
 
 

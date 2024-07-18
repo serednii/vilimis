@@ -210,6 +210,7 @@ class TaskController extends AbstractApiController
         $task->setSpendingTime(isset($data["spending_time"]) ? (int) $data["spending_time"] : 0);
         $task->setPlannedDate(!empty($data["planned_date"]) ? new \DateTime($data["planned_date"]) : null);
         $task->setPlannedPriority(isset($data["planned_priority"]) ? (int) $data["planned_priority"] : 0);
+        $task->setBoundToTaskId(!empty($data["bound_to_task_id"]) ? (int) $data["bound_to_task_id"] : null);
     }
 
 

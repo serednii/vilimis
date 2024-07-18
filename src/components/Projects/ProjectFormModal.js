@@ -2,12 +2,12 @@ import React from "react";
 import ProjectForm from "./ProjectForm";
 import Modal from "../Modal/Modal";
 
-const ProjectFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id }) => {
+const ProjectFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id, clientId }) => {
     function onNewProject(project) {
         setIsOpen(false);
 
         if (callback) {
-            callback();
+            callback(project);
         }
     }
 
@@ -18,10 +18,10 @@ const ProjectFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, call
                 onAfterOpen={onAfterOpen}
                 onRequestClose={onRequestClose}
                 title={id ? ("Projekt #"+id):"Nový projekt"}
-                size="xl"
+                size={id ? "xl":"md"}
             >
 
-                <ProjectForm handleSave={onNewProject} id={id}/>
+                <ProjectForm clientId={clientId} handleSave={onNewProject} id={id}/>
             </Modal>
         </>
     );

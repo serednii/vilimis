@@ -5,14 +5,16 @@ import SessionsList from "../Sessions/SessionsList";
 import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import CommentsList from "../Comments/CommentsList";
 import AttachmentsList from "../Attachment/AttachmentsList";
+import TasksList from "../Tasks/TasksList";
 
-const ProjectForm = ({id, handleSave}) => {
+const ProjectForm = ({id, handleSave, clientId}) => {
     return (
         <>
             {id && id > 0 ? (
                 <Tabs>
                     <TabList>
                         <Tab>Nastavení</Tab>
+                        <Tab>Úkoly</Tab>
                         <Tab>Poznámky</Tab>
                         <Tab>Přílohy</Tab>
                     </TabList>
@@ -34,6 +36,10 @@ const ProjectForm = ({id, handleSave}) => {
                     </TabPanel>
 
                     <TabPanel>
+                        <TasksList projectId={id} />
+                    </TabPanel>
+
+                    <TabPanel>
                         <CommentsList entity="project" entityId={id} />
                     </TabPanel>
 
@@ -42,7 +48,7 @@ const ProjectForm = ({id, handleSave}) => {
                     </TabPanel>
                 </Tabs>
             ) : (
-                <ProjectFormDefault id={id} handleSave={handleSave}/>
+                <ProjectFormDefault clientId={clientId} id={id} handleSave={handleSave}/>
             )}
         </>
     );

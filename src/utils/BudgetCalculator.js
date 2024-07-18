@@ -25,8 +25,28 @@ class BudgetCalculator {
         return this._numberFormat(forInvoicing,0, ".", " ")+" " + currency;
     }
 
+    projectBudgetNicely(currency)
+    {
+        if (!this.project) {
+            return this._numberFormat(0,0, ".", " ")+" " + currency;
+        }
+        return this._numberFormat(this.project?.budget,0, ".", " ")+" " + currency;
+    }
+
     calculareSpendingHoursNicely() {
         return this._formatTimeNicely(this.spendingSeconds);
+    }
+
+    calculareSpendingPercent() {
+        if (this.hourBudget <= 0) {
+            return 100;
+        }
+        let percent =  100 / (this.hourBudget * 60 * 60) * this.spendingSeconds;
+        if (percent > 100) {
+            return 100;
+        }
+
+        return percent;
     }
 
     budgetHoursNicely() {
@@ -34,7 +54,7 @@ class BudgetCalculator {
     }
 
     calculateLeftHoursBudgetNicely() {
-        if (this.hourBudget === 0) {
+        if (this.hourBudget <= 0) {
             return "00:00";
         }
         let leftSeconds = this.hourBudget * 60 * 60 - this.spendingSeconds;

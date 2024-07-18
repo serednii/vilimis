@@ -52,7 +52,7 @@ class Task
     /**
      * @var string
      *
-     * @ORM\Type TEXT
+     * @ORM\Type LONGTEXT
      * @ORM\Column description
      */
     private $description = "";
@@ -113,6 +113,14 @@ class Task
      */
     private $planned_priority = false;
     
+    /**
+     * @var ?int
+     *
+     * @ORM\Type INT(6) UNSIGNED
+     * @ORM\Column bound_to_task_id
+     */
+    private $bound_to_task_id = null;
+
 
     public function __construct()
     {
@@ -324,6 +332,22 @@ class Task
     public function setPlannedPriority(int $planned_priority)
     {
         $this->planned_priority = $planned_priority;
+    }
+
+    /**
+     * @return ?int
+     */
+    public function getBoundToTaskId(): ?int
+    {
+        return $this->bound_to_task_id;
+    }
+
+    /**
+     * @param ?int $bound_to_task_id
+     */
+    public function setBoundToTaskId(?int $bound_to_task_id)
+    {
+        $this->bound_to_task_id = $bound_to_task_id;
     }
 
 }

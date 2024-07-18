@@ -10,6 +10,7 @@ const SessionsList = ({projectId, clientId}) => {
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [modalSessionId, setModalSessionId] = React.useState(0);
+    const [reload, setReload] = useState(true);
 
     function afterOpenModal() {
         // references are now sync'd and can be accessed.
@@ -20,12 +21,14 @@ const SessionsList = ({projectId, clientId}) => {
     }
 
     useEffect(() => {
+        if (!reload) return;
         loadSessions();
-    }, [projectId, clientId]);
+        setReload(false);
+    }, [reload]);
 
     function handleUpdate()
     {
-        loadSessions();
+        setReload(true);
     }
     function loadSessions() {
         let url = "/session/list";

@@ -1,0 +1,12 @@
+{
+  "driver": "mysqli",
+  "hostname": "db",
+  "port": 3306,
+  "username": "vilemis",
+  "password": "vilemis",
+  "database": "vilemis",
+
+  "entities": [
+    "API\\Entity"
+  ]
+}

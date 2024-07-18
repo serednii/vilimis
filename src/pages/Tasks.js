@@ -4,6 +4,7 @@ import TaskNew from "../components/Tasks/TaskNew";
 import TaskEdit from "../components/Tasks/TaskEdit";
 import TasksKanban from "../components/Tasks/TasksKanban";
 import TasksWeekKanban from "../components/Tasks/TasksWeekKanban";
+import TasksList from "../components/Tasks/TasksList";
 
 const Tasks = ({ }) => {
     useEffect(() => {
@@ -14,8 +15,9 @@ const Tasks = ({ }) => {
         <Routes>
             <Route path="edit/:id" element={<TaskEdit />} />
             <Route path="new" element={<TaskNew />} />
+            <Route path="list" element={<TasksKanban />} />
             <Route path="week" element={<TasksWeekKanban />} />
-            <Route path="*" element={<TasksKanban />} />
+            <Route path="*" element={<TasksList />} />
         </Routes>
     );
 }

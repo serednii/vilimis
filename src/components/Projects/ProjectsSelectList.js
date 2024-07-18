@@ -27,11 +27,11 @@ const ProjectsSelectList = ({onChange, selected}) => {
 
     function loadProjects(onLoad) {
         API.getData("/project/list", (projects) => {
-            setProjects(projects.data);
+            setProjects(projects);
 
-            if (projects.data && projects.data.length > 0) {
+            if (projects && projects.length > 0) {
                 const options = [];
-                projects.data.map(project => {
+                projects.map(project => {
                     let projectValue = {
                         value: project.id,
                         label: project.name,

@@ -39,7 +39,7 @@ const WebsList = ({ }) => {
 
             <div className="card border-0 shadow mb-4">
                 <div className="card-body">
-                    {webs && webs.length > 0 ? (
+                    {webs?.length > 0 ? (
                         <div className="table-responsive">
                             <table className="table table-centered table-nowrap mb-0 rounded">
                                 <thead className="thead-light">

@@ -2,7 +2,8 @@ import React from "react";
 import TaskForm from "./TaskForm";
 import Modal from "../Modal/Modal";
 
-const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id }) => {
+const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id, projectId }) => {
+
     function onNewTask(task) {
         setIsOpen(false);
 
@@ -17,10 +18,10 @@ const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callbac
                 isOpen={isOpen}
                 onAfterOpen={onAfterOpen}
                 onRequestClose={onRequestClose}
-                title={"Úkol #"+id}
+                title={id ? ("Úkol #"+id):"Nový úkol"}
                 size="xl"
             >
-                <TaskForm handleSave={onNewTask} id={id}/>
+                <TaskForm projectId={projectId} handleSave={onNewTask} id={id}/>
             </Modal>
         </>
     );

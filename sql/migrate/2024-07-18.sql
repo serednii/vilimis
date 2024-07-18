@@ -1,0 +1,1 @@
+ALTER TABLE `task` ADD `bound_to_task_id` INT(6) UNSIGNED;

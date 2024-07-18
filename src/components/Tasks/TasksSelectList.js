@@ -2,13 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useRootContext } from "../../contexts/RootContext";
 import Select from "react-select";
 import { CONFIG } from "../../config";
-import TaskForm from "./TaskForm";
 import Modal from 'react-modal';
 import TaskFormModal from "./TaskFormModal";
 
-Modal.setAppElement("#root");
-
-const TasksSelectList = ({ onChange, selected, projectId, onNew }) => {
+const TasksSelectList = ({ onChange, selected, projectId, onNew, notId }) => {
     const { API } = useRootContext();
     const [tasks, setTasks] = useState([]);
     const [projects, setProjects] = useState([]);
@@ -47,6 +44,9 @@ const TasksSelectList = ({ onChange, selected, projectId, onNew }) => {
         API.getData("/task/list", (tasks) => {
             if (projectId) {
                 tasks = tasks.filter(task=>(task.projectId == projectId));
+            }
+            if (notId) {
+                tasks = tasks.filter(task=>(task.id != notId));
             }
             setTasks(tasks);
 

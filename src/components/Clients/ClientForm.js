@@ -7,6 +7,7 @@ import InvoiceItemsList from "../InvoiceItems/InvoiceItemsList";
 import CommentsList from "../Comments/CommentsList";
 import ClientFormDefault from "./ClientFormDefault";
 import SessionsList from "../Sessions/SessionsList";
+import ProjectsList from "../Projects/ProjectsList";
 
 const clientBlank = {
     name: "",
@@ -30,6 +31,7 @@ const ClientForm = ({id, handleSave}) => {
                     <Tabs>
                         <TabList>
                             <Tab>Nastavení</Tab>
+                            <Tab>Projekty</Tab>
                             <Tab>Setkání</Tab>
                             <Tab>Poznámky</Tab>
                         </TabList>
@@ -37,6 +39,10 @@ const ClientForm = ({id, handleSave}) => {
 
                         <TabPanel>
                             <ClientFormDefault id={id} handleSave={handleSave}/>
+                        </TabPanel>
+
+                        <TabPanel>
+                            <ProjectsList clientId={id}/>
                         </TabPanel>
 
                         <TabPanel>

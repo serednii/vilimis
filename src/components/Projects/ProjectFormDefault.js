@@ -15,12 +15,16 @@ const projectBlank = {
     clientId: null
 }
 
-const ProjectFormDefault = ({id, handleSave}) => {
+const ProjectFormDefault = ({id, handleSave, clientId}) => {
     const {API} = useRootContext()
     const [project, setProject] = useState(null);
     const [selectedClientId, setSelectedClientId] = useState(null);
     const [selectedEndCustomerId, setSelectedEndCustomerId] = useState(null);
     const [selectedProjectStatusId, setSelectedProjectStatusId] = useState(null);
+
+    if (clientId) {
+        projectBlank.clientId = clientId;
+    }
 
     useEffect(() => {
         if (id) {
@@ -58,6 +62,12 @@ const ProjectFormDefault = ({id, handleSave}) => {
                     <input type="hidden" name="spending_time" value={project.spendingTime}/>
 
                     <div className="mb-3">
+                        <label htmlFor="form_edit_name">Název</label>
+                        <input defaultValue={project.name} type="text" name="name" className="form-control form-control-lg"
+                               id="form_edit_name"/>
+                    </div>
+
+                    <div className="mb-3">
                         <label htmlFor="form_edit_client_id">Klient</label>
                         <ClientsSelectList selected={project.clientId} onChange={setSelectedClientId}/>
                         <input type="hidden" name="client_id" value={selectedClientId}/>
@@ -72,11 +82,6 @@ const ProjectFormDefault = ({id, handleSave}) => {
                         <ProjectStatusesSelectList selected={project.projectStatusId}
                                                    onChange={setSelectedProjectStatusId}/>
                         <input type="hidden" name="project_status_id" value={selectedProjectStatusId}/>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="form_edit_name">Název</label>
-                        <input defaultValue={project.name} type="text" name="name" className="form-control"
-                               id="form_edit_name"/>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="form_edit_budget">Rozpočet</label>

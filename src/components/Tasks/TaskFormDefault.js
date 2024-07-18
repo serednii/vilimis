@@ -4,6 +4,7 @@ import ProjectsSelectList from "../Projects/ProjectsSelectList";
 import TaskStatusesSelectList from "../TaskStatuses/TaskStatusesSelectList";
 import JoditEditor from 'jodit-react';
 import {CONFIG} from "../../config";
+import TasksSelectList from "./TasksSelectList";
 
 const taskBlank = {
     name: "",
@@ -11,10 +12,11 @@ const taskBlank = {
     projectId: null
 }
 
-const TaskFormDefault = ({id, handleSave}) => {
+const TaskFormDefault = ({id, handleSave, projectId}) => {
     const {API} = useRootContext()
     const [task, setTask] = useState(null);
     const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const [selectedBoundToTaskId, setSelectedBoundToTaskId] = useState(null);
     const [selectedTaskStatusId, setSelectedTaskStatusId] = useState(null);
 
     const editor = useRef(null);
@@ -28,9 +30,12 @@ const TaskFormDefault = ({id, handleSave}) => {
             });
         } else {
             setContent("");
+            if (projectId) {
+                taskBlank.projectId = projectId;
+            }
             setTask(taskBlank)
         }
-    }, [id]);
+    }, [id, projectId]);
 
     function handleSubmit(event) {
         event.preventDefault();
@@ -135,6 +140,11 @@ const TaskFormDefault = ({id, handleSave}) => {
                                 <label htmlFor="form_edit_project_id">Projekt</label>
                                 <ProjectsSelectList selected={task.projectId} onChange={setSelectedProjectId}/>
                                 <input type="hidden" name="project_id" value={selectedProjectId}/>
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="form_edit_bound_to_task_id">Vázáno na úkol</label>
+                                <TasksSelectList projectId={task.projectId} notId={task.id} selected={task.boundToTaskId} onChange={setSelectedBoundToTaskId}/>
+                                <input type="hidden" name="bound_to_task_id" value={selectedBoundToTaskId}/>
                             </div>
                         </div>
                     </div>

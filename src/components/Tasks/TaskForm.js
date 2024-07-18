@@ -5,7 +5,7 @@ import TaskFormTimeTracks from "./TaskFormTimeTracks";
 import CommentsList from "../Comments/CommentsList";
 import AttachmentsList from "../Attachment/AttachmentsList";
 
-const TaskForm = ({ id, handleSave }) => {
+const TaskForm = ({ id, handleSave, projectId }) => {
 
     return (
         <>
@@ -35,7 +35,7 @@ const TaskForm = ({ id, handleSave }) => {
                     </TabPanel>
                 </Tabs>
             ) : (
-                <TaskFormDefault handleSave={handleSave} />
+                <TaskFormDefault projectId={projectId} handleSave={handleSave} />
             )}
         </>
     );

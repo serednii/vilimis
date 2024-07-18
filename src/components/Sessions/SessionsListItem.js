@@ -3,7 +3,7 @@ import {useRootContext} from "../../contexts/RootContext";
 import {NavLink} from "react-router-dom";
 import SessionFormModal from "./SessionFormModal";
 
-const SessionsListItem = ({session, onUpdate, clients}) => {
+const SessionsListItem = ({session, handleUpdate, clients}) => {
     const {API, locale} = useRootContext()
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -14,19 +14,6 @@ const SessionsListItem = ({session, onUpdate, clients}) => {
 
     function closeModal() {
         setIsOpen(false);
-    }
-
-    function handleDelete(id) {
-        API.getData("/session/delete/"+id, ()=>{
-            handleUpdate();
-        });
-    }
-
-    function handleUpdate()
-    {
-        if (onUpdate) {
-            onUpdate();
-        }
     }
 
     return (

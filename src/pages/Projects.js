@@ -4,6 +4,7 @@ import ProjectNew from "../components/Projects/ProjectNew";
 import ProjectEdit from "../components/Projects/ProjectEdit";
 import ProjectsKanban from "../components/Projects/ProjectsKanban";
 import ProjectsYear from "../components/Projects/ProjectsYear";
+import ProjectsList from "../components/Projects/ProjectsList";
 
 const Projects = ({}) => {
     useEffect(() => {
@@ -16,7 +17,7 @@ const Projects = ({}) => {
             <Route path="new" element={<ProjectNew/>}/>
             <Route path="list" element={<ProjectsKanban/>}/>
             <Route path="year" element={<ProjectsYear/>}/>
-            <Route path="*" element={<ProjectsKanban/>}/>
+            <Route path="*" element={<ProjectsList/>}/>
         </Routes>
     );
 }

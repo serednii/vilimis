@@ -98,6 +98,23 @@
                 <input step="1" value="{{ task.PlannedPriority }}" type="number" name="planned_priority" class="form-control" id="form_edit_planned_priority"
                 >
             </div>
+            <div class="form-group">
+                <label for="form_edit_bound_to_task_id">Vázáno na úkol</label>
+                <select name="bound_to_task_id" class="form-control" id="form_edit_bound_to_task_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for bound_to_task_id in bound_to_task_ids %}
+                        <option value="{{ bound_to_task_id.id }}">
+                        {% if bound_to_task_id.title %}
+                            {{ bound_to_task_id.title }}
+                        {% elseif bound_to_task_id.name %}
+                            {{ bound_to_task_id.name }}
+                        {% else %}
+                            #{{ bound_to_task_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
             <button type="submit" class="btn btn-default">Přidat</button>
         </form>
         <br/>

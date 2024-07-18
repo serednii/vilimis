@@ -201,8 +201,6 @@ const TasksKanban = ({ }) => {
                 </div>
             </div>
 
-            {console.log(settings.showTaskStatuses)}
-
             {taskStatuses && taskStatuses?.length > 0 && (
                 <DndProvider backend={HTML5Backend}>
                     <div className="container-fluid kanban-container py-4 px-0">
