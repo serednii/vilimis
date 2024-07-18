@@ -1,0 +1,5 @@
+RedirectMatch 403 ^/config/?$
+RedirectMatch 403 ^/src/?$
+RedirectMatch 403 ^/cache/?$
+RedirectMatch 403 ^/template/?$
+RedirectMatch 403 ^/vendor/?$

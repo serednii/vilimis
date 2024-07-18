@@ -63,7 +63,7 @@ const ClientsList = ({}) => {
                 </button>
             </div>
             <div className="row">
-            {clients && clients.length && clients.map((client) => (
+            {clients?.length > 0 ? clients.map((client) => (
                 <div className="col-12 col-md-6 col-lg-4 mb-4" key={client.id}>
                 <div className="card border-0 shadow h-100">
                     <div className="card-body">
@@ -145,7 +145,9 @@ const ClientsList = ({}) => {
                     </div>
                 </div>
                 </div>
-            ))}
+            )) : (
+                <p>Zatím žádný</p>
+            )}
             </div>
 
             {/*

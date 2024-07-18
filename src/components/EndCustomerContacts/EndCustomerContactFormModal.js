@@ -1,17 +1,8 @@
 import React from "react";
-import Modal from 'react-modal';
 import EndCustomerContactForm from "./EndCustomerContactForm";
+import Modal from "../Modal/Modal";
 
-Modal.setAppElement("#root");
-
-const EndCustomerContactFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callback, id, endCustomerId }) => {
-    function handleSave(task) {
-        setIsOpen(false);
-
-        if (callback) {
-            callback(task);
-        }
-    }
+const EndCustomerContactFormModal = ({ onRequestClose, onAfterOpen, isOpen, callback, id, endCustomerId }) => {
 
     return (
         <>
@@ -19,22 +10,9 @@ const EndCustomerContactFormModal = ({ onRequestClose, onAfterOpen, isOpen, setI
                 isOpen={isOpen}
                 onAfterOpen={onAfterOpen}
                 onRequestClose={onRequestClose}
-                contentLabel="Example Modal"
-                className="modalccc  modal-xl"
-                overlayClassName="modal-dialogccc"
+                title={id ? ("Koncový zákazník - kontakt #{id} #"+id):"Nový koncový zákazník - kontakt"}
             >
-                <div className="modal-content">
-                    <div className="modal-body p-0">
-                        <div className="card p-3 p-lg-4 d-block">
-                            <button onClick={onRequestClose} type="button" className="btn-close float-end"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            <h2>Koncový zákazník - kontakt #{id}</h2>
-
-                            <EndCustomerContactForm endCustomerId={endCustomerId} handleSave={handleSave} id={id}/>
-                        </div>
-                    </div>
-                </div>
+                <EndCustomerContactForm endCustomerId={endCustomerId} handleSave={callback} id={id}/>
             </Modal>
         </>
     );

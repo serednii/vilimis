@@ -23,6 +23,7 @@ const TasksWeekKanban = ({}) => {
     const [refresh, setRefresh] = useState(0);
     const [projects, setProjects] = useState([]);
     const [endCustomers, setEndCustomers] = useState([]);
+    const [tasksLoading, setTasksLoading] = useState(false);
 
     const defaultSettingsLocal = localStorage.getItem("tasks_week_kanban_settings");
     const defaultSettings = defaultSettingsLocal ? JSON.parse(defaultSettingsLocal) : {
@@ -65,6 +66,7 @@ const TasksWeekKanban = ({}) => {
     useEffect(() => {
         if (!reload) return;
 
+        setTasksLoading(true);
 
         let url = "/task/list?order=planned_priority";
         if (!settings.showArchived) {
@@ -111,6 +113,7 @@ const TasksWeekKanban = ({}) => {
             setEndCustomers(endCustomers);
         });
 
+        setTasksLoading(false);
         setReload(false);
     }, [reload]);
 
@@ -184,11 +187,9 @@ const TasksWeekKanban = ({}) => {
 
     };
 
-    if (!tasks || tasks.length === 0) {
-        return ("...");
+    if (tasksLoading) {
+        return ("Načítání...");
     }
-
-    let tmpDate = monday;
 
     return (
         <>

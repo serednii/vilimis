@@ -2,23 +2,26 @@ import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import Select from "react-select";
 import {CONFIG} from "../../config";
-import EndCustomerContactForm from "./EndCustomerContactForm";
-import Modal from 'react-modal';
-
-Modal.setAppElement("#root");
+import EndCustomerContactFormModal from "./EndCustomerContactFormModal";
 
 const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustomerId}) => {
     const {API} = useRootContext()
     const [endCustomerContacts, setEndCustomerContacts] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedIds, setSelectedIds] = useState(selected);
     const [option, setOption] = useState([]);
+    const [reload, setReload] = useState(0);
+
+    useEffect(()=>{
+        setSelectedIds(structuredClone(selected));
+    }, [selected])
 
     useEffect(() => {
         loadEndCustomerContacts((options)=>{
-            if (selected && Array.isArray(selected)) {
+            if (selectedIds && Array.isArray(selectedIds)) {
                 let selectedValues = [];
                 let selectedValuesIds = [];
-                selected.forEach(selectedSingle=>{
+                selectedIds.forEach(selectedSingle=>{
                     let selectedValue = options.filter(endCustomerContactValue => endCustomerContactValue.value == selectedSingle);
                     if (selectedValue && selectedValue[0]) {
                         selectedValues.push(selectedValue[0]);
@@ -32,8 +35,8 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustome
                 if (onChange) {
                     onChange(selectedValuesIds);
                 }
-            } else if (selected) {
-                let selectedValue = options.filter(endCustomerContactValue => endCustomerContactValue.value == selected);
+            } else if (selectedIds) {
+                let selectedValue = options.filter(endCustomerContactValue => endCustomerContactValue.value == selectedIds);
                 if (selectedValue) {
                     setSelectedOption(selectedValue[0])
                     if (onChange) {
@@ -42,7 +45,7 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustome
                 }
             }
         });
-    }, [selected, endCustomerId]);
+    }, [endCustomerId, selectedIds, reload]);
 
     function loadEndCustomerContacts(onLoad) {
         let url = "/endCustomerContact/list";
@@ -59,7 +62,7 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustome
                     let endCustomerContactValue = {
                         value: parseInt(endCustomerContact.id),
                         label: endCustomerContact.name + " " + endCustomerContact.surname + (endCustomerContact.position ? " ("+endCustomerContact.position+")" : ""),
-                        logo: endCustomerContact.logo ? CONFIG.uploadDir + endCustomerContact.logo : ""
+                        logo: endCustomerContact.photo ? CONFIG.uploadDir + endCustomerContact.photo : ""
                     };
                     options.push(endCustomerContactValue);
                 });
@@ -76,7 +79,14 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustome
     function onNewEndCustomerContact(endCustomerContact){
         setIsOpen(false);
 
-        loadEndCustomerContacts();
+        selectedIds.push(endCustomerContact.id);
+        setSelectedIds(selectedIds);
+
+        if (onChange) {
+            onChange(selectedIds);
+        }
+
+        setReload((prev) => prev + 1);
     }
 
 
@@ -84,20 +94,21 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustome
         alignItems: 'center',
         display: 'flex',
 
-        ':before': {
+        ':before': logo ? {
             background: logo ? "url('" + logo + "') no-repeat center center / contain" : "transparent",
             borderRadius: 3,
             content: '" "',
             display: 'block',
             marginRight: 8,
             height: 20,
-            width: 40,
-        },
+            width: 20,
+        } : {},
     });
 
     const colourStyles = {
         input: (styles) => ({...styles, ...dot()}),
         singleValue: (styles, {data}) => ({...styles, ...dot(data.logo)}),
+        multiValue: (styles, {data}) => ({...styles, ...dot(data.logo)}),
         option: (styles, {data}) => ({...styles, ...dot(data.logo)}),
     }
 
@@ -109,6 +120,7 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustome
                 values.push(v.value);
             });
             setSelectedOption(value);
+            setSelectedIds(values);
             if (onChange) {
                 onChange(values);
             }
@@ -116,6 +128,8 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustome
         }
 
         setSelectedOption(value);
+        setSelectedIds(value.value);
+
         if (onChange) {
             onChange(value.value);
         }
@@ -155,27 +169,15 @@ const EndCustomerContactsSelectList = ({onChange, selected, multiple, endCustome
                 </div>
             </div>
 
-
-            <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                contentLabel="Example Modal"
-                className="modalccc"
-                overlayClassName="modal-dialogccc"
-            >
-                <div className="modal-content">
-                    <div className="modal-body p-0">
-                        <div className="card p-3 p-lg-4">
-                            <button onClick={closeModal} type="button" className="btn-close ms-auto" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            <h2>Nový koncový zákazník</h2>
-
-                            <EndCustomerContactForm endCustomerId={endCustomerId} handleSave={onNewEndCustomerContact}/>
-                        </div>
-                        </div>
-                    </div>
-            </Modal>
+            {modalIsOpen && (
+                <EndCustomerContactFormModal
+                    isOpen={modalIsOpen}
+                    onAfterOpen={afterOpenModal}
+                    onRequestClose={closeModal}
+                    callback={onNewEndCustomerContact}
+                    endCustomerId={endCustomerId}
+                />
+            )}
         </>
     );
 };

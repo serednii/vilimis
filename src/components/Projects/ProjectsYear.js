@@ -112,6 +112,7 @@ const ProjectsYear = ({}) => {
             </div>
 
 
+            {projects?.length > 0 ? (
             <div className="table-responsive">
                 <table className="position-relative table table-centered  mb-0 rounded table-bordered">
                     <thead>
@@ -195,52 +196,59 @@ const ProjectsYear = ({}) => {
                     </tbody>
                 </table>
             </div>
+            ) : (
+                <p>Zatím žádný projekt</p>
+            )}
 
-            <h2 className="h5 mt-4 mb-4">Nenaplánované projekty:</h2>
+            {projectsNonPlanned?.length > 0 && (
+                <>
+                    <h2 className="h5 mt-4 mb-4">Nenaplánované projekty:</h2>
 
-            {projectsNonPlanned?.map(project=>(
+                    {projectsNonPlanned?.map(project=>(
                         <>
-                                    <div className="card shadow timetrack-table__item mb-3"
-                                         onClick={() => {
-                                             setModalProjectId(project.id);
-                                             setIsOpen(true)
-                                         }}
-                                    >
-                                        <div className="timetrack-table__item__content  overflow-auto">
-                                            <div className="d-flex align-content-center align-items-center" style={{
-                                                position: "sticky",
-                                                left: 0,
-                                                minWidth: "100%"
-                                            }}>
+                            <div className="card shadow timetrack-table__item mb-3"
+                                 onClick={() => {
+                                     setModalProjectId(project.id);
+                                     setIsOpen(true)
+                                 }}
+                            >
+                                <div className="timetrack-table__item__content  overflow-auto">
+                                    <div className="d-flex align-content-center align-items-center" style={{
+                                        position: "sticky",
+                                        left: 0,
+                                        minWidth: "100%"
+                                    }}>
 
-                                                <div className="pe-3">
-                                                    {isImg = false}
-                                                    <React.Fragment>
+                                        <div className="pe-3">
+                                            {isImg = false}
+                                            <React.Fragment>
 
-                                                        {"endCustomerId" in project && project.endCustomerId && endCustomers.filter(endCustomer => endCustomer.id === project.endCustomerId).map((endCustomer, endCustomer_index) => (
-                                                            endCustomer.logo && (
-                                                                <React.Fragment key={endCustomer_index}>
-                                                                    <img
-                                                                        src={CONFIG.uploadDir + endCustomer.logo} height={42}/>
-                                                                    {isImg = true}
-                                                                </React.Fragment>
-                                                            )
-                                                        ))}
-                                                        {!isImg && "clientId" in project && project.clientId && clients.filter(client => client.id === project.clientId).map((client, client_index) => (
-                                                            <React.Fragment key={client_index}>
-                                                                <img
-                                                                    src={CONFIG.uploadDir + client.logo} height={42}/>
-                                                            </React.Fragment>
-                                                        ))}
-                                                    </React.Fragment></div>
-                                                <div>
-                                                    {project.name}
-                                                </div>
-                                            </div>
+                                                {"endCustomerId" in project && project.endCustomerId && endCustomers.filter(endCustomer => endCustomer.id === project.endCustomerId).map((endCustomer, endCustomer_index) => (
+                                                    endCustomer.logo && (
+                                                        <React.Fragment key={endCustomer_index}>
+                                                            <img
+                                                                src={CONFIG.uploadDir + endCustomer.logo} height={42}/>
+                                                            {isImg = true}
+                                                        </React.Fragment>
+                                                    )
+                                                ))}
+                                                {!isImg && "clientId" in project && project.clientId && clients.filter(client => client.id === project.clientId).map((client, client_index) => (
+                                                    <React.Fragment key={client_index}>
+                                                        <img
+                                                            src={CONFIG.uploadDir + client.logo} height={42}/>
+                                                    </React.Fragment>
+                                                ))}
+                                            </React.Fragment></div>
+                                        <div>
+                                            {project.name}
                                         </div>
                                     </div>
-                            </>
-                            ))}
+                                </div>
+                            </div>
+                        </>
+                    ))}
+                </>
+            )}
 
                 {modalIsOpen && (
                     <ProjectFormModal

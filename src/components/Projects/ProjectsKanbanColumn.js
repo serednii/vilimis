@@ -27,7 +27,7 @@ import ProjectsKanbanItemBlank from "./ProjectsKanbanItemBlank";
                             onUpdate={() => setReload(true)}/>
                     ))}
 
-                    {!projects || projects.length == 0 && (
+                    {(!projects || projects.length == 0) && (
                         <ProjectsKanbanItemBlank moveCard={moveCard} id="0" index="-1"
                                                  projectStatusId={projectStatus.id}/>
                     )}

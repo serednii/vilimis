@@ -18,7 +18,7 @@ class APIService {
         }
 
         this.loaderDispatch({action: LOADER_ACTIONS.SHOW});
-        const response = await fetch(CONFIG.api + url, {
+        const response = await fetch(process.env.REACT_APP_API_URL + url, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -68,7 +68,7 @@ class APIService {
         }
 
         this.loaderDispatch({action: LOADER_ACTIONS.SHOW});
-        const response = await fetch(CONFIG.api + url, {
+        const response = await fetch(process.env.REACT_APP_API_URL + url, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
@@ -95,7 +95,7 @@ class APIService {
     async postData(url = '', formData, callback, silence) {
         this.loaderDispatch({action: LOADER_ACTIONS.SHOW});
         // Default options are marked with *
-        const response = await fetch(CONFIG.api + url, {
+        const response = await fetch(process.env.REACT_APP_API_URL + url, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached

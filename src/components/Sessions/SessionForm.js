@@ -107,9 +107,6 @@ const SessionForm = ({id, handleSave, projectId, clientId}) => {
             if (sessionEndCustomerContacts && sessionEndCustomerContacts.length > 0) {
                 sessionEndCustomerContacts.forEach(sessionEndCustomerContact => {
                     if (!(end_customer_contact_ids.includes(parseInt(sessionEndCustomerContact)))) {
-                        let formDataEcc = new FormData;
-                        formDataEcc.append("session_id", data.session.id);
-                        formDataEcc.append("end_customer_contact", sessionEndCustomerContact);
                         API.getData("/sessionEndCustomerContact/deleteByFilter?filter[session_id]=" + data.session.id + "&filter[end_customer_contact_id]="  + sessionEndCustomerContact, null, true);
                     }
                 })
@@ -119,7 +116,7 @@ const SessionForm = ({id, handleSave, projectId, clientId}) => {
                 client_contact_ids.forEach((client_contact_id, index)=>{
                     client_contact_id = parseInt(client_contact_id);
                     client_contact_ids[index] = client_contact_id;
-                    if (!(sessionClientContacts.includes(parseInt(client_contact_id)))) {
+                    if (!(sessionClientContacts.includes(client_contact_id))) {
                         let formDataEcc = new FormData;
                         formDataEcc.append("session_id", data.session.id);
                         formDataEcc.append("client_contact_id", client_contact_id);
@@ -131,9 +128,6 @@ const SessionForm = ({id, handleSave, projectId, clientId}) => {
             if (sessionClientContacts && sessionClientContacts.length > 0) {
                 sessionClientContacts.forEach(sessionClientContact => {
                     if (!(client_contact_ids.includes(parseInt(sessionClientContact)))) {
-                        let formDataEcc = new FormData;
-                        formDataEcc.append("session_id", data.session.id);
-                        formDataEcc.append("client_contact", sessionClientContact);
                         API.getData("/sessionClientContact/deleteByFilter?filter[session_id]=" + data.session.id + "&filter[client_contact_id]="  + sessionClientContact, null, true);
                     }
                 })

@@ -21,6 +21,7 @@ const TasksKanban = ({ }) => {
     const [refresh, setRefresh] = useState(0);
     const [projects, setProjects] = useState([]);
     const [endCustomers, setEndCustomers] = useState([]);
+    const [tasksLoading, setTasksLoading] = useState(false);
 
     const defaultSettingsLocal = localStorage.getItem("tasks_kanban_settings");
     const defaultSettings = defaultSettingsLocal ? JSON.parse(defaultSettingsLocal) : {
@@ -54,7 +55,9 @@ const TasksKanban = ({ }) => {
     useEffect(() => {
         if (!reload) return;
 
-        API.getData("/taskStatus/list?order=priority%20DESC", (taskStatuses) => {
+        setTasksLoading(true);
+
+        API.getData("/taskStatus/list?order=priority%20DESC&a", (taskStatuses) => {
             setTaskStatuses(taskStatuses);
 
             if (taskStatuses && taskStatuses.length > 0) {
@@ -95,6 +98,7 @@ const TasksKanban = ({ }) => {
             setEndCustomers(endCustomers);
         });
 
+        setTasksLoading(false);
         setReload(false);
     }, [reload]);
 
@@ -162,8 +166,8 @@ const TasksKanban = ({ }) => {
 
     };
 
-    if (!taskStatuses || taskStatuses.length === 0) {
-        return ("...");
+    if (tasksLoading) {
+        return ("Načítání...");
     }
 
     return (
@@ -197,22 +201,26 @@ const TasksKanban = ({ }) => {
                 </div>
             </div>
 
-            <DndProvider backend={HTML5Backend}>
-                <div className="container-fluid kanban-container py-4 px-0">
-                    <div className="row d-flex flex-nowrap">
-                        {taskStatuses.filter(taskStatus=>settings.showTaskStatuses?.includes(taskStatus.id)).map((taskStatus, taskStatus_index) => (
-                            <TasksKanbanColumn key={taskStatus.id}
-                                               setReload={setReload}
-                                               tasks={tasks[taskStatus.id]}
-                                               taskStatus={taskStatus}
-                                               clients={clients}
-                                               endCustomers={endCustomers}
-                                               projects={projects}
-                                               moveCard={moveCard}/>
-                        ))}
+            {console.log(settings.showTaskStatuses)}
+
+            {taskStatuses && taskStatuses?.length > 0 && (
+                <DndProvider backend={HTML5Backend}>
+                    <div className="container-fluid kanban-container py-4 px-0">
+                        <div className="row d-flex flex-nowrap">
+                            {taskStatuses?.filter(taskStatus=>(settings?.showTaskStatuses?.length>0 && settings?.showTaskStatuses?.includes(taskStatus.id))||settings?.showTaskStatuses?.length===0).map((taskStatus, taskStatus_index) => (
+                                <TasksKanbanColumn key={taskStatus.id}
+                                                   setReload={setReload}
+                                                   tasks={tasks[taskStatus.id]}
+                                                   taskStatus={taskStatus}
+                                                   clients={clients}
+                                                   endCustomers={endCustomers}
+                                                   projects={projects}
+                                                   moveCard={moveCard}/>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </DndProvider>
+                </DndProvider>
+            )}
 
             {modalIsOpen && (
                 <TaskFormModal

@@ -2,23 +2,26 @@ import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import Select from "react-select";
 import {CONFIG} from "../../config";
-import ClientContactForm from "./ClientContactForm";
-import Modal from 'react-modal';
-
-Modal.setAppElement("#root");
+import ClientContactFormModal from "./ClientContactFormModal";
 
 const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
     const {API} = useRootContext()
     const [clientContacts, setClientContacts] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedIds, setSelectedIds] = useState();
     const [option, setOption] = useState([]);
+    const [reload, setReload] = useState(0);
+
+    useEffect(()=>{
+        setSelectedIds(structuredClone(selected));
+    }, [selected])
 
     useEffect(() => {
         loadClientContacts((options)=>{
-            if (selected && Array.isArray(selected)) {
+            if (selectedIds && Array.isArray(selectedIds)) {
                 let selectedValues = [];
                 let selectedValuesIds = [];
-                selected.forEach(selectedSingle=>{
+                selectedIds.forEach(selectedSingle=>{
                     let selectedValue = options.filter(clientContactValue => clientContactValue.value == selectedSingle);
                     if (selectedValue && selectedValue[0]) {
                         selectedValues.push(selectedValue[0]);
@@ -32,8 +35,8 @@ const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
                 if (onChange) {
                     onChange(selectedValuesIds);
                 }
-            } else if (selected) {
-                let selectedValue = options.filter(clientContactValue => clientContactValue.value == selected);
+            } else if (selectedIds) {
+                let selectedValue = options.filter(clientContactValue => clientContactValue.value == selectedIds);
                 if (selectedValue) {
                     setSelectedOption(selectedValue[0])
                     if (onChange) {
@@ -42,7 +45,7 @@ const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
                 }
             }
         });
-    }, [selected, clientId]);
+    }, [selectedIds, clientId, reload]);
 
     function loadClientContacts(onLoad) {
         let url = "/clientContact/list";
@@ -58,8 +61,8 @@ const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
                 clientContacts.map(clientContact => {
                     let clientContactValue = {
                         value: parseInt(clientContact.id),
-                        label: clientContact.name,
-                        logo: clientContact.logo ? CONFIG.uploadDir + clientContact.logo : ""
+                        label: clientContact.name + " " + clientContact.surname + (clientContact.position ? " ("+clientContact.position+")" : ""),
+                        logo: clientContact.photo ? CONFIG.uploadDir + clientContact.photo : ""
                     };
                     options.push(clientContactValue);
                 });
@@ -76,7 +79,16 @@ const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
     function onNewClientContact(clientContact){
         setIsOpen(false);
 
-        loadClientContacts();
+        selectedIds.push(clientContact.id);
+        setSelectedIds(selectedIds);
+
+        if (onChange) {
+            onChange(selectedIds);
+        }
+
+        console.log(selectedIds)
+
+        setReload((prev) => prev + 1);
     }
 
 
@@ -84,20 +96,21 @@ const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
         alignItems: 'center',
         display: 'flex',
 
-        ':before': {
+        ':before': logo ? {
             background: logo ? "url('" + logo + "') no-repeat center center / contain" : "transparent",
             borderRadius: 3,
             content: '" "',
             display: 'block',
             marginRight: 8,
             height: 20,
-            width: 40,
-        },
+            width: 20,
+        }: {},
     });
 
     const colourStyles = {
         input: (styles) => ({...styles, ...dot()}),
         singleValue: (styles, {data}) => ({...styles, ...dot(data.logo)}),
+        multiValue: (styles, {data}) => ({...styles, ...dot(data.logo)}),
         option: (styles, {data}) => ({...styles, ...dot(data.logo)}),
     }
 
@@ -109,6 +122,7 @@ const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
                 values.push(v.value);
             });
             setSelectedOption(value);
+            setSelectedIds(values);
             if (onChange) {
                 onChange(values);
             }
@@ -116,6 +130,8 @@ const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
         }
 
         setSelectedOption(value);
+        setSelectedIds(value.value);
+
         if (onChange) {
             onChange(value.value);
         }
@@ -156,26 +172,15 @@ const ClientContactsSelectList = ({onChange, selected, multiple, clientId}) => {
             </div>
 
 
-            <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                contentLabel="Example Modal"
-                className="modalccc"
-                overlayClassName="modal-dialogccc"
-            >
-                <div className="modal-content">
-                    <div className="modal-body p-0">
-                        <div className="card p-3 p-lg-4">
-                            <button onClick={closeModal} type="button" className="btn-close ms-auto" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            <h2>Nový koncový zákazník</h2>
-
-                            <ClientContactForm clientId={clientId} handleSave={onNewClientContact}/>
-                        </div>
-                        </div>
-                    </div>
-            </Modal>
+            {modalIsOpen && (
+                <ClientContactFormModal
+                    isOpen={modalIsOpen}
+                    onAfterOpen={afterOpenModal}
+                    onRequestClose={closeModal}
+                    callback={onNewClientContact}
+                    clientId={clientId}
+                />
+            )}
         </>
     );
 };

@@ -5,10 +5,13 @@ import { NavLink } from "react-router-dom";
 const WebsList = ({ }) => {
     const { API } = useRootContext()
     const [webs, setWebs] = useState([]);
+    const [websLoading, setWebsLoading] = useState(false);
 
     useEffect(() => {
+        setWebsLoading(true);
         API.getData("/web/list", (webs) => {
             setWebs(webs);
+            setWebsLoading(false);
         });
     }, []);
 
@@ -18,6 +21,10 @@ const WebsList = ({ }) => {
                 setWebs(webs);
             });
         });
+    }
+
+    if (websLoading) {
+        return ("Načítání...");
     }
 
     return (
@@ -32,9 +39,10 @@ const WebsList = ({ }) => {
 
             <div className="card border-0 shadow mb-4">
                 <div className="card-body">
-                    <div className="table-responsive">
-                        <table className="table table-centered table-nowrap mb-0 rounded">
-                            <thead className="thead-light">
+                    {webs && webs.length > 0 ? (
+                        <div className="table-responsive">
+                            <table className="table table-centered table-nowrap mb-0 rounded">
+                                <thead className="thead-light">
                                 <tr>
                                     <th className="border-0 rounded-start">#</th>
                                     <th className="border-0">Název</th>
@@ -42,9 +50,9 @@ const WebsList = ({ }) => {
                                     <th className="border-0">Projekt</th>
                                     <th className="border-0 rounded-end">Akce</th>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {webs && webs.length && webs.map((web, web_key) => (
+                                </thead>
+                                <tbody>
+                                {webs.map((web, web_key) => (
                                     <tr key={web_key}>
                                         <td><NavLink to={"/webs/edit/" + web.id} className="text-primary fw-bold">{web.id}</NavLink></td>
                                         <td className="fw-bold ">
@@ -60,9 +68,12 @@ const WebsList = ({ }) => {
                                         </td>
                                     </tr>
                                 ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <p>Zatím žádný web</p>
+                    )}
                 </div>
             </div>
         </>

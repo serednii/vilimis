@@ -3,7 +3,8 @@ import { nameWeekDay, nameMonth } from "./czechDateLabels";
 //sbíráme za každý den všechny časové intervaly, kdy jsme pracovali
 export const groupByTimeOfDay = (workDataTime) => {
   const arrayDayOfTime = {};
-  workDataTime.forEach((el) => {
+
+  workDataTime?.length > 0 && workDataTime?.forEach((el) => {
     const deltaTime =
       new Date(el.datetimeStop.date) - new Date(el.datetimeStart.date);
     const date = el.datetimeStart.date.split(" ")[0];

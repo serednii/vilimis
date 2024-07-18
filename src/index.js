@@ -43,6 +43,7 @@ import Reports from "./pages/Reports";
 import Invoices from "./pages/Invoices";
 import Settings from "./pages/Settings";
 import TopUserInfo from "./components/_page/TopUserInfo";
+import Menu from "./components/_page/Menu";
 
 library.add(fas);
 
@@ -50,6 +51,7 @@ function Root() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [jwt, setJwt] = useState(null);
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [loaderState, loaderDispatch] = useReducer(loaderReducer, {show: 0});
     const [timetrackerState, timetrackerDispatch] = useReducer(timetrackerReducer, {start: null, taskId: null});
     const [openedMenuIndex, setOpenedMenuIndex] = useState(0);
@@ -106,6 +108,7 @@ function Root() {
 
 
     const reloadUser = () => {
+        setLoading(true);
         if (jwt) {
             const userId = JSON.parse(window.atob(jwt.split(".")[1].replace("-", "+").replace("_", "/"))).id;
 
@@ -117,13 +120,12 @@ function Root() {
                 return;
             }
         }
+        setLoading(false);
     };
 
     useEffect(() => {
-        setLoading(true);
         reloadUser();
 
-        setLoading(false);
         setUser(null);
     }, [jwt]);
 
@@ -189,6 +191,7 @@ function Root() {
                         </a>
                         <div className="d-flex align-items-center">
                             <button
+                                onClick={()=>setShowMobileMenu(prev=>!prev)}
                                 className="navbar-toggler d-lg-none collapsed"
                                 type="button"
                                 data-bs-toggle="collapse"
@@ -202,20 +205,22 @@ function Root() {
                         </div>
                     </nav>
 
-                    <nav id="sidebarMenu" className="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
+                    <nav id="sidebarMenu" className={"sidebar d-lg-block bg-gray-800 text-white collapse" + (showMobileMenu?" show":"")} data-simplebar>
                         <div className="sidebar-inner px-4 pt-3">
+
                             <div
                                 className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
                                 <div className="d-flex align-items-center">
                                     <div className="avatar-lg me-4">
-                                        <img src="/gephart/images/face.jpg"
-                                             className="card-img-top rounded-circle border-white"
-                                             alt="Gephart"/>
+                                        <img
+                                            src={user.avatar ? user.avatar : "http://www.gravatar.com/avatar/" + MD5(user.username) + "?s=64&d=mm"}
+                                            className="card-img-top rounded-circle border-white"
+                                            alt="Gephart"/>
                                     </div>
                                     <div className="d-block">
                                         <h2 className="h5 mb-3">{user.name} {user.surname}</h2>
-                                        <button  onClick={logout}
-                                           className="btn btn-secondary btn-sm d-inline-flex align-items-center">
+                                        <button onClick={logout}
+                                                className="btn btn-secondary btn-sm d-inline-flex align-items-center">
                                             <svg className="icon icon-xxs me-1" fill="none" stroke="currentColor"
                                                  viewBox="0 0 24 24"
                                                  xmlns="http://www.w3.org/2000/svg">
@@ -225,198 +230,24 @@ function Root() {
                                             Odhlásit
                                         </button>
                                     </div>
-                                </div>
-                                <div className="collapse-close d-md-none">
-                                    <a href="#sidebarMenu" data-bs-toggle="collapse"
-                                       data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="true"
-                                       aria-label="Toggle navigation">
-                                        <svg className="icon icon-xs" fill="currentColor" viewBox="0 0 20 20"
-                                             xmlns="http://www.w3.org/2000/svg">
-                                            <path fillRule="evenodd"
-                                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                  clipRule="evenodd"></path>
-                                        </svg>
-                                    </a>
+                                    <div className="collapse-close d-md-none">
+                                        <a href="#sidebarMenu" data-bs-toggle="collapse"
+                                           onClick={()=>setShowMobileMenu(prev=>!prev)}
+                                           data-bs-target="#sidebarMenu" aria-controls="sidebarMenu"
+                                           aria-expanded="true"
+                                           aria-label="Toggle navigation">
+                                            <svg className="icon icon-xs" fill="currentColor" viewBox="0 0 20 20"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path fillRule="evenodd"
+                                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                      clipRule="evenodd"></path>
+                                            </svg>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="gephart-menu-logo">
-                                <img src="/gephart/images/logo-white.svg" width="503" alt="VilémIS Logo"/>
-                            </div>
-                            <ul className="nav flex-column pt-3 pt-md-0">
-                                <li className="nav-item ">
-                                    <NavLink to="/" className="nav-link">
-                                <span className="sidebar-icon">
-                                    <Speedometer/>
-                                </span>
-                                        <span className="sidebar-text">Nástěnka</span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/time-tracks"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                         <Timer/>
-                                    </span>
-                                    <span className="sidebar-text">Časové záznamy</span>
-                                </span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/webs"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                        <Network/>
-                                    </span>
-                                    <span className="sidebar-text">Weby</span>
-                                </span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/tasks"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                         <CheckSquare/>
-                                    </span>
-                                    <span className="sidebar-text">Úkoly</span>
-                                </span>
-                                        <span className="link-arrow"><ArrowArcRight/></span>
-                                    </NavLink>
-                                    <div className="multi-level" role="list">
-                                        <ul className="flex-column nav">
-                                            <li className="nav-item">
 
-                                                <NavLink to="/tasks/list"
-                                                         className="nav-link d-flex justify-content-between">
-                                                    <span>
-                                                        <span className="sidebar-text">Dle stavu</span>
-                                                    </span>
-                                                </NavLink>
-                                                <NavLink to="/tasks/week"
-                                                         className="nav-link d-flex justify-content-between">
-                                                    <span>
-                                                        <span className="sidebar-text">Týdenní plán</span>
-                                                    </span>
-                                                </NavLink>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/projects" className="nav-link d-flex justify-content-between">
-                                        <span>
-                                            <span className="sidebar-icon">
-                                                 <FolderSimple/>
-                                            </span>
-                                            <span className="sidebar-text">Projekty</span>
-                                        </span>
-                                        <span className="link-arrow"><ArrowArcRight/></span>
-                                    </NavLink>
-                                    <div className="multi-level" role="list">
-                                        <ul className="flex-column nav">
-                                            <li className="nav-item">
-
-                                                <NavLink to="/projects/list"
-                                                         className="nav-link d-flex justify-content-between">
-                                                    <span>
-                                                        <span className="sidebar-text">Dle stavu</span>
-                                                    </span>
-                                                </NavLink>
-                                                <NavLink to="/projects/year"
-                                                         className="nav-link d-flex justify-content-between">
-                                                    <span>
-                                                        <span className="sidebar-text">Roční plán</span>
-                                                    </span>
-                                                </NavLink>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/end-customers"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                        <UserCircle/>
-                                    </span>
-                                    <span className="sidebar-text">Koncoví zákazníci</span>
-                                </span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/clients"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                        <Users/>
-                                    </span>
-                                    <span className="sidebar-text">Klienti</span>
-                                </span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/invoices"
-                                             className="nav-link d-flex justify-content-between">
-                                        <span>
-                                            <span className="sidebar-icon">
-                                                <Invoice/>
-                                            </span>
-                                            <span className="sidebar-text">Faktury</span>
-                                        </span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item">
-                                    <NavLink to="/reports"
-                                             className="nav-link d-flex justify-content-between">
-                                        <span>
-                                            <span className="sidebar-icon">
-                                                <Table/>
-                                            </span>
-                                            <span className="sidebar-text">Reporty</span>
-                                        </span>
-                                    </NavLink>
-                                </li>
-
-
-                                <li role="separator" className="dropdown-divider mt-4 mb-3 border-gray-700"></li>
-
-
-                                <li className="nav-item ">
-                                    <NavLink to="/workflow"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                        <TreeStructure/>
-                                    </span>
-                                    <span className="sidebar-text">Workflow</span>
-                                </span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item ">
-                                    <NavLink to="/entity"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                        <SquaresFour/>
-                                    </span>
-                                    <span className="sidebar-text">Entity</span>
-                                </span>
-                                    </NavLink>
-                                </li>
-                                <li className="nav-item ">
-                                    <NavLink to="/settings"
-                                             className="nav-link d-flex justify-content-between">
-                                <span>
-                                    <span className="sidebar-icon">
-                                        <Gear/>
-                                    </span>
-                                    <span className="sidebar-text">Nastavení</span>
-                                </span>
-                                    </NavLink>
-                                </li>
-                            </ul>
+                            <Menu/>
                         </div>
                     </nav>
 
@@ -426,6 +257,7 @@ function Root() {
                             <div className="container-fluid px-0">
                                 <div className="d-flex justify-content-between align-items-center w-100"
                                      id="navbarSupportedContent">
+                                    {/*
                                     <div className="d-flex align-items-center">
                                         <form className="navbar-search form-inline" id="navbar-search-main">
                                             <div className="input-group input-group-merge search-bar">
@@ -438,6 +270,7 @@ function Root() {
                                             </div>
                                         </form>
                                     </div>
+                                    */}
                                     <div className="flex-fill"></div>
 
                                     <TimeTracker/>

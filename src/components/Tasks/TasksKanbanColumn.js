@@ -28,7 +28,7 @@ import TasksKanbanItemBlank from "./TasksKanbanItemBlank";
                             onUpdate={() => setReload(true)}/>
                     ))}
 
-                    {!tasks || tasks.length == 0 && (
+                    {(!tasks || tasks.length == 0) && (
                         <TasksKanbanItemBlank moveCard={moveCard} id="0" index="-1" taskStatusId={taskStatus.id}/>
                     )}
 

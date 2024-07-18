@@ -1,11 +1,8 @@
 import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
-import Select, {StylesConfig} from "react-select";
+import Select from "react-select";
 import {CONFIG} from "../../config";
-import ClientForm from "./ClientForm";
-import Modal from 'react-modal';
-
-Modal.setAppElement("#root");
+import ClientFormModal from "./ClientFormModal";
 
 const ClientsSelectList = ({onChange, selected}) => {
     const {API} = useRootContext()
@@ -129,26 +126,14 @@ const ClientsSelectList = ({onChange, selected}) => {
             </div>
 
 
-            <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                contentLabel="Example Modal"
-                className="modalccc"
-                overlayClassName="modal-dialogccc"
-            >
-                <div className="modal-content">
-                    <div className="modal-body p-0">
-                        <div className="card p-3 p-lg-4">
-                            <button onClick={closeModal} type="button" className="btn-close ms-auto" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            <h2>Nový klient</h2>
-
-                            <ClientForm handleSave={onNewClient}/>
-                        </div>
-                        </div>
-                    </div>
-            </Modal>
+            {modalIsOpen && (
+                <ClientFormModal
+                    isOpen={modalIsOpen}
+                    onAfterOpen={afterOpenModal}
+                    onRequestClose={closeModal}
+                    callback={onNewClient}
+                    />
+            )}
         </>
     );
 };

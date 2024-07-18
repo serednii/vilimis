@@ -4,7 +4,7 @@ namespace API\Entity;
 
 
 /**
- * @ORM\Table taskStatus
+ * @ORM\Table taskstatus
  * @Serializable
  */
 class TaskStatus

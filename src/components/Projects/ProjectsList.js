@@ -59,8 +59,7 @@ const ProjectsList = ({ }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {projects &&
-                                    projects.length &&
+                                {projects?.length > 0 &&
                                     projects.map((project, project_key) => (
                                         <tr key={project_key}>
                                             <td>

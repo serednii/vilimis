@@ -46,13 +46,15 @@ const TimeTrackerChart = () => {
 
   useEffect(() => {
     API.getData("/taskTimetrack/list?order=datetime_start", (taskTimetracks) => {
-      const newFormatData = getNewFormatData(taskTimetracks);
+      const newFormatData = getNewFormatData(taskTimetracks.data);
       //const newFormatData = getNewFormatData(workDataTime);
-      const [lastYear] = newFormatData.objYearAndMonth.allYear.slice(-1);
-      const [lastMonth] = newFormatData.objYearAndMonth[lastYear].slice(-1);
-      setSelectYear(lastYear);
-      setSelectedMonth(lastMonth);
-      setNewFormatData(newFormatData);
+      if (newFormatData?.length >0) {
+        const [lastYear] = newFormatData.objYearAndMonth.allYear.slice(-1);
+        const [lastMonth] = newFormatData.objYearAndMonth[lastYear].slice(-1);
+        setSelectYear(lastYear);
+        setSelectedMonth(lastMonth);
+        setNewFormatData(newFormatData);
+      }
     });
   }, []);
 

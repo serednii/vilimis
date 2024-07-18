@@ -63,7 +63,7 @@ const EndCustomersList = ({}) => {
                     Nový klient
                 </button>
             </div>
-            {endCustomers && endCustomers.length && endCustomers.map((endCustomer) => (
+            {endCustomers?.length > 0 ? endCustomers.map((endCustomer) => (
                 <div className="card border-0 shadow mb-4" key={endCustomer.id}>
                     <div className="card-body">
                         <div className="float-end text-end">
@@ -144,7 +144,9 @@ const EndCustomersList = ({}) => {
                         </div>
                     </div>
                 </div>
-            ))}
+            )) : (
+                <p>Zatím žádný</p>
+            )}
 
             {/*
             <div className="card border-0 shadow mb-4">

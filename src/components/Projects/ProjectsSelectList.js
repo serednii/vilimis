@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
-import Select, {StylesConfig} from "react-select";
+import Select from "react-select";
 import {CONFIG} from "../../config";
-import ProjectForm from "./ProjectForm";
-import Modal from 'react-modal';
+import ProjectFormModal from "./ProjectFormModal";
 
-Modal.setAppElement("#root");
 
 const ProjectsSelectList = ({onChange, selected}) => {
     const {API} = useRootContext()
@@ -29,11 +27,11 @@ const ProjectsSelectList = ({onChange, selected}) => {
 
     function loadProjects(onLoad) {
         API.getData("/project/list", (projects) => {
-            setProjects(projects);
+            setProjects(projects.data);
 
-            if (projects && projects.length > 0) {
+            if (projects.data && projects.data.length > 0) {
                 const options = [];
-                projects.map(project => {
+                projects.data.map(project => {
                     let projectValue = {
                         value: project.id,
                         label: project.name,
@@ -41,7 +39,7 @@ const ProjectsSelectList = ({onChange, selected}) => {
                     };
                     options.push(projectValue);
                 });
-                console.log(options)
+
                 setOption(options);
 
                 if (onLoad) {
@@ -132,26 +130,17 @@ const ProjectsSelectList = ({onChange, selected}) => {
             </div>
 
 
-            <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                contentLabel="Example Modal"
-                className="modalccc"
-                overlayClassName="modal-dialogccc"
-            >
-                <div className="modal-content">
-                    <div className="modal-body p-0">
-                        <div className="card p-3 p-lg-4">
-                            <button onClick={closeModal} type="button" className="btn-close ms-auto" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            <h2>Nový projekt</h2>
-
-                            <ProjectForm handleSave={onNewProject}/>
-                        </div>
-                        </div>
-                    </div>
-            </Modal>
+            {
+                modalIsOpen && (
+                    <ProjectFormModal
+                        isOpen={modalIsOpen}
+                        onAfterOpen={afterOpenModal}
+                        onRequestClose={closeModal}
+                        setIsOpen={setIsOpen}
+                        callback={onNewProject}
+                    />
+                )
+            }
         </>
     );
 };
