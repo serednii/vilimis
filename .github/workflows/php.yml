@@ -32,7 +32,7 @@ jobs:
     - name: Create database
       run: |
         echo "CREATE DATABASE vilemis;" | mysql -h 127.0.0.1 -P 4444 -u root -plocalhost
-        cd /api/v1/
+        cd api/v1/
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
