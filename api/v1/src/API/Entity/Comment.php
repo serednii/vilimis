@@ -2,6 +2,7 @@
 
 namespace API\Entity;
 
+
 /**
  * @ORM\Table comment
  * @Serializable
@@ -19,7 +20,7 @@ class Comment
     /**
      * @var string
      *
-     * @ORM\Type TEXT
+     * @ORM\Type LONGTEXT
      * @ORM\Column description
      */
     private $description = "";

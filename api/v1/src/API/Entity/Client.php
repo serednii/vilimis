@@ -28,7 +28,7 @@ class Client
     /**
      * @var string
      *
-     * @ORM\Type TEXT
+     * @ORM\Type LONGTEXT
      * @ORM\Column address
      */
     private $address = "";

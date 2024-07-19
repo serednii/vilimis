@@ -8,6 +8,8 @@ use API\Repository\SessionTypeRepository;
 use API\Repository\ClientRepository;
 use API\Repository\EndCustomerRepository;
 use API\Repository\ProjectRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -17,9 +19,17 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /session
+ * @Security ROLE_USER
  */
 class SessionController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var SessionRepository
      */
@@ -35,15 +45,18 @@ class SessionController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         SessionRepository $session_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->session_repository = $session_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -127,6 +140,8 @@ class SessionController extends AbstractApiController
 
             EntityManager::save($session);
 
+            $session = $this->triggerSave($session);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "session" => $session,
@@ -160,6 +175,31 @@ class SessionController extends AbstractApiController
         ]));
     }
 
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "session_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $sessions = $this->session_repository->findBy($filter);
+
+        if (is_array($sessions) && count($sessions) > 0) {
+            foreach ($sessions as $session) {
+                EntityManager::remove($session);
+            }
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
     private function mapEntityFromArray(Session $session, array $data, array $files) {
         $session->setName($data["name"]);
         $session->setDatetimeOfSession(!empty($data["datetime_of_session"]) ? new \DateTime($data["datetime_of_session"]) : null);
@@ -170,4 +210,17 @@ class SessionController extends AbstractApiController
         $session->setProjectId(!empty($data["project_id"]) ? (int) $data["project_id"] : null);
     }
 
+
+    private function triggerSave(Session $session): Session
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "session" => $session
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("session");
+    }
 }

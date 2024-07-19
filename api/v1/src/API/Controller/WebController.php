@@ -17,6 +17,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /web
+ * @Security ROLE_USER
  */
 class WebController extends AbstractApiController
 {

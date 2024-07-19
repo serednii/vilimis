@@ -16,6 +16,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /endCustomerContact
+ * @Security ROLE_USER
  */
 class EndCustomerContactController extends AbstractApiController
 {

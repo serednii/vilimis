@@ -9,6 +9,8 @@ use API\Repository\SessionTypeRepository;
 use API\Repository\ClientRepository;
 use API\Repository\EndCustomerRepository;
 use API\Repository\ProjectRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -20,6 +22,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class SessionController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var SessionRepository
      */
@@ -51,6 +60,7 @@ class SessionController
         ClientRepository $client_id_repository,
         EndCustomerRepository $end_customer_id_repository,
         ProjectRepository $project_id_repository,
+        EventManager $eventManager,
         SessionRepository $session_repository
     )
     {
@@ -58,6 +68,7 @@ class SessionController
         $this->client_id_repository = $client_id_repository;
         $this->end_customer_id_repository = $end_customer_id_repository;
         $this->project_id_repository = $project_id_repository;
+        $this->eventManager = $eventManager;
         $this->session_repository = $session_repository;
     }
 
@@ -114,6 +125,7 @@ class SessionController
             $this->mapEntityFromArray($session, $postData, $filesData);
 
             EntityManager::save($session);
+            $session = $this->triggerSave($session);
 
             Router::redirectTo("admin_session_edit", ["id"=>$session->getId()]);
         }
@@ -157,4 +169,17 @@ class SessionController
         $session->setProjectId(!empty($data["project_id"]) ? (int) $data["project_id"] : null);
     }
 
+
+    private function triggerSave(Session $session): Session
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "session" => $session
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("session");
+    }
 }

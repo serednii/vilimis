@@ -15,6 +15,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /setting
+ * @Security ROLE_USER
  */
 class SettingController extends AbstractApiController
 {

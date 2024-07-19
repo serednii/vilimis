@@ -17,6 +17,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /task
+ * @Security ROLE_USER
  */
 class TaskController extends AbstractApiController
 {

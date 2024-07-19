@@ -16,6 +16,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /invoiceItem
+ * @Security ROLE_USER
  */
 class InvoiceItemController extends AbstractApiController
 {

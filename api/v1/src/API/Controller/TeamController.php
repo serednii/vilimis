@@ -5,6 +5,8 @@ namespace API\Controller;
 use API\Entity\Team;
 use API\Repository\TeamRepository;
 use API\Repository\UserRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -14,9 +16,17 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /team
+ * @Security ROLE_USER
  */
 class TeamController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var TeamRepository
      */
@@ -32,15 +42,18 @@ class TeamController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         TeamRepository $team_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->team_repository = $team_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -124,6 +137,8 @@ class TeamController extends AbstractApiController
 
             EntityManager::save($team);
 
+            $team = $this->triggerSave($team);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "team" => $team,
@@ -191,4 +206,17 @@ class TeamController extends AbstractApiController
         $team->setManagerUserId(!empty($data["manager_user_id"]) ? (int) $data["manager_user_id"] : null);
     }
 
+
+    private function triggerSave(Team $team): Team
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "team" => $team
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("team");
+    }
 }

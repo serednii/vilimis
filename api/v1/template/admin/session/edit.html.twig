@@ -7,15 +7,18 @@
     <form action="{{ _router.generateUrl("admin_session_edit", {"id":session.id}) }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="form_edit_name">Název</label>
-                <input value="{{ session.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+                <input value="{{ session.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_datetime_of_session">Čas</label>
-                <input value="{{ session.DatetimeOfSession.format("Y-m-d H:i") }}" type="datetime-local" name="datetime_of_session" class="form-control" id="form_edit_datetime_of_session">
+                <input value="{{ session.DatetimeOfSession.format("Y-m-d H:i") }}" type="datetime-local" name="datetime_of_session" class="form-control" id="form_edit_datetime_of_session"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_description">Přepis</label>
-                <textarea class="form-control js-wysiwyg" name="description" rows="10" id="form_edit_description">{{ session.Description }}</textarea>
+                <textarea class="form-control js-wysiwyg" name="description" rows="10" id="form_edit_description"
+                >{{ session.Description }}</textarea>
             </div>
             <div class="form-group">
                 <label for="form_edit_session_type_id">Typ setkání</label>

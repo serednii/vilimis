@@ -5,6 +5,8 @@ namespace Admin\Controller;
 use Admin\Facade\AdminResponse;
 use API\Entity\Attachment;
 use API\Repository\AttachmentRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -16,6 +18,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class AttachmentController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var AttachmentRepository
      */
@@ -23,9 +32,11 @@ class AttachmentController
 
 
     public function __construct(
+        EventManager $eventManager,
         AttachmentRepository $attachment_repository
     )
     {
+        $this->eventManager = $eventManager;
         $this->attachment_repository = $attachment_repository;
     }
 
@@ -74,6 +85,7 @@ class AttachmentController
             $this->mapEntityFromArray($attachment, $postData, $filesData);
 
             EntityManager::save($attachment);
+            $attachment = $this->triggerSave($attachment);
 
             Router::redirectTo("admin_attachment_edit", ["id"=>$attachment->getId()]);
         }
@@ -139,4 +151,17 @@ class AttachmentController
         return "";
     }
 
+
+    private function triggerSave(Attachment $attachment): Attachment
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "attachment" => $attachment
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("attachment");
+    }
 }

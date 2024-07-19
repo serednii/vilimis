@@ -5,6 +5,8 @@ namespace Admin\Controller;
 use Admin\Facade\AdminResponse;
 use API\Entity\SessionType;
 use API\Repository\SessionTypeRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -16,6 +18,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class SessionTypeController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var SessionTypeRepository
      */
@@ -23,9 +32,11 @@ class SessionTypeController
 
 
     public function __construct(
+        EventManager $eventManager,
         SessionTypeRepository $sessionType_repository
     )
     {
+        $this->eventManager = $eventManager;
         $this->sessionType_repository = $sessionType_repository;
     }
 
@@ -74,6 +85,7 @@ class SessionTypeController
             $this->mapEntityFromArray($sessionType, $postData, $filesData);
 
             EntityManager::save($sessionType);
+            $sessionType = $this->triggerSave($sessionType);
 
             Router::redirectTo("admin_sessionType_edit", ["id"=>$sessionType->getId()]);
         }
@@ -138,4 +150,17 @@ class SessionTypeController
         return "";
     }
 
+
+    private function triggerSave(SessionType $sessionType): SessionType
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "sessionType" => $sessionType
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("sessionType");
+    }
 }

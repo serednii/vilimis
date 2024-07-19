@@ -4,6 +4,8 @@ namespace API\Controller;
 
 use API\Entity\Comment;
 use API\Repository\CommentRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -13,9 +15,17 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /comment
+ * @Security ROLE_USER
  */
 class CommentController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var CommentRepository
      */
@@ -31,15 +41,18 @@ class CommentController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         CommentRepository $comment_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->comment_repository = $comment_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -123,6 +136,8 @@ class CommentController extends AbstractApiController
 
             EntityManager::save($comment);
 
+            $comment = $this->triggerSave($comment);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "comment" => $comment,
@@ -156,6 +171,31 @@ class CommentController extends AbstractApiController
         ]));
     }
 
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "comment_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $comments = $this->comment_repository->findBy($filter);
+
+        if (is_array($comments) && count($comments) > 0) {
+            foreach ($comments as $comment) {
+                EntityManager::remove($comment);
+            }
+        }
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
     private function mapEntityFromArray(Comment $comment, array $data, array $files) {
         $comment->setDescription($data["description"]);
         $comment->setEntity($data["entity"]);
@@ -163,4 +203,17 @@ class CommentController extends AbstractApiController
         $comment->setCreated(!empty($data["created"]) ? new \DateTime($data["created"]) : null);
     }
 
+
+    private function triggerSave(Comment $comment): Comment
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "comment" => $comment
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("comment");
+    }
 }

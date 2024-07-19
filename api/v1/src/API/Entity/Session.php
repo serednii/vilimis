@@ -2,6 +2,7 @@
 
 namespace API\Entity;
 
+
 /**
  * @ORM\Table session
  * @Serializable
@@ -35,7 +36,7 @@ class Session
     /**
      * @var string
      *
-     * @ORM\Type TEXT
+     * @ORM\Type LONGTEXT
      * @ORM\Column description
      */
     private $description = "";

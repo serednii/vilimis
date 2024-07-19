@@ -2,6 +2,7 @@
 
 namespace API\Entity;
 
+
 /**
  * @ORM\Table team
  * @Serializable
@@ -43,7 +44,7 @@ class Team
     /**
      * @var string
      *
-     * @ORM\Type TEXT
+     * @ORM\Type LONGTEXT
      * @ORM\Column default_roles
      */
     private $default_roles = "";
@@ -51,7 +52,7 @@ class Team
     /**
      * @var string
      *
-     * @ORM\Type TEXT
+     * @ORM\Type LONGTEXT
      * @ORM\Column default_rights
      */
     private $default_rights = "";

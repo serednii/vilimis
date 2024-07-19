@@ -14,6 +14,7 @@
 .pnp.js
 /api/v1/vendor
 /api/v1/cache
+/api/v1/cache/web/upload/*
 
 # testing
 /coverage
@@ -24,6 +25,8 @@
 /package-lock.json
 /src/config.js
 /api/v1/config/orm.json
+!/api/v1/config/orm.json--default
+!/api/v1/config/orm.json--docker
 
 # misc
 .DS_Store

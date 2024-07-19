@@ -4,6 +4,8 @@ namespace API\Controller;
 
 use API\Entity\Client;
 use API\Repository\ClientRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -13,9 +15,17 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /client
+ * @Security ROLE_USER
  */
 class ClientController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ClientRepository
      */
@@ -35,12 +45,14 @@ class ClientController extends AbstractApiController
     public function __construct(
         ClientRepository $client_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->client_repository = $client_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -123,6 +135,8 @@ class ClientController extends AbstractApiController
             $this->mapEntityFromArray($client, $postData, $filesData);
 
             EntityManager::save($client);
+
+            $client = $this->triggerSave($client);
 
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
@@ -226,4 +240,17 @@ class ClientController extends AbstractApiController
         return "";
     }
 
+
+    private function triggerSave(Client $client): Client
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "client" => $client
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("client");
+    }
 }

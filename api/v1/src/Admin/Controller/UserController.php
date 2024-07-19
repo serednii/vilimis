@@ -6,6 +6,8 @@ use Admin\Facade\AdminResponse;
 use API\Entity\User;
 use API\Repository\UserRepository;
 use API\Repository\TeamRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -17,6 +19,13 @@ use Gephart\Security\Configuration\SecurityConfiguration;
  */
 class UserController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var UserRepository
      */
@@ -41,12 +50,14 @@ class UserController
         TeamRepository $team_id_repository,
         UserRepository $parent_user_id_repository,
         SecurityConfiguration $security_configuration,
+        EventManager $eventManager,
         UserRepository $user_repository
     )
     {
         $this->team_id_repository = $team_id_repository;
         $this->parent_user_id_repository = $parent_user_id_repository;
         $this->security_configuration = $security_configuration;
+        $this->eventManager = $eventManager;
         $this->user_repository = $user_repository;
     }
 
@@ -99,6 +110,7 @@ class UserController
             $this->mapEntityFromArray($user, $postData, $filesData);
 
             EntityManager::save($user);
+            $user = $this->triggerSave($user);
 
             Router::redirectTo("admin_user_edit", ["id"=>$user->getId()]);
         }
@@ -185,4 +197,17 @@ class UserController
         return "";
     }
 
+
+    private function triggerSave(User $user): User
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "user" => $user
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("user");
+    }
 }

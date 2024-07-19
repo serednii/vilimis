@@ -15,6 +15,49 @@ $(function () {
         $(this).parents(".js-generator-item").remove();
     });
 
+    $("body").on("click", ".js-generator-all-show-everything", function () {
+
+        if (!confirm('Opravdu chcete úplně vše vygenerovat? Přijdete o všechny ruční úpravy.')) {
+            return;
+        }
+        $("#generator-modal-label").html("Probíhá generování ..<br/>.");
+
+        $(".js-generator-module").each(function(){
+
+            $("#generator-modal-content").append("Načítání "+$(this).find(".panel-title").text()+"  ...<br/>");
+
+                var id = $(this).data("generator-module_id");
+                $.get("{{ _router.generateUrl("admin_generator_ajax_entitysync") }}", {
+                    "id": id
+                }, function () {
+                    $("#generator-modal-content").append("Entita vygenerována.<br/>");
+                    $.get("{{ _router.generateUrl("admin_generator_ajax_repositorysync") }}", {
+                        "id": id
+                    }, function () {
+                        $("#generator-modal-content").append("Repozitář vygenerován.<br/>");
+                        $.get("{{ _router.generateUrl("admin_generator_ajax_tablesync") }}", {
+                            "id": id
+                        }, function () {
+                            $("#generator-modal-content").append("Tabulka synchronizována.<br/>");
+                            $.get("{{ _router.generateUrl("admin_generator_ajax_controllersync") }}", {
+                                "id": id
+                            }, function () {
+                                $("#generator-modal-content").append("Controller vygenerován.<br/>");
+                                $.get("{{ _router.generateUrl("admin_generator_ajax_viewsync") }}", {"id": id}, function () {
+                                    $("#generator-modal-content").append("Šablona vygenerována.<br/>");
+                                    $.get("{{ _router.generateUrl("admin_generator_ajax_apicontrollersync") }}", {"id": id}, function () {
+                                        $("#generator-modal-content").append("API controller vygenerován.<br/>");
+                                        $("#generator-modal-label").html("Hotovo");
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+
+        });
+    });
+
     $("body").on("click", ".js-generator-all-show", function () {
         $("#generator-modal-label").html("Probíhá generování ...");
         $("#generator-modal-content").html("Načítání ...");

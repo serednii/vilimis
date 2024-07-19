@@ -2,8 +2,9 @@
 
 namespace API\Entity;
 
+
 /**
- * @ORM\Table sessionType
+ * @ORM\Table sessiontype
  * @Serializable
  */
 class SessionType

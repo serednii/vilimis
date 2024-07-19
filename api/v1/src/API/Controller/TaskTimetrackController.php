@@ -16,6 +16,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /taskTimetrack
+ * @Security ROLE_USER
  */
 class TaskTimetrackController extends AbstractApiController
 {

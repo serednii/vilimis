@@ -4,6 +4,8 @@ namespace API\Controller;
 
 use API\Entity\Attachment;
 use API\Repository\AttachmentRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -13,9 +15,17 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /attachment
+ * @Security ROLE_USER
  */
 class AttachmentController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var AttachmentRepository
      */
@@ -31,15 +41,18 @@ class AttachmentController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         AttachmentRepository $attachment_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->attachment_repository = $attachment_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -123,6 +136,8 @@ class AttachmentController extends AbstractApiController
 
             EntityManager::save($attachment);
 
+            $attachment = $this->triggerSave($attachment);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "attachment" => $attachment,
@@ -149,6 +164,31 @@ class AttachmentController extends AbstractApiController
     {
         $attachment = $this->attachment_repository->find($id);
         EntityManager::remove($attachment);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "attachment_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $attachments = $this->attachment_repository->findBy($filter);
+
+        if (is_array($attachments) && count($attachments) > 0) {
+            foreach ($attachments as $attachment) {
+                EntityManager::remove($attachment);
+            }
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "message" => "Smazáno",
@@ -196,4 +236,17 @@ class AttachmentController extends AbstractApiController
         return "";
     }
 
+
+    private function triggerSave(Attachment $attachment): Attachment
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "attachment" => $attachment
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("attachment");
+    }
 }

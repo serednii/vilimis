@@ -12,23 +12,28 @@
         <form action="{{ _router.generateUrl("admin_attachment") }}" method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="form_edit_name">Název</label>
-                <input value="{{ attachment.Name }}" type="text" name="name" class="form-control" id="form_edit_name">
+                <input value="{{ attachment.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_entity">Entita</label>
-                <input value="{{ attachment.Entity }}" type="text" name="entity" class="form-control" id="form_edit_entity">
+                <input value="{{ attachment.Entity }}" type="text" name="entity" class="form-control" id="form_edit_entity"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_entity_id">ID entity</label>
-                <input value="{{ attachment.EntityId }}" type="number" name="entity_id" class="form-control" id="form_edit_entity_id">
+                <input step="1" value="{{ attachment.EntityId }}" type="number" name="entity_id" class="form-control" id="form_edit_entity_id"
+                >
             </div>
             <div class="form-group">
                 <label for="form_edit_created">Čas vytvoření</label>
-                <input value="{{ attachment.Created.format("Y-m-d H:i") }}" type="datetime-local" name="created" class="form-control" id="form_edit_created">
+                <input value="{{ attachment.Created.format("Y-m-d H:i") }}" type="datetime-local" name="created" class="form-control" id="form_edit_created"
+                >
             </div>
             <div class="form-group">
                 <label for="form_new_file">Soubor</label>
-                <input type="file" name="file" class="form-control" id="form_new_file">
+                <input type="file" name="file" class="form-control" id="form_new_file"
+                >
                 {% if attachment.File %}
                     <a href="upload/{{ attachment.File }}" target="_blank">zobrazit</a>
                     <br/><label><input type="checkbox" name="file_delete"> Smazat</label>

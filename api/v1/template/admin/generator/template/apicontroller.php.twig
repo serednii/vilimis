@@ -20,6 +20,7 @@ use Gephart\Security\Configuration\SecurityConfiguration;{% set break = true %}
 
 /**
  * @RoutePrefix /{{ module.slugSingular }}
+ * @Security ROLE_USER
  */
 class {{ module.entityName }}Controller extends AbstractApiController
 {

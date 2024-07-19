@@ -15,6 +15,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /projectStatus
+ * @Security ROLE_USER
  */
 class ProjectStatusController extends AbstractApiController
 {

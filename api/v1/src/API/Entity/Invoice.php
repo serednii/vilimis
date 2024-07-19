@@ -124,9 +124,6 @@ class Invoice
 
     public function __construct()
     {
-        $this->created_date = new \DateTime();
-        $this->due_date = new \DateTime();
-        $this->duty_date = new \DateTime();
     }
 
     /**

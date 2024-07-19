@@ -5,6 +5,8 @@ namespace API\Controller;
 use API\Entity\User;
 use API\Repository\UserRepository;
 use API\Repository\TeamRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -14,9 +16,17 @@ use Gephart\Framework\Response\JsonResponseFactory;
 use Gephart\Security\Configuration\SecurityConfiguration;
 /**
  * @RoutePrefix /user
+ * @Security ROLE_USER
  */
 class UserController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var UserRepository
      */
@@ -41,12 +51,14 @@ class UserController extends AbstractApiController
         UserRepository $user_repository,
         SecurityConfiguration $security_configuration,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->user_repository = $user_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
         $this->security_configuration = $security_configuration;
     }
 
@@ -130,6 +142,8 @@ class UserController extends AbstractApiController
             $this->mapEntityFromArray($user, $postData, $filesData);
 
             EntityManager::save($user);
+
+            $user = $this->triggerSave($user);
 
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
@@ -246,4 +260,17 @@ class UserController extends AbstractApiController
         return "";
     }
 
+
+    private function triggerSave(User $user): User
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "user" => $user
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("user");
+    }
 }

@@ -5,6 +5,8 @@ namespace Admin\Controller;
 use Admin\Facade\AdminResponse;
 use API\Entity\Client;
 use API\Repository\ClientRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -16,6 +18,13 @@ use Psr\Http\Message\UploadedFileInterface;
  */
 class ClientController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var ClientRepository
      */
@@ -23,9 +32,11 @@ class ClientController
 
 
     public function __construct(
+        EventManager $eventManager,
         ClientRepository $client_repository
     )
     {
+        $this->eventManager = $eventManager;
         $this->client_repository = $client_repository;
     }
 
@@ -74,6 +85,7 @@ class ClientController
             $this->mapEntityFromArray($client, $postData, $filesData);
 
             EntityManager::save($client);
+            $client = $this->triggerSave($client);
 
             Router::redirectTo("admin_client_edit", ["id"=>$client->getId()]);
         }
@@ -143,4 +155,17 @@ class ClientController
         return "";
     }
 
+
+    private function triggerSave(Client $client): Client
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "client" => $client
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("client");
+    }
 }

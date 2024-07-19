@@ -15,6 +15,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /taskStatus
+ * @Security ROLE_USER
  */
 class TaskStatusController extends AbstractApiController
 {
@@ -134,6 +135,8 @@ class TaskStatusController extends AbstractApiController
             $this->mapEntityFromArray($taskStatus, $postData, $filesData);
 
             EntityManager::save($taskStatus);
+
+            $taskStatus = $this->triggerSave($taskStatus);
 
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([

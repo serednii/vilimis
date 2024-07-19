@@ -6,8 +6,8 @@
 
     <p>
         <a href="{{ _router.generateUrl("admin_generator_new") }}" class="btn btn-success">Nový modul</a>
+        <span class="btn btn-warning js-generator-all-show-everything" data-toggle="modal" data-target="#generator-modal">Generovat vše</span>
     </p>
-
     <div class="row noselect">
         {% for module in modules %}
             <div class="col-lg-4 col-md-6 js-generator-module" data-generator-module_id="{{ module.id }}">

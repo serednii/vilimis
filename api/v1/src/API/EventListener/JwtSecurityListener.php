@@ -94,33 +94,47 @@ class JwtSecurityListener
 
         $must_have_role = $this->security_reader->getMustHaveRole($controller, $action);
 
-        if (!empty($must_have_role)) {
+        try {
+            if (!empty($must_have_role)) {
 
-            $headers = Request::getHeaders();
-            if (!isset($headers['authorization']) && !isset($headers['authorization'][0])) {
-                if (!empty($headers["content-type"])
-                    && !empty($headers["content-type"][0])
-                    && strpos($headers["content-type"][0], "/json") !== false) {
-                    $this->jsonResponse->render([
-                        "message" => "Neoprávněný přístup. Chybí JWT token v hlavičce"
-                    ], 401);
-                }
-                return false;
-            }
-
-            $jwt = str_replace("Bearer ", "", $headers["authorization"][0]);
-
-            if ($payload = $this->jwtService->validate($jwt)) {
-                $user = $this->userRepository->find($payload["id"]);
-
-                if (!$user) {
-                    $this->jsonResponse->render([
-                        "message" => "Uživatel dle JWT nebyl nalezen"
-                    ], 401);
+                $headers = Request::getHeaders();
+                if (!isset($headers['authorization']) && !isset($headers['authorization'][0])) {
+                    if (!empty($headers["content-type"])
+                        && !empty($headers["content-type"][0])
+                        && strpos($headers["content-type"][0], "/json") !== false) {
+                        $this->jsonResponse->render([
+                            "message" => "Neoprávněný přístup. Chybí JWT token v hlavičce"
+                        ], 403);
+                    } else {
+                        $this->jsonResponse->render([
+                            "message" => "Chybí autorizační token"
+                        ], 403);
+                    }
+                    return false;
                 }
 
-                $this->DBProvider->getUserFromExternal($user);
+                $jwt = str_replace("Bearer ", "", $headers["authorization"][0]);
+
+                if ($payload = $this->jwtService->validate($jwt)) {
+                    $user = $this->userRepository->find($payload["id"]);
+
+                    if (!$user) {
+                        $this->jsonResponse->render([
+                            "message" => "Uživatel dle JWT nebyl nalezen"
+                        ], 401);
+                    }
+
+                    $this->DBProvider->getUserFromExternal($user);
+                } else {
+                    $this->jsonResponse->render([
+                        "message" => "Ověření nebylo provedeno."
+                    ], 403);
+                }
             }
+        } catch (\Exception $exception) {
+            $this->jsonResponse->render([
+                "message" => $exception->getMessage()
+            ], 403);
         }
     }
 }

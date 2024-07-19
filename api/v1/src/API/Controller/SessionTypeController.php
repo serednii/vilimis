@@ -4,6 +4,8 @@ namespace API\Controller;
 
 use API\Entity\SessionType;
 use API\Repository\SessionTypeRepository;
+use Gephart\EventManager\Event;
+use Gephart\EventManager\EventManager;
 use Gephart\Framework\Facade\EntityManager;
 use Gephart\Framework\Facade\Request;
 use Gephart\Framework\Facade\Router;
@@ -13,9 +15,17 @@ use Gephart\Framework\Response\JsonResponseFactory;
 
 /**
  * @RoutePrefix /sessionType
+ * @Security ROLE_USER
  */
 class SessionTypeController extends AbstractApiController
 {
+    const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
+
     /**
      * @var SessionTypeRepository
      */
@@ -31,15 +41,18 @@ class SessionTypeController extends AbstractApiController
      */
     private $jsonSerializator;
 
+
     public function __construct(
         SessionTypeRepository $sessionType_repository,
         JsonResponseFactory $jsonResponseFactory,
-        JsonSerializator $jsonSerializator
+        JsonSerializator $jsonSerializator,
+        EventManager $eventManager
     )
     {
         $this->sessionType_repository = $sessionType_repository;
         $this->jsonResponseFactory = $jsonResponseFactory;
         $this->jsonSerializator = $jsonSerializator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -123,6 +136,8 @@ class SessionTypeController extends AbstractApiController
 
             EntityManager::save($sessionType);
 
+            $sessionType = $this->triggerSave($sessionType);
+
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "sessionType" => $sessionType,
@@ -149,6 +164,31 @@ class SessionTypeController extends AbstractApiController
     {
         $sessionType = $this->sessionType_repository->find($id);
         EntityManager::remove($sessionType);
+
+        return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+            "message" => "Smazáno",
+            "code" => 200
+        ]));
+    }
+
+
+    /**
+     * @Route {
+     *  "rule": "/deleteByFilter",
+     *  "name": "sessionType_deleteByFilter"
+     * }
+     */
+    public function deleteByFilter()
+    {
+        $filter = $this->parseRequestFilter();
+
+        $sessionTypes = $this->sessionType_repository->findBy($filter);
+
+        if (is_array($sessionTypes) && count($sessionTypes) > 0) {
+            foreach ($sessionTypes as $sessionType) {
+                EntityManager::remove($sessionType);
+            }
+        }
 
         return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
             "message" => "Smazáno",
@@ -195,4 +235,17 @@ class SessionTypeController extends AbstractApiController
         return "";
     }
 
+
+    private function triggerSave(SessionType $sessionType): SessionType
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "sessionType" => $sessionType
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("sessionType");
+    }
 }

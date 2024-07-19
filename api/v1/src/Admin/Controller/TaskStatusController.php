@@ -32,9 +32,11 @@ class TaskStatusController
 
 
     public function __construct(
+        EventManager $eventManager,
         TaskStatusRepository $taskStatus_repository
     )
     {
+        $this->eventManager = $eventManager;
         $this->taskStatus_repository = $taskStatus_repository;
     }
 
@@ -83,6 +85,7 @@ class TaskStatusController
             $this->mapEntityFromArray($taskStatus, $postData, $filesData);
 
             EntityManager::save($taskStatus);
+            $taskStatus = $this->triggerSave($taskStatus);
 
             Router::redirectTo("admin_taskStatus_edit", ["id"=>$taskStatus->getId()]);
         }
