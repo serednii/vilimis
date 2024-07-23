@@ -12,12 +12,17 @@ const endCustomerBlank = {
     clientId: null
 }
 
-const EndCustomerForm = ({id, handleSave}) => {
+const EndCustomerForm = ({id, handleSave, clientId}) => {
     const {API} = useRootContext()
     const [endCustomer, setEndCustomer] = useState(null);
     const [selectedClientId, setSelectedClientId] = useState(null);
 
     useEffect(() => {
+        if (clientId) {
+            endCustomerBlank.clientId = clientId;
+        } else {
+            clientId.clientId = null;
+        }
         if (id) {
             API.getData("/endCustomer/single/" + id, (data) => {
                 setEndCustomer(data);
@@ -25,7 +30,7 @@ const EndCustomerForm = ({id, handleSave}) => {
         } else {
             setEndCustomer(endCustomerBlank)
         }
-    }, [id]);
+    }, [id, clientId]);
 
     function handleDelete(id) {
         API.getData("/endCustomer/delete/"+id, ()=>{

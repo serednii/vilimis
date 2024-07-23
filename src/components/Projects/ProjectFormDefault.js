@@ -74,7 +74,7 @@ const ProjectFormDefault = ({id, handleSave, clientId}) => {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="form_edit_client_id">Koncový uživatel</label>
-                        <EndCustomersSelectList selected={project.endCustomerId} onChange={setSelectedEndCustomerId}/>
+                        <EndCustomersSelectList clientId={selectedClientId} selected={project.endCustomerId} onChange={setSelectedEndCustomerId}/>
                         <input type="hidden" name="end_customer_id" value={selectedEndCustomerId}/>
                     </div>
                     <div className="mb-3">

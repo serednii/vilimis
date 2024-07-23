@@ -65,7 +65,7 @@ const ProjectDateForm = ({id, handleSave, projectId}) => {
                     <div className="mb-3">
                         <div className="mb-3">
                             <label htmlFor="form_edit_name">Název</label>
-                            <input defaultValue={projectDate.name} type="text" name="name" className="form-control"
+                            <input defaultValue={projectDate.name} type="text" name="name" className="form-control form-control-lg"
                                    id="form_edit_name"/>
                         </div>
                         <div className="mb-3">

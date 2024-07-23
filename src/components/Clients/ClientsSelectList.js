@@ -114,7 +114,12 @@ const ClientsSelectList = ({onChange, selected}) => {
             <div className="d-flex">
                 <div className={"flex-fill"}>
                     <Select
+                        placeholder={"Vybrat"}
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                         value={selectedOption}
+                        isSearchable={true}
+                        menuPosition="fixed"
                         onChange={handleChange}
                         options={option}
                         styles={colourStyles}

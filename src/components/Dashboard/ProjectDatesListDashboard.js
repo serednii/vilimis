@@ -49,7 +49,7 @@ const ProjectDatesListDashboard = ({ }) => {
             <div className="card-header d-flex align-items-center"><h2
                 className="fs-6 fw-bold mb-0">Data projektů</h2>
                 <div className="ms-auto">
-                    <NavLink to="/projectDates" className="small fw-normal d-inline-flex align-items-center" href="#">
+                    <NavLink to="/projects" className="small fw-normal d-inline-flex align-items-center" href="#">
                         <Eye className="me-2"/>
                         Zobrazit vše</NavLink></div>
             </div>

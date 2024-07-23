@@ -81,8 +81,13 @@ const ProjectStatusesSelectList = ({onChange, selected}) => {
     return (
         <>
             <Select
+                placeholder={"Vybrat"}
+                className="react-select-container"
+                classNamePrefix="react-select"
                 value={selectedOption}
                 onChange={handleChange}
+                isSearchable={true}
+                menuPosition="fixed"
                 options={option}
                 styles={colourStyles}
             />

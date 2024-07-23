@@ -106,9 +106,13 @@ class JwtSecurityListener
                             "message" => "Neoprávněný přístup. Chybí JWT token v hlavičce"
                         ], 403);
                     } else {
-                        $this->jsonResponse->render([
-                            "message" => "Chybí autorizační token"
-                        ], 403);
+                        if (!empty($headers["content-type"])
+                            && !empty($headers["content-type"][0])
+                            && strpos($headers["content-type"][0], "/json") !== false) {
+                            $this->jsonResponse->render([
+                                "message" => "Chybí autorizační token"
+                            ], 403);
+                        }
                     }
                     return false;
                 }

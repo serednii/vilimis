@@ -80,15 +80,17 @@ const ClientsList = ({}) => {
                                 </button>
 
                             </div>
+                        </div>
+
+                        <h2 className="h5 mb-3">{client.name}</h2>
+                        <div className="mb-3">
                             {client.logo && client.logo.length > 0 && (
                                 <img src={CONFIG.uploadDir + client.logo}
                                      style={{maxWidth: "200px"}}/>
                             )}
                         </div>
 
-                        <h2 className="h5 mb-3">{client.name}</h2>
-
-                        <table className="table table-bordered w-auto mb-3">
+                        {/*<table className="table table-bordered w-auto mb-3">
                             <tbody>
                             <tr>
                                 <td>IČ:</td>
@@ -103,7 +105,7 @@ const ClientsList = ({}) => {
                                 <td>{client.address}</td>
                             </tr>
                             </tbody>
-                        </table>
+                        </table>*/}
 
                         <div className="table-responsive">
                         <table className="table table-bordered table-centered table-nowrap mb-0">

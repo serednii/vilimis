@@ -106,7 +106,7 @@ const ProjectsList = ({clientId}) => {
             </div>
 
             <div className="my-3">
-                <button onClick={() => setIsOpen(true)}
+                <button onClick={() => {setIsOpen(true);setModalProjectId(null);}}
                         className="btn btn-secondary d-inline-flex align-items-center me-2">
                     <Plus size={16} className="me-2"/>
                     Nový projekt
@@ -117,9 +117,10 @@ const ProjectsList = ({clientId}) => {
                 <>
                     <div className="d-flex mb-3"><select className="form-select fmxw-200"
                                                          disabled={selectedIds.length === 0}
+                                                         defaultValue=""
                                                          onChange={(e) => setBulkAction(e.target.value)}
                     >
-                        <option value="" selected="selected">Hromadná akce</option>
+                        <option value="">Hromadná akce</option>
                         <option value="delete">Smazat</option>
                     </select>
                         <button disabled={selectedIds.length === 0}
@@ -130,7 +131,7 @@ const ProjectsList = ({clientId}) => {
                     <div className="card border-0 shadow mb-4">
                         <div className="card-body">
                             <div className="table-responsive">
-                                <table class="table table-hover align-items-center">
+                                <table className="table table-hover align-items-center">
                                     <thead>
                                     <tr>
                                         <td style={{maxWidth: "15px", width: "15px", minWidth: "15px"}}
@@ -148,20 +149,20 @@ const ProjectsList = ({clientId}) => {
                                                 <label className="form-check-label" htmlFor="item_all"/>
                                             </div>
                                         </td>
-                                        <th class="border-bottom">Název</th>
+                                        <th className="border-bottom">Název</th>
                                         {!clientId && (
                                             <th className="border-bottom">Klient</th>
                                         )}
-                                        <th class="border-bottom">Rozpočet</th>
-                                        <th class="border-bottom">Stav</th>
-                                        <th class="border-bottom">Proces</th>
-                                        <th class="border-bottom">Akce</th>
+                                        <th className="border-bottom">Rozpočet</th>
+                                        <th className="border-bottom">Stav</th>
+                                        <th className="border-bottom">Proces</th>
+                                        <th className="border-bottom">Akce</th>
                                     </tr>
                                     </thead>
                                     <tbody>
 
-                                    {projects.map((project, project_key) => (
-                                        <tr key={project}>
+                                    {projects?.map((project, project_key) => (
+                                        <tr key={project_key+" "+project.id}>
                                             {(projectUtil = new ProjectUtils(project, projectStatuses, clients, endCustomers)) && ""}
                                             {(budgetUtil = new BudgetCalculator(project.spendingTime, null, project)) && ""}
 
@@ -169,15 +170,15 @@ const ProjectsList = ({clientId}) => {
                                                 <div className="form-check dashboard-check">
                                                     <input className="form-check-input" type="checkbox"
                                                            id={"item_" + project.id}
-                                                           checked={selectedIds.includes(project.id)}
-                                                           onClick={(e) => {
+                                                           checked={selectedIds?.includes(project.id)}
+                                                           onChange={(e) => {
                                                                if (e.target.checked) {
                                                                    setSelectedIds((prev) => [...prev, project.id]);
                                                                } else {
                                                                    setSelectedIds((prev) => prev.filter((id) => id != project.id));
                                                                }
                                                            }}
-                                                           selectedIds/>
+                                                           />
                                                     <label className="form-check-label" htmlFor={"item_" + project.id}/>
                                                 </div>
                                             </td>

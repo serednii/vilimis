@@ -125,7 +125,7 @@ const TasksList = ({projectId}) => {
             <div className="my-3">
                 <div className="row">
                     <div className="col-6">
-                        <button onClick={() => setIsOpen(true)}
+                        <button onClick={() => {setIsOpen(true); setModalTaskId(null);}}
                                 className="btn btn-secondary d-inline-flex align-items-center me-2">
                             <Plus size={16} className="me-2"/>
                             Nový úkol
@@ -146,9 +146,10 @@ const TasksList = ({projectId}) => {
                 <>
                     <div className="d-flex mb-3"><select className="form-select fmxw-200"
                                                          disabled={selectedIds.length === 0}
+                                                         defaultValue=""
                                                          onChange={(e) => setBulkAction(e.target.value)}
                     >
-                        <option value="" selected="selected">Hromadná akce</option>
+                        <option value="">Hromadná akce</option>
                         <option value="delete">Smazat</option>
                     </select>
                         <button disabled={selectedIds.length === 0}
@@ -206,7 +207,7 @@ const TasksList = ({projectId}) => {
                                                                    setSelectedIds((prev) => prev.filter((id) => id != task.id));
                                                                }
                                                            }}
-                                                           selectedIds/>
+                                                           />
                                                     <label className="form-check-label" htmlFor={"item_" + task.id}/>
                                                 </div>
                                             </td>

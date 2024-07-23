@@ -5,7 +5,7 @@ import {CONFIG} from "../../config";
 import EndCustomerForm from "./EndCustomerForm";
 import EndCustomerFormModal from "./EndCustomerFormModal";
 
-const EndCustomersSelectList = ({onChange, selected}) => {
+const EndCustomersSelectList = ({onChange, selected, clientId}) => {
     const {API} = useRootContext()
     const [endCustomers, setEndCustomers] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
@@ -23,13 +23,17 @@ const EndCustomersSelectList = ({onChange, selected}) => {
                 }
             }
         });
-    }, []);
+    }, [clientId]);
 
     function loadEndCustomers(onLoad) {
         API.getData("/endCustomer/list", (endCustomers) => {
+            if (clientId) {
+                endCustomers = endCustomers.filter(endCustomer=>(endCustomer.clientId == clientId));
+            }
+
             setEndCustomers(endCustomers);
 
-            if (endCustomers && endCustomers.length > 0) {
+            if (endCustomers?.length > 0) {
                 const options = [];
                 endCustomers.map(endCustomer => {
                     let endCustomerValue = {
@@ -44,6 +48,9 @@ const EndCustomersSelectList = ({onChange, selected}) => {
                 if (onLoad) {
                     onLoad(options);
                 }
+            } else {
+                setOption([]);
+                onLoad([]);
             }
         });
     }
@@ -115,8 +122,13 @@ const EndCustomersSelectList = ({onChange, selected}) => {
             <div className="d-flex">
                 <div className={"flex-fill"}>
                     <Select
+                        placeholder={"Vybrat"}
+                        className="react-select-container"
+                        classNamePrefix="react-select"
                         value={selectedOption}
                         onChange={handleChange}
+                        isSearchable={true}
+                        menuPosition="fixed"
                         options={option}
                         styles={colourStyles}
                     />
@@ -133,6 +145,7 @@ const EndCustomersSelectList = ({onChange, selected}) => {
                     onAfterOpen={afterOpenModal}
                     onRequestClose={closeModal}
                     callback={onNewEndCustomer}
+                    clientId={clientId}
                 />
             )}
         </>
