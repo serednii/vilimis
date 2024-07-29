@@ -57,7 +57,7 @@ const TimeTrackerButton = ({isOpen, setIsOpen, isActive, timetrackerState, tasks
         <div className="h-100 d-flex justify-content-sm-center align-items-center">
             {(timetrackerState.start === null || single) ? (
                 <button className={"btn btn-xs btn-text text-default fw-bold border-0 "+(isActive?"text-success":"")} onClick={handleClick}>
-                    <Timer size={20}/>
+                    <Timer size={single?14:20}/>
                 </button>
             ) : (
                 <span>
