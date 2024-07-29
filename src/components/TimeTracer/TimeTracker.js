@@ -5,27 +5,53 @@ import { useRootContext } from "../../contexts/RootContext";
 import { CONFIG } from "../../config";
 import {TIMETRACKER_ACTIONS} from "../../reducers/timetrackerReducer";
 
-const TimeTracker = () => {
+const TimeTracker = ({taskId}) => {
     const { API, timetrackerState, timetrackerDispatch } = useRootContext();
     const [isOpen, setIsOpen] = useState(false)
 
     function handleChange(taskId) {
         setIsOpen(false);
-        startTimer(taskId);
+        handleStart(taskId);
+    }
+
+    function handleStart(selectedTaskId) {
+        if (selectedTaskId) {
+            startTimer(selectedTaskId);
+            return;
+        }
+
+        if (taskId) {
+            startTimer(taskId);
+        }
     }
 
     function handleStop() {
         stopTimer();
     }
 
-    function startTimer(taskId) {
-        timetrackerDispatch({
-            action: TIMETRACKER_ACTIONS.START,
-            taskId
-        });
+    function startTimer(selectedTaskId) {
+        let originalTaskId = timetrackerState.taskId;
+        if (timetrackerState.start !== null) {
+            stopTimer(()=>{
+                if ((originalTaskId && selectedTaskId != originalTaskId) || !originalTaskId) {
+                    timetrackerDispatch({
+                        action: TIMETRACKER_ACTIONS.START,
+                        taskId: selectedTaskId
+                    });
+                }
+            });
+            return;
+        }
+
+        if ((selectedTaskId && selectedTaskId != selectedTaskId) || !originalTaskId) {
+            timetrackerDispatch({
+                action: TIMETRACKER_ACTIONS.START,
+                taskId: selectedTaskId
+            });
+        }
     }
 
-    function stopTimer() {
+    function stopTimer(afterStop) {
         var formData = new FormData;
 
         var dateStart =  new Date();
@@ -40,12 +66,17 @@ const TimeTracker = () => {
             timetrackerDispatch({
                 action: TIMETRACKER_ACTIONS.STOP
             });
+
+            if (afterStop) {
+                afterStop();
+            }
         });
     }
 
     return (
         <div className="h-100 position-relative">
-            <TimeTrackerButton timetrackerState={timetrackerState} isOpen={isOpen} setIsOpen={setIsOpen} taskId={timetrackerState.taskId} handleStop={handleStop} />
+            <TimeTrackerButton timetrackerState={timetrackerState} isOpen={isOpen} setIsOpen={setIsOpen} single={taskId?true:false}
+                               isActive={(taskId && taskId == timetrackerState.taskId) ? true: false} taskId={timetrackerState.taskId} handleStart={handleStart} handleStop={handleStop} />
             <TimeTrackerTask isOpen={isOpen} handleChange={handleChange} />
         </div>
     )

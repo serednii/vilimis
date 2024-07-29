@@ -27,17 +27,7 @@ import Webs from "./pages/Webs";
 import Breadcrumb from './components/Breadcrumb/Breadcrumb';
 import Login from "./pages/Login";
 import MD5 from "crypto-js/md5";
-import {
-    CheckSquare,
-    FolderSimple, Gear,
-    Network, SignOut,
-    Smiley,
-    Speedometer,
-    SquaresFour, TreeStructure,
-    UserCircle,
-    Users,
-    MagnifyingGlass, Timer, Table, Invoice, ArrowRight, ArrowArcRight, User
-} from "@phosphor-icons/react";
+
 import TimeTracks from "./pages/TimeTracks";
 import Reports from "./pages/Reports";
 import Invoices from "./pages/Invoices";
@@ -45,15 +35,12 @@ import Settings from "./pages/Settings";
 import TopUserInfo from "./components/_page/TopUserInfo";
 import Menu from "./components/_page/Menu";
 
-library.add(fas);
-
 function Root() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [jwt, setJwt] = useState(null);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [loaderState, loaderDispatch] = useReducer(loaderReducer, {show: 0});
-    const [timetrackerState, timetrackerDispatch] = useReducer(timetrackerReducer, {start: null, taskId: null});
     const [openedMenuIndex, setOpenedMenuIndex] = useState(0);
 
     const locale = {
@@ -77,6 +64,9 @@ function Root() {
         toast,
         jwt
     );
+
+    const [timetrackerState, timetrackerDispatch] = useReducer(timetrackerReducer, {start: null, taskId: null, api: API});
+
     useEffect(() => {
         const timetrackerData = localStorage.getItem("timetracker");
         if (timetrackerData) {

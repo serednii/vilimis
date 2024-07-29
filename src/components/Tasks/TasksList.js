@@ -9,6 +9,7 @@ import TasksKanbanSettingsModal from "./TasksKanbanSettingsModal";
 import TasksListSettingsModal from "./TasksListSettingsModal";
 import TaskUtils from "../../utils/TaskUtils";
 import BudgetCalculator from "../../utils/BudgetCalculator";
+import TimeTracker from "../TimeTracer/TimeTracker";
 
 const TasksList = ({projectId}) => {
     const {API} = useRootContext()
@@ -212,13 +213,23 @@ const TasksList = ({projectId}) => {
                                                 </div>
                                             </td>
                                             <td className="fw-bold  text-wrap">
-                                                <a onClick={() => {
-                                                    setModalTaskId(task.id);
-                                                    setIsOpen(true)
-                                                }}
-                                                   className="text-primary fw-bold">
-                                                    {task.name}
-                                                </a>
+
+                                                <div className="d-flex align-items-center">
+
+                                                    <div>
+                                                    <TimeTracker taskId={task.id} />
+                                                    </div>
+
+                                                    <div>
+                                                    <a onClick={() => {
+                                                        setModalTaskId(task.id);
+                                                        setIsOpen(true)
+                                                    }}
+                                                       className="text-primary fw-bold">
+                                                        {task.name}
+                                                    </a>
+                                                    </div>
+                                                </div>
                                             </td>
                                             {!projectId && (
                                                 <td>
