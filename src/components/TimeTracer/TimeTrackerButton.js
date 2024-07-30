@@ -61,6 +61,7 @@ const TimeTrackerButton = ({isOpen, setIsOpen, isActive, timetrackerState, tasks
                 </button>
             ) : (
                 <span>
+                    <span className="timetracker-button_desc">
                     {timeSpentOnPage === 0 ? ("....") : (
                         <>
                             {task && "name" in task && (
@@ -80,7 +81,8 @@ const TimeTrackerButton = ({isOpen, setIsOpen, isActive, timetrackerState, tasks
                             {m}:{s}
                         </>
                     )}
-                    <button className="ms-2 text-default fw-bold   border-0" onClick={handleStop}>
+                        </span>
+                    <button className="btn btn-xs btn-text text-default fw-bold border-0" onClick={handleStop}>
                         <Stop size={20}/>
                     </button>
                 </span>

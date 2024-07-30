@@ -5,7 +5,7 @@ import TasksSelectList from "../Tasks/TasksSelectList";
 
 const TimeTrackerTask = ({ isOpen, handleChange, onNew }) => {
     return (
-        isOpen && <div className='position-absolute' style={{zIndex:1040,right:0,width:"300px"}}>
+        isOpen && <div className='timetracker-button_list '>
             <TasksSelectList onChange={handleChange} onNew={onNew}/>
         </div>
     )

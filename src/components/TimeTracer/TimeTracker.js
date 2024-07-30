@@ -74,7 +74,7 @@ const TimeTracker = ({taskId}) => {
     }
 
     return (
-        <div className="h-100 position-relative">
+        <div className="h-100  timetracker-button_wrap">
             <TimeTrackerButton timetrackerState={timetrackerState} isOpen={isOpen} setIsOpen={setIsOpen} single={taskId?true:false}
                                isActive={(taskId && taskId == timetrackerState.taskId) ? true: false} taskId={timetrackerState.taskId} handleStart={handleStart} handleStop={handleStop} />
             <TimeTrackerTask isOpen={isOpen} handleChange={handleChange} />

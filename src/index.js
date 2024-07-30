@@ -2,7 +2,7 @@ import {createRoot} from 'react-dom/client';
 import React, {useEffect, useReducer, useState} from "react";
 import './styles/index.sass';
 import Workflow from "./pages/Workflow";
-import {BrowserRouter, NavLink, Route, Routes} from "react-router-dom";
+import {BrowserRouter, createBrowserRouter, NavLink, Route, Routes, useLocation} from "react-router-dom";
 import NoPage from "./pages/NoPage";
 import Home from "./pages/Home";
 import EntityPage from "./pages/EntityPage";
@@ -38,6 +38,7 @@ import Menu from "./components/_page/Menu";
 function Root() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [diskSpace, setDiskSpace] = useState(null);
     const [jwt, setJwt] = useState(null);
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [loaderState, loaderDispatch] = useReducer(loaderReducer, {show: 0});
@@ -96,6 +97,13 @@ function Root() {
         }
     }, []);
 
+// And instead of history.listen you can:
+    function closeMobileMenu() {
+        if (showMobileMenu) {
+            setShowMobileMenu(false);
+        }
+    }
+
 
     const reloadUser = () => {
         setLoading(true);
@@ -103,6 +111,10 @@ function Root() {
             const userId = JSON.parse(window.atob(jwt.split(".")[1].replace("-", "+").replace("_", "/"))).id;
 
             if (userId) {
+                API.getData("/disk-space/", (data) => {
+                    setDiskSpace(data);
+                });
+
                 API.getData("/user/single/" + userId, (user) => {
                     setUser(user);
                     setLoading(false);
@@ -135,6 +147,7 @@ function Root() {
         urlToTitle,
         setJwt,
         user,
+        diskSpace,
         reloadUser,
         logout
     }
@@ -180,6 +193,11 @@ function Root() {
                             />
                         </a>
                         <div className="d-flex align-items-center">
+
+                            <div className="me-3">
+                                <TimeTracker/>
+                            </div>
+
                             <button
                                 onClick={()=>setShowMobileMenu(prev=>!prev)}
                                 className="navbar-toggler d-lg-none collapsed"
@@ -200,25 +218,26 @@ function Root() {
 
                             <div
                                 className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
-                                <div className="d-flex align-items-center">
-                                    <div className="avatar-lg me-4">
-                                        <img
-                                            src={user.avatar ? user.avatar : "http://www.gravatar.com/avatar/" + MD5(user.username) + "?s=64&d=mm"}
-                                            className="card-img-top rounded-circle border-white"
-                                            alt="Gephart"/>
-                                    </div>
-                                    <div className="d-block">
-                                        <h2 className="h5 mb-3">{user.name} {user.surname}</h2>
-                                        <button onClick={logout}
-                                                className="btn btn-secondary btn-sm d-inline-flex align-items-center">
-                                            <svg className="icon icon-xxs me-1" fill="none" stroke="currentColor"
-                                                 viewBox="0 0 24 24"
-                                                 xmlns="http://www.w3.org/2000/svg">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                                            </svg>
-                                            Odhlásit
-                                        </button>
+                                    <div className="d-flex">
+                                        <div className="avatar-lg me-4">
+                                            <img
+                                                src={user.avatar ? user.avatar : "http://www.gravatar.com/avatar/" + MD5(user.username) + "?s=64&d=mm"}
+                                                className="card-img-top rounded-circle border-white"
+                                                alt="Gephart"/>
+                                        </div>
+                                        <div className="d-block">
+                                            <h2 className="h5 mb-3">{user.name} {user.surname}</h2>
+                                            <button onClick={logout}
+                                                    className="btn btn-secondary btn-sm d-inline-flex align-items-center">
+                                                <svg className="icon icon-xxs me-1" fill="none" stroke="currentColor"
+                                                     viewBox="0 0 24 24"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                                                          d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                                </svg>
+                                                Odhlásit
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="collapse-close d-md-none">
                                         <a href="#sidebarMenu" data-bs-toggle="collapse"
@@ -233,11 +252,10 @@ function Root() {
                                                       clipRule="evenodd"></path>
                                             </svg>
                                         </a>
-                                    </div>
                                 </div>
                             </div>
 
-                            <Menu/>
+                            <Menu closeMobileMenu={closeMobileMenu}/>
                         </div>
                     </nav>
 
@@ -275,7 +293,7 @@ function Root() {
                         </nav>
 
 
-                        <div className="py-4">
+                        <div className="py-4 navbar-breadcrumb">
 
                             <Breadcrumb/>
                             {/* <nav aria-label="breadcrumb" className="d-none d-md-inline-block">

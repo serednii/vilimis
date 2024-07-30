@@ -1,4 +1,4 @@
-import {NavLink} from "react-router-dom";
+import {NavLink, useLocation} from "react-router-dom";
 import {
     ArrowArcRight,
     CheckSquare,
@@ -9,14 +9,20 @@ import {
     UserCircle,
     Users
 } from "@phosphor-icons/react";
-import React from "react";
+import React, {useEffect} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 
-const Menu  = () => {
-    const {user, logout} = useRootContext();
+const Menu  = ({closeMobileMenu}) => {
+    const {user, logout, diskSpace} = useRootContext();
+    let location = useLocation();
+
+    useEffect(() => {
+        closeMobileMenu();
+    }, [location]);
 
     return (<>
-
+<div className="user-menu d-flex flex-column justify-content-between">
+    <div>
         <div className="gephart-menu-logo">
             <img src="/gephart/images/logo-white.svg" width="503" alt="VilémIS Logo"/>
         </div>
@@ -196,7 +202,24 @@ const Menu  = () => {
                                 </span>
                 </NavLink>
             </li>
-        </ul>
+        </ul></div>
+
+        {diskSpace !== null && diskSpace?.code == 200 && parseInt(diskSpace.quotaInMb) >= 0 && (
+
+            <div className="my-5 disk-space">
+            <div className="progress-wrapper">
+                <div className="progress-info">
+                    <div className="h6 mb-0">{diskSpace.usedSpaceInMb} MB</div>
+                    <div className="small fw-bold text-gray-500"><span>{diskSpace.quotaInMb} MB</span></div>
+                </div>
+                <div className="progress mb-0">
+                    <div className="progress-bar bg-success" role="progressbar" aria-valuenow="100" aria-valuemin="0"
+                         aria-valuemax="100" style={{width: diskSpace.usedPercent + "%"}}></div>
+                </div>
+            </div>
+            </div>
+        )}
+</div>
     </>)
 }
 

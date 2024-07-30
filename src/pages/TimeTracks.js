@@ -62,6 +62,7 @@ const TimeTracks = ({}) => {
             <div className="table-responsive">
                 <table className="table table-centered table-nowrap mb-0 rounded table-bordered">
                     <thead>
+                    <tr>
                     <th></th>
                     {days.map(day => (
                         <th className="text-center position-relative" key={"day" + + day}>
@@ -112,6 +113,7 @@ const TimeTracks = ({}) => {
                             ))}
                         </th>
                     ))}
+                    </tr>
                     </thead>
                     <tbody>
                     {hours.map(hour => (
