@@ -15,7 +15,7 @@ const EndCustomersSelectList = ({onChange, selected, clientId}) => {
         loadEndCustomers((options)=>{
             if (selected) {
                 let selectedValue = options.filter(endCustomerValue => endCustomerValue.value == selected);
-                if (selectedValue) {
+                if (selectedValue && selectedValue[0]) {
                     setSelectedOption(selectedValue[0])
                     if (onChange) {
                         onChange(selectedValue[0].value);
@@ -28,7 +28,7 @@ const EndCustomersSelectList = ({onChange, selected, clientId}) => {
     function loadEndCustomers(onLoad) {
         API.getData("/endCustomer/list", (endCustomers) => {
             if (clientId) {
-                endCustomers = endCustomers.filter(endCustomer=>(endCustomer.clientId == clientId));
+                endCustomers = endCustomers?.filter(endCustomer=>(endCustomer.clientId == clientId));
             }
 
             setEndCustomers(endCustomers);
@@ -59,9 +59,9 @@ const EndCustomersSelectList = ({onChange, selected, clientId}) => {
         setIsOpen(false);
 
         loadEndCustomers((options)=>{
-            let selectedValue = options.filter(endCustomerValue => endCustomerValue.value == endCustomer.id);
+            let selectedValue = options.filter(endCustomerValue => endCustomerValue.value  == endCustomer.id);
 
-            if (selectedValue) {
+            if (selectedValue && selectedValue[0]) {
                 setSelectedOption(selectedValue[0])
                 if (onChange) {
                     onChange(selectedValue[0].value);

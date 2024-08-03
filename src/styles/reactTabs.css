@@ -47,6 +47,7 @@
 
 .react-tabs__tab-panel {
   display: none;
+  background: #fff;
 }
 
 .react-tabs__tab-panel--selected {

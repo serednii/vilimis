@@ -6,6 +6,7 @@ import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import CommentsList from "../Comments/CommentsList";
 import AttachmentsList from "../Attachment/AttachmentsList";
 import TasksList from "../Tasks/TasksList";
+import ChecklistsList from "../Checklists/ChecklistsList";
 
 const ProjectForm = ({id, handleSave, clientId}) => {
     return (
@@ -15,6 +16,7 @@ const ProjectForm = ({id, handleSave, clientId}) => {
                     <TabList>
                         <Tab>Nastavení</Tab>
                         <Tab>Úkoly</Tab>
+                        <Tab>Checklisty</Tab>
                         <Tab>Poznámky</Tab>
                         <Tab>Přílohy</Tab>
                     </TabList>
@@ -24,19 +26,27 @@ const ProjectForm = ({id, handleSave, clientId}) => {
                                 <h5>Nastavení</h5>
                                 <ProjectFormDefault id={id} handleSave={handleSave}/>
                             </div>
-                            <div className="col-12 col-md-3">
-                                <h5>Data projektu</h5>
-                                <ProjectDatesList projectId={id}/>
+                            <div className="col-12 col-md-6">
+                                <div className="row">
+                                <div className="col-12 col-md-6">
+                                    <h5>Data projektu</h5>
+                                    <ProjectDatesList projectId={id}/>
+                                </div>
+                                <div className="col-12 col-md-6">
+                                    <h5>Setkání</h5>
+                                    <SessionsList projectId={id}/>
+                                </div>
+                                </div>
                             </div>
-                            <div className="col-12 col-md-3">
-                                <h5>Setkání</h5>
-                                <SessionsList projectId={id}/>
                             </div>
-                        </div>
                     </TabPanel>
 
                     <TabPanel>
-                        <TasksList projectId={id} />
+                        <TasksList projectId={id}/>
+                    </TabPanel>
+
+                    <TabPanel>
+                        <ChecklistsList projectId={id}/>
                     </TabPanel>
 
                     <TabPanel>

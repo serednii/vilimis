@@ -34,6 +34,7 @@ import Invoices from "./pages/Invoices";
 import Settings from "./pages/Settings";
 import TopUserInfo from "./components/_page/TopUserInfo";
 import Menu from "./components/_page/Menu";
+import Checklists from "./pages/Checklists";
 
 function Root() {
     const [user, setUser] = useState(null);
@@ -369,6 +370,7 @@ function Root() {
                             <Route path="time-tracks" element={<TimeTracks/>}/>
                             <Route path="reports/*" element={<TimeTracks/>}/>
                             <Route path="reports" element={<Reports/>}/>
+                            <Route path="checklists" element={<Checklists/>}/>
                             <Route path="settings" element={<Settings/>}/>
                             <Route path="*" element={<NoPage/>}/>
                             {/*</Route>*/}

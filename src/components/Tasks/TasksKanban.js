@@ -18,7 +18,6 @@ const TasksKanban = ({ }) => {
     const [taskStatuses, setTaskStatuses] = useState([]);
     const [clients, setClients] = useState([]);
     const [reload, setReload] = useState(true);
-    const [refresh, setRefresh] = useState(0);
     const [projects, setProjects] = useState([]);
     const [endCustomers, setEndCustomers] = useState([]);
     const [tasksLoading, setTasksLoading] = useState(false);

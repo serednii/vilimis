@@ -1,6 +1,7 @@
 import React from "react";
 import ClientForm from "./ClientForm";
 import Modal from "../Modal/Modal";
+import {Users} from "@phosphor-icons/react";
 
 const ClientFormModal = ({ onRequestClose, onAfterOpen, isOpen, callback, id }) => {
 
@@ -10,7 +11,7 @@ const ClientFormModal = ({ onRequestClose, onAfterOpen, isOpen, callback, id }) 
                 isOpen={isOpen}
                 onAfterOpen={onAfterOpen}
                 onRequestClose={onRequestClose}
-                title={id ? ("Klient #"+id):"Nový klient"}
+                title={id ? (<><Users/> Klient #{id}</>):"Nový klient"}
                 size={id?"xl":"md"}
             >
 

@@ -2,6 +2,8 @@
 
 /.idea
 
+/mailchimp-sync
+
 # docker
 .docker/db/data/*
 .docker/logs/*
@@ -12,6 +14,7 @@
 /node_modules
 /.pnp
 .pnp.js
+/api/v1/mysql-data
 /api/v1/vendor
 /api/v1/cache
 /api/v1/cache/web/upload/*

@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import {CONFIG} from "../../config";
 import ClientsSelectList from "../Clients/ClientsSelectList";
+import {MagnifyingGlass} from "@phosphor-icons/react";
+import IcoFinder from "../Ares/IcoFinder";
 
 const endCustomerBlank = {
     name: "",
@@ -21,7 +23,7 @@ const EndCustomerForm = ({id, handleSave, clientId}) => {
         if (clientId) {
             endCustomerBlank.clientId = clientId;
         } else {
-            clientId.clientId = null;
+            endCustomerBlank.clientId = null;
         }
         if (id) {
             API.getData("/endCustomer/single/" + id, (data) => {
@@ -58,6 +60,7 @@ const EndCustomerForm = ({id, handleSave, clientId}) => {
             }
         });
     }
+    console.log(endCustomer);
 
     return (
         <>
@@ -70,19 +73,29 @@ const EndCustomerForm = ({id, handleSave, clientId}) => {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="form_edit_name">Název</label>
-                        <input defaultValue={endCustomer.name} type="text" name="name" className="form-control"
+                        <input key={"name"+endCustomer.address} defaultValue={endCustomer.name} type="text" name="name" className="form-control"
                                id="form_edit_name"/>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="form_edit_address">Adresa</label>
-                        <textarea defaultValue={endCustomer.address} className="form-control" name="address"
+                        <textarea key={"address"+endCustomer.address} defaultValue={endCustomer.address} className="form-control" name="address"
                                   rows="10"
                                   id="form_edit_address"></textarea>
+
                     </div>
                     <div className="mb-3">
                         <label htmlFor="form_edit_ic">IČ</label>
-                        <input defaultValue={endCustomer.ic} type="text" name="ic" className="form-control"
-                               id="form_edit_ic"/>
+                        <IcoFinder name="ic" defaultValue={endCustomer.ic}
+                                   id="form_edit_ic"
+                                   onFind={(data)=>{
+                                       if (!data.name) return;
+                            setEndCustomer((prev) =>({
+                                ...prev,
+                                name: data.name,
+                                dic: data.dic,
+                                address: data.address
+                            }));
+                        }}/>
                     </div>
                     <div className="mb-3">
                         <label htmlFor="form_edit_web">Web</label>

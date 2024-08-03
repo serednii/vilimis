@@ -1,0 +1,154 @@
+irybarstvi.cz
+
+Leaderboard (branding)
+
+<!-- irybarstvi.cz / leaderboard1 -->
+      <script src="https://cdn.performax.cz/px2/flexo.js?1" async></script>
+      <div id="PX_27735_423565054092287"></div>
+      <script>
+          window.px2 = window.px2 || { conf: {},queue: [] };
+          px2.queue.push(function () {
+              px2.render({
+                  slot: {
+                      id: 27735
+                  },
+                  elem: "PX_27735_423565054092287"
+              })
+          });
+      </script>
+
+SMR 300x300
+
+<!-- irybarstvi.cz / medium-rectangle1 -->
+      <script src="https://cdn.performax.cz/px2/flexo.js?1" async></script>
+      <div id="PX_27759_782836710958376"></div>
+      <script>
+          window.px2 = window.px2 || { conf: {},queue: [] };
+          px2.queue.push(function () {
+              px2.render({
+                  slot: {
+                      id: 27759
+                  },
+                  elem: "PX_27759_782836710958376"
+              })
+          });
+      </script>
+
+Halfpage_1 300x600
+
+<!-- irybarstvi.cz / halfpage1 -->
+      <script src="https://cdn.performax.cz/px2/flexo.js?1" async></script>
+      <div id="PX_27741_733050599520261"></div>
+      <script>
+          window.px2 = window.px2 || { conf: {},queue: [] };
+          px2.queue.push(function () {
+              px2.render({
+                  slot: {
+                      id: 27741
+                  },
+                  elem: "PX_27741_733050599520261"
+              })
+          });
+      </script>
+
+Halfpage_2 300x600
+
+<!-- irybarstvi.cz / halfpage2 -->
+      <script src="https://cdn.performax.cz/px2/flexo.js?1" async></script>
+      <div id="PX_27753_201919824117722"></div>
+      <script>
+          window.px2 = window.px2 || { conf: {},queue: [] };
+          px2.queue.push(function () {
+              px2.render({
+                  slot: {
+                      id: 27753
+                  },
+                  elem: "PX_27753_201919824117722"
+              })
+          });
+      </script>
+
+Leaderboard_spodní 998x300
+
+<!-- irybarstvi.cz / billboard1 -->
+      <script src="https://cdn.performax.cz/px2/flexo.js?1" async></script>
+      <div id="PX_27738_995816643796632"></div>
+      <script>
+          window.px2 = window.px2 || { conf: {},queue: [] };
+          px2.queue.push(function () {
+              px2.render({
+                  slot: {
+                      id: 27738
+                  },
+                  elem: "PX_27738_995816643796632"
+              })
+          });
+      </script>
+
+MOBIL_A (Interscroller)
+
+<!-- irybarstvi.cz / mobile-rectangle1 -->
+      <script src="https://cdn.performax.cz/px2/flexo.js?1" async></script>
+      <div id="PX_27750_604704301602981"></div>
+      <script>
+          window.px2 = window.px2 || { conf: {},queue: [] };
+          px2.queue.push(function () {
+              px2.render({
+                  slot: {
+                      id: 27750
+                  },
+                  elem: "PX_27750_604704301602981"
+              })
+          });
+      </script>
+
+MOBIL_B 300x300
+
+<!-- irybarstvi.cz / mobile-rectangle2 -->
+      <script src="https://cdn.performax.cz/px2/flexo.js?1" async></script>
+      <div id="PX_27747_731217607421184"></div>
+      <script>
+          window.px2 = window.px2 || { conf: {},queue: [] };
+          px2.queue.push(function () {
+              px2.render({
+                  slot: {
+                      id: 27747
+                  },
+                  elem: "PX_27747_731217607421184"
+              })
+          });
+      </script>
+
+MOBIL_C 300x300
+
+<!-- irybarstvi.cz / mobile-rectangle3 -->
+      <script src="https://cdn.performax.cz/px2/flexo.js?1" async></script>
+      <div id="PX_27762_6881013625513"></div>
+      <script>
+          window.px2 = window.px2 || { conf: {},queue: [] };
+          px2.queue.push(function () {
+              px2.render({
+                  slot: {
+                      id: 27762
+                  },
+                  elem: "PX_27762_6881013625513"
+              })
+          });
+      </script>
+
+Outstream
+
+<!-- irybarstvi.cz / outstream -->
+      <script src="https://cdn.performax.cz/px2/flexo.js?1" async></script>
+      <div id="PX_27813_401359899108223"></div>
+      <script>
+          window.px2 = window.px2 || { conf: {},queue: [] };
+          px2.queue.push(function () {
+              px2.render({
+                  slot: {
+                      id: 27813
+                  },
+                  elem: "PX_27813_401359899108223"
+              })
+          });
+      </script>

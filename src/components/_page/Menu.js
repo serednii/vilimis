@@ -2,7 +2,7 @@ import {NavLink, useLocation} from "react-router-dom";
 import {
     ArrowArcRight,
     CheckSquare,
-    FolderSimple, Gear, Invoice,
+    FolderSimple, Gear, Invoice, ListChecks,
     Network,
     Speedometer, SquaresFour, Table,
     Timer, TreeStructure,
@@ -119,6 +119,17 @@ const Menu  = ({closeMobileMenu}) => {
                 </div>
             </li>
             <li className="nav-item">
+                <NavLink to="/checklists"
+                         className="nav-link d-flex justify-content-between">
+                                <span>
+                                    <span className="sidebar-icon">
+                                        <ListChecks/>
+                                    </span>
+                                    <span className="sidebar-text">Checklisty</span>
+                                </span>
+                </NavLink>
+            </li>
+            <li className="nav-item">
                 <NavLink to="/end-customers"
                          className="nav-link d-flex justify-content-between">
                                 <span>
@@ -202,11 +213,12 @@ const Menu  = ({closeMobileMenu}) => {
                                 </span>
                 </NavLink>
             </li>
-        </ul></div>
+        </ul>
+    </div>
 
-        {diskSpace !== null && diskSpace?.code == 200 && parseInt(diskSpace.quotaInMb) >= 0 && (
+    {diskSpace !== null && diskSpace?.code == 200 && parseInt(diskSpace.quotaInMb) >= 0 && (
 
-            <div className="my-5 disk-space">
+        <div className="my-5 disk-space">
             <div className="progress-wrapper">
                 <div className="progress-info">
                     <div className="h6 mb-0">{diskSpace.usedSpaceInMb} MB</div>

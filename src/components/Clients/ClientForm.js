@@ -8,6 +8,7 @@ import CommentsList from "../Comments/CommentsList";
 import ClientFormDefault from "./ClientFormDefault";
 import SessionsList from "../Sessions/SessionsList";
 import ProjectsList from "../Projects/ProjectsList";
+import AttachmentsList from "../Attachment/AttachmentsList";
 
 const clientBlank = {
     name: "",
@@ -34,6 +35,7 @@ const ClientForm = ({id, handleSave}) => {
                             <Tab>Projekty</Tab>
                             <Tab>Setkání</Tab>
                             <Tab>Poznámky</Tab>
+                            <Tab>Přílohy</Tab>
                         </TabList>
 
 
@@ -51,6 +53,10 @@ const ClientForm = ({id, handleSave}) => {
 
                         <TabPanel>
                             <CommentsList entity="client" entityId={id} />
+                        </TabPanel>
+
+                        <TabPanel>
+                            <AttachmentsList entity="client" entityId={id} />
                         </TabPanel>
                     </Tabs>
                 ) : (

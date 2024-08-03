@@ -4,6 +4,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import TaskFormTimeTracks from "./TaskFormTimeTracks";
 import CommentsList from "../Comments/CommentsList";
 import AttachmentsList from "../Attachment/AttachmentsList";
+import ChecklistsList from "../Checklists/ChecklistsList";
 
 const TaskForm = ({ id, handleSave, projectId }) => {
 
@@ -14,6 +15,7 @@ const TaskForm = ({ id, handleSave, projectId }) => {
                     <TabList>
                         <Tab>Nastavení</Tab>
                         <Tab>Časové záznamy</Tab>
+                        <Tab>Checklisty</Tab>
                         <Tab>Poznámky</Tab>
                         <Tab>Přílohy</Tab>
                     </TabList>
@@ -24,6 +26,10 @@ const TaskForm = ({ id, handleSave, projectId }) => {
 
                     <TabPanel>
                         <TaskFormTimeTracks taskId={id} />
+                    </TabPanel>
+
+                    <TabPanel>
+                        <ChecklistsList taskId={id}/>
                     </TabPanel>
 
                     <TabPanel>

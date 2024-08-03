@@ -252,7 +252,9 @@ const TasksList = ({projectId}) => {
                                                 </td>
                                             )}
                                             <td><span class="fw-normal">{taskUtil.deadLineDateFormated}</span></td>
-                                            <td><span class="fw-normal text-success">{taskUtil.taskStatus?.name}</span>
+                                            <td><span class="fw-normal"
+                                            style={taskUtil.taskStatus?.color != "" ? {color: taskUtil.taskStatus?.color} : {}}
+                                            >{taskUtil.taskStatus?.name}</span>
                                             </td>
                                             <td>
 

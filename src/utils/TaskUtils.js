@@ -13,19 +13,19 @@ class TaskUtils {
             this.deadLineDateFormated = new Date(task.deadLineDate.date).toLocaleDateString()
         }
 
-        const taskStatus = taskStatuses?.filter(taskStatus => taskStatus.id == task.taskStatusId)?.[0];
+        const taskStatus = taskStatuses?.filter(taskStatus => taskStatus.id == task?.taskStatusId)?.[0];
         this.taskStatus = taskStatus;
 
         let isImg = false;
         let imgUrl = "";
         if (task?.projectId) {
-            const project = projects?.filter(project => project.id == task.projectId)?.[0];
+            const project = projects?.filter(project => project.id == task?.projectId)?.[0];
             this.project = project;
 
-            const client = clients?.filter(client => client.id == project.clientId)?.[0];
+            const client = clients?.filter(client => client.id == project?.clientId)?.[0];
             this.client = client;
 
-            const endCustomer = endCustomers.filter(endCustomer => endCustomer.id == project.endCustomerId)?.[0];
+            const endCustomer = endCustomers.filter(endCustomer => endCustomer.id == project?.endCustomerId)?.[0];
             this.endCustomer = endCustomer;
 
             if (project?.endCustomerId) {

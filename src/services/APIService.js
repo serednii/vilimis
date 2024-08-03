@@ -44,16 +44,21 @@ class APIService {
             }
 
             if (callback) {
-                if ("data" in data) {
-                    callback(data.data);
-                    return;
-                }
+                try {
+                    if ("data" in data) {
+                        callback(data.data);
+                        return;
+                    }
 
-                callback(data);
+                    callback(data);
+                } catch (error) {
+                    console.log(error);
+                }
             }
-        }).catch((data)=> {
+        }).catch((error)=> {
             response.text().then((data) => {
                 //alert(data);
+                //console.log(error);
                 callback(data);
             });
         });

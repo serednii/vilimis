@@ -26,7 +26,7 @@ const TaskStatusesSelectList = ({onChange, selected}) => {
     }, []);
 
     function loadTaskStatuses(onLoad) {
-        API.getData("/taskStatus/list?order=priority%20DESC", (taskStatuses) => {
+        API.getData("/taskStatus/list?order=priority", (taskStatuses) => {
             setTaskStatuses(taskStatuses);
 
             if (taskStatuses && taskStatuses.length > 0) {

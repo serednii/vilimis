@@ -1,0 +1,91 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Checklist - položka</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_checklistItem") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ checklistItem.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_description">Popis</label>
+                <textarea class="form-control js-wysiwyg" name="description" rows="10" id="form_edit_description"
+                >{{ checklistItem.Description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_priority">Priorita</label>
+                <input step="1" value="{{ checklistItem.Priority }}" type="number" name="priority" class="form-control" id="form_edit_priority"
+                >
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input {% if checklistItem.Done %}checked{% endif %} type="checkbox" name="done" value="1" 
+                >
+                    Splněno
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_checklist_group_id">Checklist Skupina ID</label>
+                <select name="checklist_group_id" class="form-control" id="form_edit_checklist_group_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for checklist_group_id in checklist_group_ids %}
+                        <option value="{{ checklist_group_id.id }}">
+                        {% if checklist_group_id.title %}
+                            {{ checklist_group_id.title }}
+                        {% elseif checklist_group_id.name %}
+                            {{ checklist_group_id.name }}
+                        {% else %}
+                            #{{ checklist_group_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_checklist_id">Checklist ID</label>
+                <select name="checklist_id" class="form-control" id="form_edit_checklist_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for checklist_id in checklist_ids %}
+                        <option value="{{ checklist_id.id }}">
+                        {% if checklist_id.title %}
+                            {{ checklist_id.title }}
+                        {% elseif checklist_id.name %}
+                            {{ checklist_id.name }}
+                        {% else %}
+                            #{{ checklist_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for checklistItem in checklistItems %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_checklistItem_edit", {"id":checklistItem.id}) }}">{{ checklistItem.Name }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_checklistItem_edit", {"id":checklistItem.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_checklistItem_delete", {"id":checklistItem.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Checklist - skupina - úprava</h1>
+
+    <form action="{{ _router.generateUrl("admin_checklistGroup_edit", {"id":checklistGroup.id}) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ checklistGroup.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_description">Popis</label>
+                <textarea class="form-control js-wysiwyg" name="description" rows="10" id="form_edit_description"
+                >{{ checklistGroup.Description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_priority">Priorita</label>
+                <input step="1" value="{{ checklistGroup.Priority }}" type="number" name="priority" class="form-control" id="form_edit_priority"
+                >
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input {% if checklistGroup.Done %}checked{% endif %} type="checkbox" name="done" value="1" 
+                >
+                    Splněno
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_checklist_id">Checklist ID</label>
+                <select name="checklist_id" class="form-control" id="form_edit_checklist_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for checklist_id in checklist_ids %}
+                        <option value="{{ checklist_id.id }}"
+                                {% if checklist_id.id == checklistGroup.ChecklistId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if checklist_id.title %}
+                            {{ checklist_id.title }}
+                        {% elseif checklist_id.name %}
+                            {{ checklist_id.name }}
+                        {% else %}
+                            #{{ checklist_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        <button type="submit" class="btn btn-default">Uložit</button>
+    </form>
+
+{% endblock %}
