@@ -26,7 +26,7 @@ const ProjectStatusesSelectList = ({onChange, selected}) => {
     }, []);
 
     function loadProjectStatuses(onLoad) {
-        API.getData("/projectStatus/list", (projectStatuses) => {
+        API.getData("/projectStatus/list?order=priority", (projectStatuses) => {
             setProjectStatuses(projectStatuses);
 
             if (projectStatuses && projectStatuses.length > 0) {
@@ -81,13 +81,10 @@ const ProjectStatusesSelectList = ({onChange, selected}) => {
     return (
         <>
             <Select
-                placeholder={"Vybrat"}
                 className="react-select-container"
                 classNamePrefix="react-select"
                 value={selectedOption}
                 onChange={handleChange}
-                isSearchable={true}
-                menuPosition="fixed"
                 options={option}
                 styles={colourStyles}
             />

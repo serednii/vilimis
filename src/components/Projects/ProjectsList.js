@@ -216,7 +216,8 @@ const ProjectsList = ({clientId}) => {
                                             </td>
                                             <td>
                                             <span
-                                                className="fw-normal text-success">{projectUtil.projectStatus?.name}</span>
+                                                className="fw-normal"
+                                                style={projectUtil.projectStatus?.color != "" ? {color: projectUtil.projectStatus?.color} : {}}>{projectUtil.projectStatus?.name}</span>
                                             </td>
                                             <td>
 

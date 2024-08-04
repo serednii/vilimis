@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import {Tab, TabList, TabPanel, Tabs} from "react-tabs";
 import SettingsBaseForm from "../components/Settings/SettingsBaseForm";
 import SettingsTasksForm from "../components/Settings/SettingsTasksForm";
+import SettingsProjectsForm from "../components/Settings/SettingsProjectsForm";
 
 const Settings = ({}) => {
 
@@ -18,11 +19,16 @@ const Settings = ({}) => {
             <Tabs>
                 <TabList>
                     <Tab>Základní nastavení</Tab>
+                    <Tab>Projekty</Tab>
                     <Tab>Úkoly</Tab>
                 </TabList>
 
                 <TabPanel>
                     <SettingsBaseForm/>
+                </TabPanel>
+
+                <TabPanel>
+                    <SettingsProjectsForm/>
                 </TabPanel>
 
                 <TabPanel>

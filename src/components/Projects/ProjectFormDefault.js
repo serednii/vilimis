@@ -3,7 +3,7 @@ import {useRootContext} from "../../contexts/RootContext";
 import {CONFIG} from "../../config";
 import ClientsSelectList from "../Clients/ClientsSelectList";
 import EndCustomersSelectList from "../EndCustomers/EndCustomersSelectList";
-import ProjectStatusesSelectList from "../ProjectStatus/ProjectsStatusSelectList";
+import ProjectStatusesSelectList from "../ProjectStatuses/ProjectStatusesSelectList";
 
 const projectBlank = {
     name: "",

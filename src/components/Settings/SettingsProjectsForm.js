@@ -4,27 +4,27 @@ import update from "immutability-helper";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {DndProvider, useDrag, useDrop} from "react-dnd";
 import {heightBetweenCursorAndMiddle} from "../../utils";
-import SettingsTasksFormTaskStatusItem from "./SettingsTasksFormTaskStatusItem";
+import SettingsProjectsFormProjectStatusItem from "./SettingsProjectsFormProjectStatusItem";
 import {Plus} from "@phosphor-icons/react";
-import TaskFormModal from "../Tasks/TaskFormModal";
-import TaskStatusFormModal from "../TaskStatuses/TaskStatusFormModal";
+import ProjectFormModal from "../Projects/ProjectFormModal";
+import ProjectStatusFormModal from "../ProjectStatuses/ProjectStatusFormModal";
 
-const SettingsTasksForm = ({}) => {
+const SettingsProjectsForm = ({}) => {
     const {API} = useRootContext()
-    const [taskStatuses, setTaskStatuses] = useState([]);
+    const [projectStatuses, setProjectStatuses] = useState([]);
     const [reload, setReload] = useState(true);
-    const [taskStatusesLoading, setTaskStatusesLoading] = useState(false);
+    const [projectStatusesLoading, setProjectStatusesLoading] = useState(false);
 
     const [modalIsOpen, setModalIsOpen] = React.useState(false);
-    const [modalTaskStatusId, setModalTaskStatusId] = React.useState(0);
+    const [modalProjectStatusId, setModalProjectStatusId] = React.useState(0);
 
     useEffect(() => {
         if (!reload) return;
-        setTaskStatusesLoading(true);
+        setProjectStatusesLoading(true);
 
-        loadTaskStatuses();
+        loadProjectStatuses();
 
-        setTaskStatusesLoading(false);
+        setProjectStatusesLoading(false);
         setReload(false);
     }, [reload]);
 
@@ -33,21 +33,21 @@ const SettingsTasksForm = ({}) => {
     }
 
     function handleDelete(id, noreload) {
-        API.getData("/taskStatus/delete/" + id, () => {
+        API.getData("/projectStatus/delete/" + id, () => {
             if (!noreload) {
                 setReload(true);
             }
         });
     }
 
-    function loadTaskStatuses() {
-        API.getData("/taskStatus/list?order=priority", (taskStatuses) => {
-            setTaskStatuses(taskStatuses);
+    function loadProjectStatuses() {
+        API.getData("/projectStatus/list?order=priority", (projectStatuses) => {
+            setProjectStatuses(projectStatuses);
         });
     }
 
     const moveCard = (dragIndex, hoverIndex) => {
-        setTaskStatuses((prevCards) => {
+        setProjectStatuses((prevCards) => {
                 prevCards = update(prevCards, {
                     $splice: [
                         [dragIndex, 1],
@@ -57,10 +57,10 @@ const SettingsTasksForm = ({}) => {
 
                 let formData = new FormData;
                 prevCards.forEach((card, index) => {
-                    formData.append("taskStatuses[id][]", card.id);
-                    formData.append("taskStatuses[priority][]", index);
+                    formData.append("projectStatuses[id][]", card.id);
+                    formData.append("projectStatuses[priority][]", index);
                 });
-                API.postData("/taskStatusPriority/save", formData, () => {
+                API.postData("/projectStatusPriority/save", formData, () => {
                     setReload((prev) => prev + 1);
                 });
 
@@ -71,7 +71,7 @@ const SettingsTasksForm = ({}) => {
     };
 
 
-    if (taskStatusesLoading) {
+    if (projectStatusesLoading) {
         return (<>Načítaní..</>)
     }
 
@@ -79,31 +79,31 @@ const SettingsTasksForm = ({}) => {
         <>
             <div className="row">
                 <div className="col-12 col-md-8">
-                    <h2 className="h5 mb-3">Stavy úkolů</h2>
+                    <h2 className="h5 mb-3">Stavy projektů</h2>
 
                     <p>
                         <button onClick={() => {
-                            setModalTaskStatusId(null);
+                            setModalProjectStatusId(null);
                             setModalIsOpen(true)
                         }}
                                 className="btn btn-secondary d-inline-flex align-items-center me-2">
                             <Plus size={16} className="me-2"/>
-                            Nový stav úkolu
+                            Nový stav projektu
                         </button>
                     </p>
 
-                    {taskStatuses && taskStatuses?.length > 0 && (
+                    {projectStatuses && projectStatuses?.length > 0 && (
                         <DndProvider backend={HTML5Backend}>
-                            {taskStatuses.map((taskStatus, index) => (
-                                <SettingsTasksFormTaskStatusItem
-                                    taskStatus={taskStatus}
-                                    id={taskStatus.id}
+                            {projectStatuses.map((projectStatus, index) => (
+                                <SettingsProjectsFormProjectStatusItem
+                                    projectStatus={projectStatus}
+                                    id={projectStatus.id}
                                     index={index}
-                                    key={taskStatus.id + "-" + index}
+                                    key={projectStatus.id + "-" + index}
                                     moveCard={moveCard}
                                     handleDelete={handleDelete}
                                     setModalIsOpen={setModalIsOpen}
-                                    setModalTaskStatusId={setModalTaskStatusId}
+                                    setModalProjectStatusId={setModalProjectStatusId}
                                 />
                             ))}
                         </DndProvider>
@@ -111,14 +111,14 @@ const SettingsTasksForm = ({}) => {
                 </div>
             </div>
             {modalIsOpen && (
-                <TaskStatusFormModal
+                <ProjectStatusFormModal
                     isOpen={modalIsOpen}
                     onRequestClose={closeModal}
                     setIsOpen={setModalIsOpen}
-                    id={modalTaskStatusId}
+                    id={modalProjectStatusId}
                     callback={() => setReload(true)}/>
             )}</>
     );
 }
 
-export default SettingsTasksForm;
+export default SettingsProjectsForm;
