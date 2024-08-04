@@ -5,6 +5,7 @@ import {useRootContext} from "../../contexts/RootContext";
 import ChecklistFormModal from "./ChecklistFormModal";
 import {Copy, Plus, Trash} from "@phosphor-icons/react";
 import ChecklistCloneModal from "./ChecklistCloneModal";
+import update from "immutability-helper";
 
 const ChecklistsList = ({projectId, taskId}) => {
     const {API} = useRootContext()
@@ -60,9 +61,6 @@ const ChecklistsList = ({projectId, taskId}) => {
     if (checklistsLoading) {
         return ("Načítání...");
     }
-
-    let checklistUtil = null;
-    let budgetUtil = null;
 
     const handleBulkAction = () => {
         switch (bulkAction) {
@@ -120,14 +118,14 @@ const ChecklistsList = ({projectId, taskId}) => {
                     <div className="card border-0 shadow mb-4">
                         <div className="card-body">
                             <div className="table-responsive">
-                                <table class="table table-hover align-items-center">
+                                <table className="table table-hover align-items-center">
                                     <thead>
                                     <tr>
                                         <td style={{maxWidth: "15px", width: "15px", minWidth: "15px"}}
                                             className="p-0 ps-2 border-bottom">
                                             <div className="form-check dashboard-check">
                                                 <input className="form-check-input" type="checkbox" id="item_all"
-                                                       onClick={(e) => {
+                                                       onChange={(e) => {
                                                            if (e.target.checked) {
                                                                setSelectedIds((prev) => [...checklists.map((checklist) => checklist.id)]);
                                                            } else {
@@ -138,8 +136,8 @@ const ChecklistsList = ({projectId, taskId}) => {
                                                 <label className="form-check-label" htmlFor="item_all"/>
                                             </div>
                                         </td>
-                                        <th class="border-bottom">Název</th>
-                                        <th class="border-bottom">Akce</th>
+                                        <th className="border-bottom">Název</th>
+                                        <th className="border-bottom">Akce</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -150,7 +148,7 @@ const ChecklistsList = ({projectId, taskId}) => {
                                                     <input className="form-check-input" type="checkbox"
                                                            id={"item_" + checklist.id}
                                                            checked={selectedIds.includes(checklist.id)}
-                                                           onClick={(e) => {
+                                                           onChange={(e) => {
                                                                if (e.target.checked) {
                                                                    setSelectedIds((prev) => [...prev, checklist.id]);
                                                                } else {

@@ -58,9 +58,40 @@ body
 
 .checklist-item
   transition: opacity .2s
+  position: relative
+
+  &:before, &:after
+    content: ""
+    position: absolute
+    height: 2px
+    left: 0
+    width: 100%
+    background: #eee
+    border-radius: 2px
+    opacity: 0
+
+  &:before
+    top: -2px
+
+  &:after
+    bottom: -2px
+
+  &.is-overTop
+    &:before
+      opacity: 1
+
+  &.is-overDown
+    &:after
+      opacity: 1
 
   &.is-done
     opacity: .3
+
+    label
+      text-decoration: line-through
+
+  &.dragging
+    opacity: .5
 
 
 @media (max-width: 767px)

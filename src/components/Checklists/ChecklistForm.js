@@ -4,10 +4,6 @@ import JoditEditor from 'jodit-react';
 import {CONFIG} from "../../config";
 import ChecklistGroups from "../ChecklistGroups/ChecklistGroups";
 
-const checklistBlank = {
-    name: "",
-    description: "",
-}
 
 const ChecklistForm = ({id, handleSave, taskId, projectId}) => {
     const {API} = useRootContext()
@@ -17,8 +13,8 @@ const ChecklistForm = ({id, handleSave, taskId, projectId}) => {
     const checklistBlank = {
         name: "",
         description: "",
-        projectId: projectId,
-        taskId: taskId
+        projectId: projectId?projectId:"",
+        taskId: taskId?taskId:""
     }
 
     const [checklistLoading, setChecklistLoading] = useState(false);
@@ -72,8 +68,8 @@ const ChecklistForm = ({id, handleSave, taskId, projectId}) => {
                     <div className="row">
                         <div className="col-md-6">
                             <form onSubmit={handleSubmit}>
-                                <input type="hidden" name="project_id" value={checklist.projectId}/>
-                                <input type="hidden" name="task_id" value={checklist.taskId}/>
+                                <input type="hidden" name="project_id" value={checklist.projectId?checklist.projectId:""}/>
+                                <input type="hidden" name="task_id" value={checklist.taskId?checklist.taskId:""}/>
 
                                 <div className="mb-3">
                                     <label htmlFor="form_edit_name">Název</label>

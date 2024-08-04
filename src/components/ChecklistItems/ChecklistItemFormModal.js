@@ -4,11 +4,11 @@ import Modal from "../Modal/Modal";
 
 const ChecklistItemFormModal = ({onRequestClose, onAfterOpen, isOpen, setModalIsOpen, callback, id, checklistId, checklistGroupId}) => {
 
-    function onNewChecklistItem(checklistItem) {
+    function onNewChecklistItem() {
         setModalIsOpen(false);
 
         if (callback) {
-            callback(checklistItem);
+            callback();
         }
     }
 

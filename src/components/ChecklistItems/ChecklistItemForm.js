@@ -49,7 +49,7 @@ const ChecklistItemForm = ({id, handleSave, checklistId, checklistGroupId}) => {
             setChecklistItem(data.checklistItem);
 
             if (handleSave) {
-                handleSave(data.checklistItem);
+                handleSave();
             }
         });
     }

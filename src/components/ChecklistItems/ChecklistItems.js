@@ -1,16 +1,13 @@
 import ChecklistItemsItem from "./ChecklistItemsItem";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Plus} from "@phosphor-icons/react";
 import {useRootContext} from "../../contexts/RootContext";
 import ChecklistItemFormModal from "./ChecklistItemFormModal";
+import update from "immutability-helper";
+import ChecklistItemsItemBlank from "./ChecklistItemsItemBlank";
 
-const ChecklistItems = ({checklistId, checklistGroupId}) => {
+const ChecklistItems = ({checklistId, checklistGroupId, checklistItems, onChange, moveCardItem}) => {
     const {API} = useRootContext()
-    const [reload, setReload] = useState(true);
-    const [checklistItems, setChecklistItems] = useState([]);
-
-    const [checklistsItemsLoading, setChecklistsItemsLoading] = useState(false);
-
 
     const [modalIsOpen, setModalIsOpen] = React.useState(false);
     const [modalChecklistItemId, setModalChecklistItemId] = React.useState(0);
@@ -23,51 +20,29 @@ const ChecklistItems = ({checklistId, checklistGroupId}) => {
     function handleDelete(id, noreload) {
         API.getData("/checklistItems/delete/" + id, () => {
             if (!noreload) {
-                setReload(true);
+                onChange();
             }
         });
     }
 
-    useEffect(() => {
-        if (!reload) return;
-
-        setChecklistsItemsLoading(true);
-        setChecklistsItemsLoading(true);
-
-        let url = "/checklistItem/list";
-        url += "?"
-        url += "&filter[checklist_id]=" + encodeURIComponent(checklistId);
-        url += "&filter[checklist_group_id]=" + encodeURIComponent(checklistGroupId);
-        url += "&order=priority";
-
-        API.getData(url, (checklistItems) => {
-            setChecklistItems(checklistItems);
-            setChecklistsItemsLoading(false);
-        });
-
-        setReload(false);
-    }, [checklistId, reload]);
-
     return (
         <>
-
-            {checklistsItemsLoading ? (
-                <>Načítaní..</>
+            {checklistItems?.length > 0 ? (
+                checklistItems?.map((checklistItem, index) => (
+                    <ChecklistItemsItem
+                        key={checklistItem.id+"_"+index+"_"+checklistItem.name}
+                        id={checklistItem.id}
+                        index={index}
+                        checklistItem={checklistItem}
+                        moveCardItem={moveCardItem}
+                        onChange={onChange}
+                    />
+                ))
             ) : (
-                checklistItems?.length > 0 ? (
-                    checklistItems?.map((checklistItem) => (
-                        <ChecklistItemsItem
-                            key={checklistItem.id}
-                            checklistItem={checklistItem}
-                            checklistItems={checklistItems}
-                            onChange={() => setReload(true)}
-                        />
-                    ))
-                ) : (
-                    <p>Zatím žádné položky</p>
-                )
+               <ChecklistItemsItemBlank
+                   moveCardItem={moveCardItem} id="0" index="-1" checklistGroupId={checklistGroupId}
+               />
             )}
-
 
             <div className="my-3">
                 <button onClick={() => {
@@ -87,7 +62,7 @@ const ChecklistItems = ({checklistId, checklistGroupId}) => {
                     id={modalChecklistItemId}
                     checklistId={checklistId}
                     checklistGroupId={checklistGroupId}
-                    callback={() => setReload(true)}/>
+                    callback={onChange}/>
             )}
         </>
     );

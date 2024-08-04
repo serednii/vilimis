@@ -1,5 +1,6 @@
 import React from "react";
 import ReactModal from 'react-modal';
+import {renderToString} from "react-dom/server";
 
 ReactModal.setAppElement("#root");
 
@@ -10,7 +11,7 @@ const Modal = ({ onRequestClose, onAfterOpen, isOpen, title, children, size }) =
                 isOpen={isOpen}
                 onAfterOpen={onAfterOpen}
                 onRequestClose={onRequestClose}
-                contentLabel={title}
+                contentLabel={renderToString(title)}
                 className={"modal-v " + (size ? "modal-"+size : "")}
                 overlayClassName="modal-v-dialog"
             >

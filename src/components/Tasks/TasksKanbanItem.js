@@ -2,7 +2,7 @@ import React, {useRef, useState} from "react";
 import {CONFIG} from "../../config";
 import TaskFormModal from "../Tasks/TaskFormModal";
 import {useDrag, useDrop} from 'react-dnd'
-import {heightBetweenCursorAndMiddle} from "../../utils";
+import {getIsTopIsDown, heightBetweenCursorAndMiddle, runMoveItem} from "../../utils";
 import TasksKanbanSettingsModal from "./TasksKanbanSettingsModal";
 import BudgetCalculator from "../../utils/BudgetCalculator";
 import {Clock, NotePencil} from "@phosphor-icons/react";
@@ -45,44 +45,18 @@ const TasksKanbanItem = ({index, id, onUpdate, task, projects, endCustomers, cli
             if (!ref.current) {
                 return
             }
+
             const dragIndex = item.index
-            const hoverIndex = index
-            // Don't replace items with themselves
-            if (item.taskStatusId == taskStatusId && dragIndex === hoverIndex) {
-                return
-            }
-            // Determine rectangle on screen
-            const hoverBoundingRect = ref.current?.getBoundingClientRect()
-            // Get vertical middle
-            const hoverMiddleY =
-                (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
-            // Determine mouse position
-            const clientOffset = monitor.getClientOffset()
-            // Get pixels to the top
-            const hoverClientY = clientOffset.y - hoverBoundingRect.top
-            // Only perform the move when the mouse has crossed half of the items height
-            // When dragging downwards, only move when the cursor is below 50%
-            // When dragging upwards, only move when the cursor is above 50%
-            // Dragging downwards
-            if (item.taskStatusId == taskStatusId && dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-                return
-            }
-            // Dragging upwards
-            if ((item.taskStatusId == taskStatusId && dragIndex > hoverIndex && hoverClientY > hoverMiddleY)) {
+            const dragTaskStatusId = item.taskStatusId;
+            let hoverIndex = index
+            const hoverTaskStatusId = taskStatusId;
+
+            if (dragIndex === hoverIndex && dragTaskStatusId === hoverTaskStatusId) {
                 return
             }
 
-            // Time to actually perform the action
-            if (item.taskStatusId != taskStatusId && isDown) {
-                moveCard(dragIndex, hoverIndex+1, item.taskStatusId, taskStatusId)
-            } else {
+            runMoveItem(ref.current, monitor, dragIndex, hoverIndex, dragTaskStatusId, hoverTaskStatusId, moveCard);
 
-                moveCard(dragIndex, hoverIndex, item.taskStatusId, taskStatusId)
-            }
-            // Note: we're mutating the monitor item here!
-            // Generally it's better to avoid mutations,
-            // but it's good here for the sake of performance
-            // to avoid expensive index searches.
             item.index = hoverIndex
         },
         hover: (element, monitor) => {
@@ -95,16 +69,8 @@ const TasksKanbanItem = ({index, id, onUpdate, task, projects, endCustomers, cli
             if (element.id === id) {
                 return;
             }
-            const height = heightBetweenCursorAndMiddle(ref.current, monitor) + 24;
 
-            if (height < 0) {
-                isTop = true;
-                isDown = false;
-            }
-            if (height >= 0) {
-                isTop = false;
-                isDown = true;
-            }
+            let [isTop, isDown] = getIsTopIsDown(ref.current, monitor);
 
             setIsTop(isTop);
             setIsDown(isDown);
