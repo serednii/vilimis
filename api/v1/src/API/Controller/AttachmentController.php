@@ -20,6 +20,7 @@ use Gephart\Framework\Response\JsonResponseFactory;
 class AttachmentController extends AbstractApiController
 {
     const EVENT_SAVE = __CLASS__ . "::EVENT_SAVE";
+    const EVENT_BEFORE_SAVE = __CLASS__ . "::EVENT_BEFORE_SAVE";
 
     /**
      * @var EventManager
@@ -134,10 +135,18 @@ class AttachmentController extends AbstractApiController
             }
             $this->mapEntityFromArray($attachment, $postData, $filesData);
 
-            EntityManager::save($attachment);
+            try {
+                $attachment = $this->triggerBeforeSave($attachment);
 
-            $attachment = $this->triggerSave($attachment);
+                EntityManager::save($attachment);
 
+                $attachment = $this->triggerSave($attachment);
+            } catch (\Exception $exception) {
+                return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
+                    "message" => $exception->getMessage(),
+                    "code" => 500
+                ]));
+            }
 
             return $this->jsonResponseFactory->createResponse($this->jsonSerializator->serialize([
                 "attachment" => $attachment,
@@ -241,6 +250,19 @@ class AttachmentController extends AbstractApiController
     {
         $event = new Event();
         $event->setName(self::EVENT_SAVE);
+        $event->setParams([
+            "attachment" => $attachment
+        ]);
+
+        $this->eventManager->trigger($event);
+
+        return $event->getParam("attachment");
+    }
+
+    private function triggerBeforeSave(Attachment $attachment): Attachment
+    {
+        $event = new Event();
+        $event->setName(self::EVENT_BEFORE_SAVE);
         $event->setParams([
             "attachment" => $attachment
         ]);
