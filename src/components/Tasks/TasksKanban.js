@@ -56,7 +56,7 @@ const TasksKanban = ({ }) => {
 
         setTasksLoading(true);
 
-        API.getData("/taskStatus/list?order=priority%20DESC&a", (taskStatuses) => {
+        API.getData("/taskStatus/list?order=priority%20ASC&a", (taskStatuses) => {
             setTaskStatuses(taskStatuses);
 
             if (taskStatuses && taskStatuses.length > 0) {

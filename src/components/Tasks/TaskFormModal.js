@@ -21,7 +21,6 @@ const TaskFormModal = ({ onRequestClose, onAfterOpen, isOpen, setIsOpen, callbac
                 onRequestClose={onRequestClose}
                 title={id ? (
                     <div className="d-flex">
-                        <TimeTracker taskId={id}/>
                         Úkol #{id}
                     </div>
                 ):"Nový úkol"}

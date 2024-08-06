@@ -45,7 +45,7 @@ const TasksList = ({projectId}) => {
 
         setTasksLoading(true);
 
-        API.getData("/taskStatus/list?order=priority%20DESC", (taskStatuses) => {
+        API.getData("/taskStatus/list?order=priority%20ASC", (taskStatuses) => {
             setTaskStatuses(taskStatuses);
 
             let url = "/task/list?order=dead_line_date";

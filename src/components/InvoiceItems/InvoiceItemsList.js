@@ -135,6 +135,7 @@ const InvoiceItemsList = ({invoiceId}) => {
                                     <td width="100">
                                         <input defaultValue={invoiceItem.priceWithoutVat} type="number"
                                                name="invoice_items[price_without_vat][]"
+                                               step="0.01"
                                                className="form-control"
                                                onChange={(e) => {
                                                    invoiceItems[invoiceItem_key].priceWithoutVat = e.target.value;

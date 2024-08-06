@@ -35,6 +35,7 @@ import Settings from "./pages/Settings";
 import TopUserInfo from "./components/_page/TopUserInfo";
 import Menu from "./components/_page/Menu";
 import Checklists from "./pages/Checklists";
+import Costs from "./pages/Costs";
 
 function Root() {
     const [user, setUser] = useState(null);
@@ -347,6 +348,8 @@ function Root() {
                         <Routes>
                             {/*<Route path="/" element={<Layout/>}>*/}
                             <Route index element={<Home/>}/>
+                            <Route path="costs/*" element={<Costs/>}/>
+                            <Route path="costs" element={<Costs/>}/>
                             <Route path="end-customer-contacts/*" element={<EndCustomerContact/>}/>
                             <Route path="end-customer-contact" element={<EndCustomerContact/>}/>
                             <Route path="client-contacts/*" element={<ClientContact/>}/>
@@ -368,7 +371,7 @@ function Root() {
                             <Route path="invoices" element={<Invoices/>}/>
                             <Route path="time-tracks/*" element={<TimeTracks/>}/>
                             <Route path="time-tracks" element={<TimeTracks/>}/>
-                            <Route path="reports/*" element={<TimeTracks/>}/>
+                            <Route path="reports/*" element={<Reports/>}/>
                             <Route path="reports" element={<Reports/>}/>
                             <Route path="checklists" element={<Checklists/>}/>
                             <Route path="settings" element={<Settings/>}/>

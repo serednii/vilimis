@@ -19,7 +19,6 @@ const InvoicesChart = ({invoices, year}) => {
         };
 
         invoices.forEach(invoice => {
-            console.log(invoice.createdDate)
             if (invoice.createdDate?.date?.substring(0, 7) === year+"-"+monthNumber) {
                 if (invoice.payed) {
                     dataset[index].y1 += parseFloat(invoice.amount);

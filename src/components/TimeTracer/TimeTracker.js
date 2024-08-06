@@ -2,11 +2,11 @@ import { useRef, useState } from "react";
 import TimeTrackerButton from "./TimeTrackerButton";
 import TimeTrackerTask from "./TimeTrackerTask";
 import { useRootContext } from "../../contexts/RootContext";
-import { CONFIG } from "../../config";
 import {TIMETRACKER_ACTIONS} from "../../reducers/timetrackerReducer";
 
 const TimeTracker = ({taskId}) => {
-    const { API, timetrackerState, timetrackerDispatch } = useRootContext();
+    const { timetrackerState, timetrackerDispatch } = useRootContext();
+    const {API} = useRootContext()
     const [isOpen, setIsOpen] = useState(false)
 
     function handleChange(taskId) {

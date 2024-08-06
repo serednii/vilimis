@@ -1,0 +1,89 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Náklady</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_cost") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ cost.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_description">Popis</label>
+                <textarea class="form-control js-wysiwyg" name="description" rows="10" id="form_edit_description"
+                >{{ cost.Description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_cost_category_id">Kategorie</label>
+                <select name="cost_category_id" class="form-control" id="form_edit_cost_category_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for cost_category_id in cost_category_ids %}
+                        <option value="{{ cost_category_id.id }}">
+                        {% if cost_category_id.title %}
+                            {{ cost_category_id.title }}
+                        {% elseif cost_category_id.name %}
+                            {{ cost_category_id.name }}
+                        {% else %}
+                            #{{ cost_category_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_amount">Částka</label>
+                <input value="{{ cost.Amount }}" type="number" name="amount" class="form-control" id="form_edit_amount"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_day_of_accounting">Den zaúčtování</label>
+                <input value="{{ cost.DayOfAccounting.format("Y-m-d") }}" type="date" name="day_of_accounting" class="form-control" id="form_edit_day_of_accounting"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_cost_repeatable_id">Opakový náklad</label>
+                <select name="cost_repeatable_id" class="form-control" id="form_edit_cost_repeatable_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for cost_repeatable_id in cost_repeatable_ids %}
+                        <option value="{{ cost_repeatable_id.id }}">
+                        {% if cost_repeatable_id.title %}
+                            {{ cost_repeatable_id.title }}
+                        {% elseif cost_repeatable_id.name %}
+                            {{ cost_repeatable_id.name }}
+                        {% else %}
+                            #{{ cost_repeatable_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for cost in costs %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_cost_edit", {"id":cost.id}) }}">{{ cost.Name }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_cost_edit", {"id":cost.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_cost_delete", {"id":cost.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

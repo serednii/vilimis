@@ -31,7 +31,7 @@ const ProjectsKanban = ({}) => {
     useEffect(() => {
         if (!reload) return;
 
-        API.getData("/projectStatus/list?order=priority%20DESC", (projectStatuses) => {
+        API.getData("/projectStatus/list?order=priority%20ASC", (projectStatuses) => {
             setProjectStatuses(projectStatuses);
 
             if (projectStatuses && projectStatuses.length > 0) {

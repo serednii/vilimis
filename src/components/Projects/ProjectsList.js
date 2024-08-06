@@ -34,7 +34,7 @@ const ProjectsList = ({clientId}) => {
 
         setProjectsLoading(true);
 
-        API.getData("/projectStatus/list?order=priority%20DESC", (projectStatuses) => {
+        API.getData("/projectStatus/list?order=priority%20ASC", (projectStatuses) => {
             setProjectStatuses(projectStatuses);
 
             let url = "/project/list?order=name";

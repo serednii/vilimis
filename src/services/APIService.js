@@ -1,6 +1,4 @@
-import Home from "../pages/Home";
 import {LOADER_ACTIONS} from "../reducers/loaderReducer";
-import {CONFIG} from "../config";
 class APIService {
     constructor(loaderDispatch, toast, jwt) {
         this.loaderDispatch = loaderDispatch;

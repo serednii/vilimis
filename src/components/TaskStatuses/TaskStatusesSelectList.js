@@ -60,7 +60,7 @@ const TaskStatusesSelectList = ({onChange, selected}) => {
             display: 'block',
             marginRight: 8,
             height: 20,
-            width: 40,
+            width: 20,
         },
     });
 

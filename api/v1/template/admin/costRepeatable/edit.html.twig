@@ -1,0 +1,62 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Náklady - opakované - úprava</h1>
+
+    <form action="{{ _router.generateUrl("admin_costRepeatable_edit", {"id":costRepeatable.id}) }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ costRepeatable.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_description">Popis</label>
+                <textarea class="form-control js-wysiwyg" name="description" rows="10" id="form_edit_description"
+                >{{ costRepeatable.Description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_cost_category_id">Kategorie</label>
+                <select name="cost_category_id" class="form-control" id="form_edit_cost_category_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for cost_category_id in cost_category_ids %}
+                        <option value="{{ cost_category_id.id }}"
+                                {% if cost_category_id.id == costRepeatable.CostCategoryId %}
+                                selected
+                                {% endif %}
+                        >
+                        {% if cost_category_id.title %}
+                            {{ cost_category_id.title }}
+                        {% elseif cost_category_id.name %}
+                            {{ cost_category_id.name }}
+                        {% else %}
+                            #{{ cost_category_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_frequency">Frekvence</label>
+                <input value="{{ costRepeatable.Frequency }}" type="text" name="frequency" class="form-control" id="form_edit_frequency"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_amount">Částka</label>
+                <input value="{{ costRepeatable.Amount }}" type="number" name="amount" class="form-control" id="form_edit_amount"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_day_of_accounting">Den zaúčtování</label>
+                <input step="1" value="{{ costRepeatable.DayOfAccounting }}" type="number" name="day_of_accounting" class="form-control" id="form_edit_day_of_accounting"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_first_day_of_accounting">První den zaúčtování</label>
+                <input value="{{ costRepeatable.FirstDayOfAccounting.format("Y-m-d") }}" type="date" name="first_day_of_accounting" class="form-control" id="form_edit_first_day_of_accounting"
+                >
+            </div>
+        <button type="submit" class="btn btn-default">Uložit</button>
+    </form>
+
+{% endblock %}

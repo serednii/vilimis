@@ -16,7 +16,6 @@ const InvoicesOverview = ({invoices, year}) => {
     let countOverDue = 0;
 
     invoices.forEach(invoice => {
-        console.log(invoice.createdDate)
         if (invoice.createdDate?.date?.substring(0, 4) == year) {
             if (invoice.payed) {
                 amountPayed += parseFloat(invoice.amount);
