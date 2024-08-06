@@ -81,7 +81,7 @@ const CostsList = ({}) => {
                         <div className="col-md-8 mb-4">
                             <div className="card border-0 shadow h-100">
                                 <div className="card-body">
-                                    <CostsChart costs={costs} year={year}/>
+                                    <CostsChart costCategories={costCategories} costs={costs} year={year}/>
                                 </div>
                             </div>
                         </div>
