@@ -2,18 +2,18 @@ import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import Select from "react-select";
 import {CONFIG} from "../../config";
-import ClientFormModal from "./ClientFormModal";
+import CostFormModal from "./CostFormModal";
 
-const ClientsSelectList = ({onChange, selected}) => {
+const CostsSelectList = ({onChange, selected, license}) => {
     const {API} = useRootContext()
-    const [clients, setClients] = useState([]);
+    const [costs, setCosts] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
     const [option, setOption] = useState([]);
 
     useEffect(() => {
-        loadClients((options)=>{
+        loadCosts((options)=>{
             if (selected) {
-                let selectedValue = options.filter(clientValue => clientValue.value == selected);
+                let selectedValue = options.filter(costValue => costValue.value == selected);
                 if (selectedValue) {
                     setSelectedOption(selectedValue[0])
                     if (onChange) {
@@ -24,23 +24,22 @@ const ClientsSelectList = ({onChange, selected}) => {
         });
     }, []);
 
-    function loadClients(onLoad) {
-        API.getData("/client/list", (clients) => {
-            setClients(clients);
+    function loadCosts(onLoad) {
+        API.getData("/cost/list?order=day_of_accounting%20DESC", (costs) => {
+            setCosts(costs);
 
-            if (clients && clients.length > 0) {
-                const options = [{
-                    value: "",
-                    label: "--- žádný ---",
-                    logo: null
-                }];
-                clients.map(client => {
-                    let clientValue = {
-                        value: client.id,
-                        label: client.name,
-                        logo: client.logo ? CONFIG.uploadDir + client.logo : ""
+            if (costs && costs.length > 0) {
+                const options = [];
+                costs.map(cost => {
+                    let name = cost.name;
+                    if (cost.dayOfAccounting) {
+                        name += " - " + cost.dayOfAccounting.date.substring(0, 10);
+                    }
+                    let costValue = {
+                        value: cost.id,
+                        label: name
                     };
-                    options.push(clientValue);
+                    options.push(costValue);
                 });
                 setOption(options);
 
@@ -51,11 +50,11 @@ const ClientsSelectList = ({onChange, selected}) => {
         });
     }
 
-    function onNewClient(client){
+    function onNewCost(cost){
         setIsOpen(false);
 
-        loadClients((options)=>{
-            let selectedValue = options.filter(clientValue => clientValue.value == client.id);
+        loadCosts((options)=>{
+            let selectedValue = options.filter(costValue => costValue.value == cost.id);
 
             if (selectedValue) {
                 setSelectedOption(selectedValue[0])
@@ -67,25 +66,11 @@ const ClientsSelectList = ({onChange, selected}) => {
     }
 
 
-    const dot = (logo = null) => ({
-        alignItems: 'center',
-        display: 'flex',
-
-        ':before': {
-            background: logo ? "url('" + logo + "') no-repeat center center / contain" : "transparent",
-            borderRadius: 3,
-            content: '" "',
-            display: 'block',
-            marginRight: 8,
-            height: 20,
-            width: 40,
-        },
-    });
 
     const colourStyles = {
-        input: (styles) => ({...styles, ...dot()}),
-        singleValue: (styles, {data}) => ({...styles, ...dot(data.logo)}),
-        option: (styles, {data}) => ({...styles, ...dot(data.logo)}),
+        input: (styles) => ({...styles}),
+        singleValue: (styles) => ({...styles}),
+        option: (styles) => ({...styles}),
     }
 
 
@@ -136,15 +121,16 @@ const ClientsSelectList = ({onChange, selected}) => {
 
 
             {modalIsOpen && (
-                <ClientFormModal
+                <CostFormModal
                     isOpen={modalIsOpen}
                     onAfterOpen={afterOpenModal}
                     onRequestClose={closeModal}
-                    callback={onNewClient}
+                    callback={onNewCost}
+                    license={license}
                     />
             )}
         </>
     );
 };
 
-export default ClientsSelectList;
+export default CostsSelectList;

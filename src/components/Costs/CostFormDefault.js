@@ -11,7 +11,7 @@ const costBlank = {
     costRepeatableId: "",
 }
 
-const CostFormDefault = ({id, handleSave}) => {
+const CostFormDefault = ({id, handleSave, license}) => {
     const {API} = useRootContext()
     const [cost, setCost] = useState(null);
     const [selectedCostCategoryId, setSelectedCostCategoryId] = useState(null);
@@ -23,6 +23,12 @@ const CostFormDefault = ({id, handleSave}) => {
             });
         } else {
             costBlank.dayOfAccounting = {date: new Date().toISOString()}
+
+            if (license) {
+                costBlank.name = license.name;
+                costBlank.description = license.description;
+                costBlank.amount = license.amount;
+            }
 
             setCost(costBlank)
         }
@@ -78,7 +84,7 @@ const CostFormDefault = ({id, handleSave}) => {
                                   id="form_edit_description"></textarea>
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="form_edit_day_of_accounting">Datum zaúčotvání</label>
+                        <label htmlFor="form_edit_day_of_accounting">Datum zaúčtování</label>
                         <input defaultValue={cost.dayOfAccounting?.date.substring(0, 10)} type="date"
                                name="day_of_accounting"
                                className="form-control"

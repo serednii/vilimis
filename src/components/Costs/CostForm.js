@@ -7,7 +7,7 @@ import ProjectsList from "../Projects/ProjectsList";
 import AttachmentsList from "../Attachment/AttachmentsList";
 
 
-const CostForm = ({id, handleSave}) => {
+const CostForm = ({id, handleSave, license}) => {
     return (
         <>
             <>
@@ -28,7 +28,7 @@ const CostForm = ({id, handleSave}) => {
                         </TabPanel>
                     </Tabs>
                 ) : (
-                    <CostFormDefault handleSave={handleSave}/>
+                    <CostFormDefault handleSave={handleSave} license={license}/>
                 )}
             </>
         </>

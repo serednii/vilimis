@@ -7,6 +7,7 @@ import CommentsList from "../Comments/CommentsList";
 import AttachmentsList from "../Attachment/AttachmentsList";
 import TasksList from "../Tasks/TasksList";
 import ChecklistsList from "../Checklists/ChecklistsList";
+import LicensesList from "../Licenses/LicensesList";
 
 const ProjectForm = ({id, handleSave, clientId}) => {
     return (
@@ -17,6 +18,7 @@ const ProjectForm = ({id, handleSave, clientId}) => {
                         <Tab>Nastavení</Tab>
                         <Tab>Úkoly</Tab>
                         <Tab>Checklisty</Tab>
+                        <Tab>Licence</Tab>
                         <Tab>Poznámky</Tab>
                         <Tab>Přílohy</Tab>
                     </TabList>
@@ -47,6 +49,10 @@ const ProjectForm = ({id, handleSave, clientId}) => {
 
                     <TabPanel>
                         <ChecklistsList projectId={id}/>
+                    </TabPanel>
+
+                    <TabPanel>
+                        <LicensesList projectId={id} />
                     </TabPanel>
 
                     <TabPanel>

@@ -2,18 +2,18 @@ import React, {useEffect, useState} from "react";
 import {useRootContext} from "../../contexts/RootContext";
 import Select from "react-select";
 import {CONFIG} from "../../config";
-import ClientFormModal from "./ClientFormModal";
+import LicenseFormModal from "./LicenseFormModal";
 
-const ClientsSelectList = ({onChange, selected}) => {
+const LicensesSelectList = ({onChange, selected}) => {
     const {API} = useRootContext()
-    const [clients, setClients] = useState([]);
+    const [licenses, setLicenses] = useState([]);
     const [selectedOption, setSelectedOption] = useState(null);
     const [option, setOption] = useState([]);
 
     useEffect(() => {
-        loadClients((options)=>{
+        loadLicenses((options)=>{
             if (selected) {
-                let selectedValue = options.filter(clientValue => clientValue.value == selected);
+                let selectedValue = options.filter(licenseValue => licenseValue.value == selected);
                 if (selectedValue) {
                     setSelectedOption(selectedValue[0])
                     if (onChange) {
@@ -24,23 +24,21 @@ const ClientsSelectList = ({onChange, selected}) => {
         });
     }, []);
 
-    function loadClients(onLoad) {
-        API.getData("/client/list", (clients) => {
-            setClients(clients);
+    function loadLicenses(onLoad) {
+        API.getData("/license/list", (licenses) => {
+            setLicenses(licenses);
 
-            if (clients && clients.length > 0) {
+            if (licenses && licenses.length > 0) {
                 const options = [{
                     value: "",
-                    label: "--- žádný ---",
-                    logo: null
+                    label: "--- žádná ---",
                 }];
-                clients.map(client => {
-                    let clientValue = {
-                        value: client.id,
-                        label: client.name,
-                        logo: client.logo ? CONFIG.uploadDir + client.logo : ""
+                licenses.map(license => {
+                    let licenseValue = {
+                        value: license.id,
+                        label: license.name
                     };
-                    options.push(clientValue);
+                    options.push(licenseValue);
                 });
                 setOption(options);
 
@@ -51,11 +49,11 @@ const ClientsSelectList = ({onChange, selected}) => {
         });
     }
 
-    function onNewClient(client){
+    function onNewLicense(license){
         setIsOpen(false);
 
-        loadClients((options)=>{
-            let selectedValue = options.filter(clientValue => clientValue.value == client.id);
+        loadLicenses((options)=>{
+            let selectedValue = options.filter(licenseValue => licenseValue.value == license.id);
 
             if (selectedValue) {
                 setSelectedOption(selectedValue[0])
@@ -67,25 +65,11 @@ const ClientsSelectList = ({onChange, selected}) => {
     }
 
 
-    const dot = (logo = null) => ({
-        alignItems: 'center',
-        display: 'flex',
-
-        ':before': {
-            background: logo ? "url('" + logo + "') no-repeat center center / contain" : "transparent",
-            borderRadius: 3,
-            content: '" "',
-            display: 'block',
-            marginRight: 8,
-            height: 20,
-            width: 40,
-        },
-    });
 
     const colourStyles = {
-        input: (styles) => ({...styles, ...dot()}),
-        singleValue: (styles, {data}) => ({...styles, ...dot(data.logo)}),
-        option: (styles, {data}) => ({...styles, ...dot(data.logo)}),
+        input: (styles) => ({...styles}),
+        singleValue: (styles) => ({...styles}),
+        option: (styles) => ({...styles}),
     }
 
 
@@ -136,15 +120,15 @@ const ClientsSelectList = ({onChange, selected}) => {
 
 
             {modalIsOpen && (
-                <ClientFormModal
+                <LicenseFormModal
                     isOpen={modalIsOpen}
                     onAfterOpen={afterOpenModal}
                     onRequestClose={closeModal}
-                    callback={onNewClient}
+                    callback={onNewLicense}
                     />
             )}
         </>
     );
 };
 
-export default ClientsSelectList;
+export default LicensesSelectList;

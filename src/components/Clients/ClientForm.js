@@ -9,6 +9,7 @@ import ClientFormDefault from "./ClientFormDefault";
 import SessionsList from "../Sessions/SessionsList";
 import ProjectsList from "../Projects/ProjectsList";
 import AttachmentsList from "../Attachment/AttachmentsList";
+import LicensesList from "../Licenses/LicensesList";
 
 const clientBlank = {
     name: "",
@@ -34,6 +35,7 @@ const ClientForm = ({id, handleSave}) => {
                             <Tab>Nastavení</Tab>
                             <Tab>Projekty</Tab>
                             <Tab>Setkání</Tab>
+                            <Tab>Licence</Tab>
                             <Tab>Poznámky</Tab>
                             <Tab>Přílohy</Tab>
                         </TabList>
@@ -49,6 +51,10 @@ const ClientForm = ({id, handleSave}) => {
 
                         <TabPanel>
                             <SessionsList clientId={id}/>
+                        </TabPanel>
+
+                        <TabPanel>
+                            <LicensesList clientId={id} />
                         </TabPanel>
 
                         <TabPanel>

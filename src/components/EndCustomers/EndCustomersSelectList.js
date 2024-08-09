@@ -34,7 +34,11 @@ const EndCustomersSelectList = ({onChange, selected, clientId}) => {
             setEndCustomers(endCustomers);
 
             if (endCustomers?.length > 0) {
-                const options = [];
+                const options = [{
+                    value: "",
+                    label: "--- žádný ---",
+                    logo: null
+                }];
                 endCustomers.map(endCustomer => {
                     let endCustomerValue = {
                         value: endCustomer.id,

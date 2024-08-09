@@ -30,7 +30,11 @@ const ProjectsSelectList = ({onChange, selected}) => {
             setProjects(projects);
 
             if (projects && projects.length > 0) {
-                const options = [];
+                const options = [{
+                    value: "",
+                    label: "--- žádný ---",
+                    logo: null
+                }];
                 projects.map(project => {
                     let projectValue = {
                         value: project.id,

@@ -1,6 +1,6 @@
 import {NavLink, useLocation} from "react-router-dom";
 import {
-    ArrowArcRight,
+    ArrowArcRight, Barcode,
     CheckSquare, CurrencyDollar,
     FolderSimple, Gear, Invoice, ListChecks,
     Network,
@@ -117,6 +117,17 @@ const Menu = ({closeMobileMenu}) => {
                                 </li>
                             </ul>
                         </div>
+                    </li>
+                    <li className="nav-item">
+                        <NavLink to="/licenses"
+                                 className="nav-link d-flex justify-content-between">
+                                        <span>
+                                            <span className="sidebar-icon">
+                                                <Barcode/>
+                                            </span>
+                                            <span className="sidebar-text">Licence</span>
+                                        </span>
+                        </NavLink>
                     </li>
                     <li className="nav-item">
                         <NavLink to="/checklists"

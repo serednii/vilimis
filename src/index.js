@@ -36,6 +36,7 @@ import TopUserInfo from "./components/_page/TopUserInfo";
 import Menu from "./components/_page/Menu";
 import Checklists from "./pages/Checklists";
 import Costs from "./pages/Costs";
+import Licenses from "./pages/Licenses";
 
 function Root() {
     const [user, setUser] = useState(null);
@@ -375,6 +376,7 @@ function Root() {
                             <Route path="reports" element={<Reports/>}/>
                             <Route path="checklists" element={<Checklists/>}/>
                             <Route path="settings" element={<Settings/>}/>
+                            <Route path="licenses" element={<Licenses/>}/>
                             <Route path="*" element={<NoPage/>}/>
                             {/*</Route>*/}
                         </Routes>

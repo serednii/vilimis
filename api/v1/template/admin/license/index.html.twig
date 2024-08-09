@@ -1,0 +1,162 @@
+{% extends "admin/default.html.twig" %}
+
+{% block content %}
+
+    <h1>Licence</h1>
+
+    <p>
+        <button class="btn btn-success" onclick="document.getElementById('form-add').style.display='block';this.style.display='none'">Přidat</button>
+    </p>
+
+    <div id="form-add" style="display: none">
+        <form action="{{ _router.generateUrl("admin_license") }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="form_edit_name">Název</label>
+                <input value="{{ license.Name }}" type="text" name="name" class="form-control" id="form_edit_name"
+                required="required">
+            </div>
+            <div class="form-group">
+                <label for="form_edit_description">Popis</label>
+                <textarea class="form-control" name="description" rows="10" id="form_edit_description"
+                >{{ license.Description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_date_from">Platné od</label>
+                <input value="{{ license.DateFrom.format("Y-m-d") }}" type="date" name="date_from" class="form-control" id="form_edit_date_from"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_date_to">Platné do</label>
+                <input value="{{ license.DateTo.format("Y-m-d") }}" type="date" name="date_to" class="form-control" id="form_edit_date_to"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_amount">Cena</label>
+                <input value="{{ license.Amount }}" type="number" name="amount" class="form-control" id="form_edit_amount"
+                >
+            </div>
+            <div class="form-group">
+                <label for="form_edit_project_id">Projekt</label>
+                <select name="project_id" class="form-control" id="form_edit_project_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for project_id in project_ids %}
+                        <option value="{{ project_id.id }}">
+                        {% if project_id.title %}
+                            {{ project_id.title }}
+                        {% elseif project_id.name %}
+                            {{ project_id.name }}
+                        {% else %}
+                            #{{ project_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_client_id">Klient</label>
+                <select name="client_id" class="form-control" id="form_edit_client_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for client_id in client_ids %}
+                        <option value="{{ client_id.id }}">
+                        {% if client_id.title %}
+                            {{ client_id.title }}
+                        {% elseif client_id.name %}
+                            {{ client_id.name }}
+                        {% else %}
+                            #{{ client_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_end_customer_id">Koncový zákazník</label>
+                <select name="end_customer_id" class="form-control" id="form_edit_end_customer_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for end_customer_id in end_customer_ids %}
+                        <option value="{{ end_customer_id.id }}">
+                        {% if end_customer_id.title %}
+                            {{ end_customer_id.title }}
+                        {% elseif end_customer_id.name %}
+                            {{ end_customer_id.name }}
+                        {% else %}
+                            #{{ end_customer_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_before_license_id">Předchozí licence</label>
+                <select name="before_license_id" class="form-control" id="form_edit_before_license_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for before_license_id in before_license_ids %}
+                        <option value="{{ before_license_id.id }}">
+                        {% if before_license_id.title %}
+                            {{ before_license_id.title }}
+                        {% elseif before_license_id.name %}
+                            {{ before_license_id.name }}
+                        {% else %}
+                            #{{ before_license_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_after_license_id">Navazující licence</label>
+                <select name="after_license_id" class="form-control" id="form_edit_after_license_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for after_license_id in after_license_ids %}
+                        <option value="{{ after_license_id.id }}">
+                        {% if after_license_id.title %}
+                            {{ after_license_id.title }}
+                        {% elseif after_license_id.name %}
+                            {{ after_license_id.name }}
+                        {% else %}
+                            #{{ after_license_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="form_edit_cost_id">Náklad</label>
+                <select name="cost_id" class="form-control" id="form_edit_cost_id">
+                    <option value="0">--- Vyberte ---</option>
+                    {% for cost_id in cost_ids %}
+                        <option value="{{ cost_id.id }}">
+                        {% if cost_id.title %}
+                            {{ cost_id.title }}
+                        {% elseif cost_id.name %}
+                            {{ cost_id.name }}
+                        {% else %}
+                            #{{ cost_id.id }}
+                        {% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default">Přidat</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            {% for license in licenses %}
+                <tr>
+                    <td>
+                        <a href="{{ _router.generateUrl("admin_license_edit", {"id":license.id}) }}">{{ license.Name }}</a>
+                    </td>
+                    <td width="130">
+                        <a class="btn btn-xs btn-success" href="{{ _router.generateUrl("admin_license_edit", {"id":license.id}) }}">upravit</a>
+                        <a class="btn btn-xs btn-danger" href="{{ _router.generateUrl("admin_license_delete", {"id":license.id}) }}"
+                           onclick="return confirm('Opravdu?')">smazat</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

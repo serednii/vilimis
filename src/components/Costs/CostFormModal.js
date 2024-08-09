@@ -3,7 +3,7 @@ import CostForm from "./CostForm";
 import Modal from "../Modal/Modal";
 import {CurrencyDollar, Users} from "@phosphor-icons/react";
 
-const CostFormModal = ({ onRequestClose, onAfterOpen, isOpen, callback, id }) => {
+const CostFormModal = ({ onRequestClose, onAfterOpen, isOpen, callback, id, license }) => {
 
     return (
         <>
@@ -15,7 +15,7 @@ const CostFormModal = ({ onRequestClose, onAfterOpen, isOpen, callback, id }) =>
                 size={id?"xl":"md"}
             >
 
-                <CostForm handleSave={callback} id={id}/>
+                <CostForm handleSave={callback} id={id} license={license}/>
             </Modal>
         </>
     );
