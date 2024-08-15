@@ -167,6 +167,14 @@ body
     font-size: 1rem
     cursor: pointer
     transition: none
+    z-index: 9
+    left: 0
+    width: 100%
+    border-radius: .5rem
+    white-space: normal
+    background: #fff
+    overflow: hidden
+    position: absolute
 
     &:hover
       max-height: calc(60*24px)!important
@@ -174,6 +182,38 @@ body
 
     &__content
       padding: .5rem
+
+    &__new
+      background: blue
+      z-index: 8
+      position: absolute
+      top: 0
+      left: 0
+      width: 100%
+      height: 100%
+      background: rgba(0, 0, 0, .2)
+      opacity: 0
+      transition: opacity .2s
+      transition-delay: 0s
+      cursor: pointer
+
+      &:hover
+        opacity: 1
+        transition-delay: .1s
+
+      &:before
+        content: "+"
+        position: absolute
+        background: white
+        border-radius: 20px
+        left: calc(50% - 20px)
+        top:  calc(50% - 20px)
+        width: 40px
+        height: 40px
+        line-height: 40px
+        font-weight: bold
+        text-align: center
+        font-size: 20px
 
 .table tr:has(+ tr.thead-light) td
   border-bottom: 0

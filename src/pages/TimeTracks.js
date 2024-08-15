@@ -4,18 +4,26 @@ import TaskTimetracksListDashboard from "../components/Dashboard/TaskTimetracksL
 import ProjectDatesListDashboard from "../components/Dashboard/ProjectDatesListDashboard";
 import React, {useEffect, useState} from "react";
 import TimeTrackerFormModal from "../components/TimeTracer/TimeTrackerFormModal";
+import WeekSetter from "../components/_dates/WeekSetter";
 
 const TimeTracks = ({}) => {
     const {API, locale} = useRootContext()
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
+    const [modalNewIsOpen, setNewIsOpen] = React.useState(false);
+    const [modalDefaultData, setModalDefaultData] = React.useState(null);
     const [reload, setReload] = useState(true);
     const [taskTimetracks, setTaskTimetracks] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [projects, setProjects] = useState([]);
+    const [date, setDate] = useState(new Date());
 
     function closeModal() {
         setIsOpen(false);
+    }
+
+    function closeNewModal() {
+        setNewIsOpen(false);
     }
 
 
@@ -40,11 +48,14 @@ const TimeTracks = ({}) => {
     }, [reload]);
 
 
-    const date = new Date();
     const day = date.getDay();
     const date_monday = date.getDate() - day + (day === 0 ? -6 : 1);
     const monday = new Date(date.setDate(date_monday));
     const days = [...Array(7).keys()];
+    let dates = [];
+    days.forEach(day => {
+        dates.push(new Date(structuredClone(date).setDate(date_monday + day)));
+    });
     const hours = [...Array(24).keys()];
     let tmpDate = monday;
 
@@ -57,7 +68,9 @@ const TimeTracks = ({}) => {
                 <div className="mb-3 mb-lg-0"><h1 className="h4">Časové záznamy</h1></div>
             </div>
 
-            <h2 className="h5 mb-3 text-center">{locale._months_fullname[monday.getMonth()]} {monday.getFullYear()}</h2>
+            <h2 className="h5 mb-3 text-center">
+                <WeekSetter onChange={(newDate)=>{setDate(newDate);setReload(true);}}/>
+            </h2>
 
             <div className="table-responsive">
                 <table className="table table-centered table-nowrap mb-0 rounded table-bordered">
@@ -66,7 +79,7 @@ const TimeTracks = ({}) => {
                     <th></th>
                     {days.map(day => (
                         <th className="text-center position-relative" key={"day" + + day}>
-                            {(tmpDate = new Date(date.setDate(date_monday + day))) && ""}
+                            {(tmpDate = dates[day]) && ""}
                             {tmpDate.getDate()}.
 
                             {taskTimetracks?.filter(taskTimetrack => (
@@ -76,15 +89,8 @@ const TimeTracks = ({}) => {
                             )).map(taskTimetrack => (
                                 <React.Fragment key={taskTimetrack.id}>
                                 <div rel="presentation" onClick={()=>setIsOpen(taskTimetrack.id)} className="shadow timetrack-table__item" style={{
-                                    borderRadius: ".5rem",
-                                    background: "#fff",
-                                    whiteSpace: "normal",
-                                    left: "0px",
-                                    width: "100%",
                                     minHeight: ((new Date(taskTimetrack.datetimeStop.date).getTime() - (new Date(taskTimetrack.datetimeStart.date).getTime())) / 1000 / 60) + "px",
                                     maxHeight: ((new Date(taskTimetrack.datetimeStop.date).getTime() - (new Date(taskTimetrack.datetimeStart.date).getTime())) / 1000 / 60) + "px",
-                                    overflow: "hidden",
-                                    position: "absolute",
                                     top:  "calc(100% + "+(((new Date(taskTimetrack.datetimeStart.date)).getHours()*60) + (new Date(taskTimetrack.datetimeStart.date).getMinutes()) - hoursFrom*60) + "px)"
                                 }}>
                                     <div className="timetrack-table__item__content">
@@ -123,8 +129,22 @@ const TimeTracks = ({}) => {
                                 <strong>{hour}:00</strong>
                             </td>
                             {days.map(day => (
-                                <td key={"day" + hour + "-" + day}>
-
+                                <td style={{position:"relative"}} key={"day" + hour + "-" + day}>
+                                    <div className="timetrack-table__item__new"
+                                    onClick={()=>{
+                                        let datetimeStart = structuredClone(dates[day]);
+                                        let datetimeStop = structuredClone(dates[day]);
+                                        datetimeStart.setHours(hour, 0, 0, 0);
+                                        datetimeStop.setHours(hour+1, 0, 0, 0);
+                                        setModalDefaultData({
+                                            id: null,
+                                            taskId: null,
+                                            datetimeStart: {date: datetimeStart.toISOString()},
+                                            datetimeStop: {date: datetimeStop.toISOString()}
+                                        })
+                                        setNewIsOpen(true);
+                                    }}
+                                    ></div>
                                 </td>
                             ))}
                         </tr>
@@ -132,6 +152,14 @@ const TimeTracks = ({}) => {
                     </tbody>
                 </table>
             </div>
+            {modalNewIsOpen && (
+                <TimeTrackerFormModal
+                    isOpen={modalNewIsOpen}
+                    setIsOpen={setNewIsOpen}
+                    onRequestClose={closeNewModal}
+                    taskTimetrack={modalDefaultData}
+                    callback={setReload}/>
+            )}
         </>
     );
 };

@@ -26892,6 +26892,10 @@ article .h1,article .h2,article .h3,article .h4,article .h5,article .h6,article 
     border-radius: .5rem
 }
 
+.list-group-timeline .list-group-item.list-group-item--nob::after {
+    display: none
+}
+
 .tooltip-inner {
     box-shadow: 0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px 0 rgba(0,0,0,.06)
 }

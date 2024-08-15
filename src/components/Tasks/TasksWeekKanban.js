@@ -13,6 +13,7 @@ import TasksKanbanSettingsModal from "./TasksKanbanSettingsModal";
 import {AlignLeft, ArrowLeft, ArrowRight, Calendar, Gear, Kanban, Plus} from "@phosphor-icons/react";
 import TasksWeekKanbanColumn from "./TasksWeekKanbanColumn";
 import TasksWeekKanbanSettingsModal from "./TasksWeekKanbanSettingsModal";
+import WeekSetter from "../_dates/WeekSetter";
 
 const TasksWeekKanban = ({}) => {
     const {API, locale} = useRootContext()
@@ -43,7 +44,6 @@ const TasksWeekKanban = ({}) => {
     days.forEach(day => {
         dates.push(new Date(structuredClone(date).setDate(date_monday + day)));
     });
-    const last_day = new Date(structuredClone(date).setDate(date.getDate() + days.length -1));
 
 
     useEffect(() => {
@@ -197,19 +197,7 @@ const TasksWeekKanban = ({}) => {
             <div className="d-flex justify-content-between w-100 flex-wrap">
                 <div className="mb-3 mb-lg-0">
                     <h1 className="h4">Úkoly - týdenní plán:&nbsp;
-                        <button className="btn btn-text"
-                                onClick={()=>setDate(prev=>{setReload(true);return new Date(structuredClone(prev).setDate(date_monday - 7))})}
-                        >
-                            <ArrowLeft/>
-                        </button>
-                        {date.getDate()}.
-                        - {last_day.getDate()}. {locale._months_fullname[monday.getMonth()]} {monday.getFullYear()}
-
-                        <button className="btn btn-text"
-                                onClick={()=>setDate(prev=>{setReload(true);return new Date(structuredClone(prev).setDate(date_monday + 7))})}
-                        >
-                            <ArrowRight/>
-                        </button>
+                        <WeekSetter onChange={(newDate)=>{setDate(newDate);setReload(true);}}/>
                     </h1>
                 </div>
             </div>

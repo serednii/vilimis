@@ -3,6 +3,8 @@
 /.idea
 
 /mailchimp-sync
+/.server
+
 
 # docker
 .docker/db/data/*

@@ -128,8 +128,7 @@ chmod -R 777 /var/www/html/test/"$nove_id"/api/v1/web/upload
 
 a2ensite "$nove_id".test.vilemis.cz
 
-service apache2 stop
-service apache2 start
+systemctl reload apache2
 
 certbot --apache --agree-tos -m michal@katuscak.cz --non-interactive --domains "$nove_id".test.vilemis.cz
 

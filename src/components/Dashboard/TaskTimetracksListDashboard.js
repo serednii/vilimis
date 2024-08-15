@@ -6,6 +6,7 @@ import TaskFormModal from "../Tasks/TaskFormModal";
 import TasksListItem from "../Tasks/TasksListItem";
 import TimeTrackerItem from "../TimeTracer/TimeTrackerItem";
 import {Eye} from "@phosphor-icons/react";
+import TimeTrackerItemView from "../TimeTracer/TimeTrackerItemView";
 
 const TaskTimetracksListDashboard = ({ }) => {
     const { API } = useRootContext()
@@ -56,20 +57,28 @@ const TaskTimetracksListDashboard = ({ }) => {
 
                         "taskId" in taskTimetrack && taskTimetrack.taskId && tasks.filter(task => task.id === taskTimetrack.taskId).map((task, task_index) => (
 
-                            <div key={taskTimetrack_index + "-" + taskTimetrack.id} className="list-group-item border-0 pb-4">
-                                {(!beforeTaskTimetrack || beforeTaskTimetrack.taskId != taskTimetrack.taskId) && (
-                                    <div className="mb-3">
-                                        <TasksListItem
-                                            task={task}
-                                            projects={projects}
-                                            endCustomers={endCustomers}
-                                            clients={clients}
-                                            onUpdate={() => setReload(true)} />
+                            <>
+                                {(!beforeTaskTimetrack || beforeTaskTimetrack.taskId != taskTimetrack.taskId) ? (
+                                    <div key={taskTimetrack_index + "-" + taskTimetrack.id}
+                                         className="list-group-item border-0 pb-4">
+                                        <div className="mb-3">
+                                            <TasksListItem
+                                                task={task}
+                                                projects={projects}
+                                                endCustomers={endCustomers}
+                                                clients={clients}
+                                                onUpdate={() => setReload(true)}/>
+                                        </div>
+                                        <TimeTrackerItemView taskTimetrack={taskTimetrack}
+                                                             onChange={() => setReload(true)}/>
+                                    </div>
+                                ) : (
+                                        <div key={taskTimetrack_index + "-" + taskTimetrack.id} style={{marginTop: "-1rem"}} className="list-group-item list-group-item--nob border-0 pb-4">
+                                    <TimeTrackerItemView taskTimetrack={taskTimetrack} onChange={() => setReload(true)} />
                                     </div>
                                 )}
-                                <TimeTrackerItem taskTimetrack={taskTimetrack} onChange={() => setReload(true)} />
                                 {(beforeTaskTimetrack = taskTimetrack) && ""}
-                            </div>
+                            </>
 
                         ))
                     ))}

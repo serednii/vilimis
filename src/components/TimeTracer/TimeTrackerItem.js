@@ -5,22 +5,21 @@ import {NavLink} from "react-router-dom";
 import TaskFormModal from "../Tasks/TaskFormModal";
 import TasksListItem from "../Tasks/TasksListItem";
 import {TIMETRACKER_ACTIONS} from "../../reducers/timetrackerReducer";
+import TasksSelectList from "../Tasks/TasksSelectList";
 
 const TimeTrackerItem = ({taskTimetrack, onChange}) => {
     const {API} = useRootContext();
 
-    const [date, setDate] = useState(taskTimetrack.datetimeStart.date.substring(0, 10));
-    const [timeStart, setTimeStart] = useState(taskTimetrack.datetimeStart.date.substring(11, 16));
-    const [timeStop, setTimeStop] = useState(taskTimetrack.datetimeStop.date.substring(11, 16));
-    const [canSave, setCanSave] = useState(false);
+    const [date, setDate] = useState(taskTimetrack?.datetimeStart?.date?.substring(0, 10));
+    const [timeStart, setTimeStart] = useState(taskTimetrack?.datetimeStart?.date?.substring(11, 16));
+    const [timeStop, setTimeStop] = useState(taskTimetrack?.datetimeStop?.date?.substring(11, 16));
     const [firstRun, setFirstRun] = useState(true);
+    const [selectedTaskId, setSelectedTaskId] = useState(null);
 
     useEffect(() => {
         if (firstRun) {
             setFirstRun(false);
-            return;
         }
-        setCanSave(true);
     }, [date, timeStart, timeStop]);
 
     const handleSave = (e) => {
@@ -37,13 +36,13 @@ const TimeTrackerItem = ({taskTimetrack, onChange}) => {
             datetimeStop = dateAfter.toISOString().substring(0, 10) + " " + timeStop;
         }
 
-        formData.append("id", taskTimetrack.id);
-        formData.append("task_id", taskTimetrack.taskId);
+        if (taskTimetrack?.id) {
+            formData.append("id", taskTimetrack.id);
+        }
+        formData.append("task_id", selectedTaskId?selectedTaskId: taskTimetrack.taskId);
         formData.append("datetime_start", datetimeStart);
         formData.append("datetime_stop", datetimeStop);
         API.postData("/taskTimetrack/save", formData, ()=>{
-
-            setCanSave(false);
             if (onChange) {
                 onChange();
             }
@@ -51,7 +50,6 @@ const TimeTrackerItem = ({taskTimetrack, onChange}) => {
     }
     function handleDelete(id) {
         API.getData("/taskTimetrack/delete/"+id, ()=>{
-            setCanSave(false);
             if (onChange) {
                 onChange();
             }
@@ -61,34 +59,36 @@ const TimeTrackerItem = ({taskTimetrack, onChange}) => {
     return (
         <form onSubmit={handleSave}>
             <div className="mb-3">
-            <input type="date"  className="form-control"
-                   onChange={(e)=>setDate(e.target.value)}
-                   defaultValue={date}/>
+                <label>Úkol</label>
+                <TasksSelectList selected={taskTimetrack.taskId} onChange={setSelectedTaskId}/>
             </div>
+            <div className="mb-3">
+                <input type="date" className="form-control"
+                           onChange={(e) => setDate(e.target.value)}
+                           defaultValue={date}/>
+                </div>
 
-            <div className="row">
-                <div className="col-6">
-                    <input type="time" className="form-control"
-                           onChange={(e)=>setTimeStart(e.target.value)}
-                           defaultValue={timeStart}/>
+                <div className="row">
+                    <div className="col-6">
+                        <input type="time" className="form-control"
+                               onChange={(e) => setTimeStart(e.target.value)}
+                               defaultValue={timeStart}/>
+                    </div>
+                    <div className="col-6">
+                        <input type="time" className="form-control"
+                               onChange={(e) => setTimeStop(e.target.value)}
+                               defaultValue={timeStop}/>
+                    </div>
                 </div>
-                <div className="col-6">
-                    <input type="time" className="form-control"
-                           onChange={(e)=>setTimeStop(e.target.value)}
-                           defaultValue={timeStop}/>
-                </div>
-            </div>
-            {canSave && (
-                <div className="mt-3">
-                    <button className="btn btn-sm btn-primary" type="submit">Uložit</button>
-                    <button
-                        onClick={() => window.confirm("Opravdu smazat?") && handleDelete(taskTimetrack.id)}
-                        className="btn btn-sm btn-danger ms-2" type="button">Smazat
-                    </button>
-                </div>
-            )}
+                    <div className="mt-3">
+                        <button className="btn btn-sm btn-primary" type="submit">Uložit</button>
+                        <button
+                            onClick={() => window.confirm("Opravdu smazat?") && handleDelete(taskTimetrack.id)}
+                            className="btn btn-sm btn-danger ms-2 float-end" type="button">Smazat
+                        </button>
+                    </div>
         </form>
-    );
+);
 
 };
 
