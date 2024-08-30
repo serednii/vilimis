@@ -36,7 +36,7 @@ const TasksKanban = ({ }) => {
             settings.showTaskStatuses = taskStatuses.map((taskStatus)=>taskStatus.id);
         }
         localStorage.setItem("tasks_kanban_settings", JSON.stringify(settings));
-    }, [settings]);
+    }, [settings, taskStatuses]);
 
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -76,10 +76,6 @@ const TasksKanban = ({ }) => {
                             tasksIds.push(taskStatus.id);
                             taskSorted[taskStatus.id] = tasks.filter(task => task.taskStatusId == taskStatus.id)
                         })
-                    }
-
-                    if (settings.showTaskStatuses === null) {
-                        settings.showTaskStatuses = tasksIds;
                     }
 
                     setTasks(taskSorted)
@@ -204,7 +200,7 @@ const TasksKanban = ({ }) => {
                 <DndProvider backend={HTML5Backend}>
                     <div className="container-fluid kanban-container py-4 px-0">
                         <div className="row d-flex flex-nowrap">
-                            {taskStatuses?.filter(taskStatus=>(settings?.showTaskStatuses?.length>0 && settings?.showTaskStatuses?.includes(taskStatus.id))||settings?.showTaskStatuses?.length===0).map((taskStatus, taskStatus_index) => (
+                            {taskStatuses?.filter(taskStatus=>((settings?.showTaskStatuses?.length>0 && settings?.showTaskStatuses?.includes(taskStatus.id))||settings?.showTaskStatuses?.length===0)).map((taskStatus, taskStatus_index) => (
                                 <TasksKanbanColumn key={taskStatus.id}
                                                    setReload={setReload}
                                                    tasks={tasks[taskStatus.id]}

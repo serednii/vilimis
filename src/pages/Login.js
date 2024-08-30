@@ -39,7 +39,7 @@ const Login = ({}) => {
                                     <img src="/gephart/images/logo-black.svg" width="203"
                                          alt="VilémIS Logo"/>
 
-                                    <h1 className="mb-0 mt-5 h3">Přihlašení do systému</h1>
+                                    <h1 className="mb-0 mt-5 h3">Přihlášení do systému</h1>
                                 </div>
 
                                 {error && (

@@ -38,7 +38,7 @@ const TasksList = ({projectId}) => {
             settings.showTaskStatuses = taskStatuses.map((taskStatus) => taskStatus.id);
         }
         localStorage.setItem(localStorageKey, JSON.stringify(settings));
-    }, [settings]);
+    }, [settings, taskStatuses]);
 
     useEffect(() => {
         if (!reload) return;
@@ -60,7 +60,7 @@ const TasksList = ({projectId}) => {
             }
             API.getData(url, (tasks) => {
                 let taskSorted = {};
-                setTasks(tasks)
+                setTasks(tasks);
             });
         });
 
@@ -191,7 +191,9 @@ const TasksList = ({projectId}) => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {tasks.map((task, task_key) => (
+                                    {tasks.filter(task=>(
+                                        (settings?.showTaskStatuses?.length>0 && settings?.showTaskStatuses?.includes(task.taskStatusId))||settings?.showTaskStatuses?.length===0||!task.taskStatusId
+                                    )).map((task, task_key) => (
                                         <tr key={task_key}>
                                             {(taskUtil = new TaskUtils(task, taskStatuses, projects, clients, endCustomers)) && ""}
                                             {(budgetUtil = new BudgetCalculator(task.spendingTime, task)) && ""}
